@@ -1,11 +1,16 @@
 package com.lollipop.qin1sptools
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.lollipop.qin1sptools.databinding.ActivityMainBinding
+import com.lollipop.qin1sptools.utils.lazyBind
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
+    private val binding: ActivityMainBinding by lazyBind()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding)
     }
+
 }
