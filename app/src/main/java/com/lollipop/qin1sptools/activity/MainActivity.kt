@@ -1,10 +1,10 @@
-package com.lollipop.qin1sptools
+package com.lollipop.qin1sptools.activity
 
 import android.os.Bundle
 import com.lollipop.qin1sptools.databinding.ActivityMainBinding
 import com.lollipop.qin1sptools.utils.lazyBind
 
-class MainActivity : BaseActivity() {
+class MainActivity : FeatureBarActivity() {
 
     private val binding: ActivityMainBinding by lazyBind()
 

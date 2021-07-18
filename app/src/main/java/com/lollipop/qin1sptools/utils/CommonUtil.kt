@@ -710,4 +710,23 @@ fun LifecycleOwner.isStarted() = lifecycle.currentState.isAtLeast(Lifecycle.Stat
  */
 fun LifecycleOwner.isResumed() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-
+private fun initWindowFlag(activity: Activity) {
+    if (versionThen(Build.VERSION_CODES.LOLLIPOP)) {
+        activity.window.apply {
+            statusBarColor = Color.TRANSPARENT
+            navigationBarColor = Color.TRANSPARENT
+        }
+    }
+    if (versionThen(Build.VERSION_CODES.R)) {
+        activity.window.setDecorFitsSystemWindows(false)
+    } else {
+        var viewFlag = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+        }
+        activity.window.decorView.systemUiVisibility = viewFlag
+    }
+    activity.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+}

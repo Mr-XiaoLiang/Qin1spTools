@@ -1,4 +1,4 @@
-package com.lollipop.qin1sptools
+package com.lollipop.qin1sptools.activity
 
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +17,7 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
         KeyEventProviderHelper(this)
     }
 
-    protected fun setContentView(binding: ViewBinding) {
+    protected open fun setContentView(binding: ViewBinding) {
         setContentView(binding.root)
     }
 
