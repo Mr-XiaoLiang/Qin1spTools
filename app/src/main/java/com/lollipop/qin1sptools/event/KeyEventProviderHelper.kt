@@ -29,7 +29,7 @@ class KeyEventProviderHelper(
 
     private fun isActive(event: android.view.KeyEvent?): Boolean {
         event ?: return false
-        return event.isTracking && !event.isCanceled
+        return !event.isCanceled
     }
 
     private fun findKeyByCode(code: Int): KeyEvent {

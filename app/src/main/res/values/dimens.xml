@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="feature_bar_size">32dp</dimen>
+
+    <dimen name="grid_menu_space">5dp</dimen>
 </resources>

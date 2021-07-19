@@ -11,6 +11,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/dexlib" />
+            <option value="$PROJECT_DIR$/j2me" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

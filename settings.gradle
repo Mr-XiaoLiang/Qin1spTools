@@ -1,2 +1,4 @@
 rootProject.name = "Qin1spTools"
 include ':app'
+include ':j2me'
+include ':dexlib'

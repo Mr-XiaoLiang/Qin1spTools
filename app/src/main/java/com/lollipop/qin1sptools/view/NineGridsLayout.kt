@@ -14,7 +14,9 @@ class NineGridsLayout(context: Context, attributeSet: AttributeSet?, defStyle: I
 
     var childSpace: Int = 0
 
-    var selectedChild: Int = 0
+    var pageIndex = -1
+
+    var selectedChild: Int = -1
         set(value) {
             field = value
             notifyChildIndexChanged()
@@ -92,7 +94,6 @@ class NineGridsLayout(context: Context, attributeSet: AttributeSet?, defStyle: I
                 )
             }
         }
-        notifyChildIndexChanged()
     }
 
     fun notifyChildIndexChanged() {

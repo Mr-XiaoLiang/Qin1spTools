@@ -4,4 +4,7 @@
         <attr name="childSpace" format="dimension"/>
         <attr name="selectedScale" format="float"/>
     </declare-styleable>
+    <declare-styleable name="PageIndicatorView">
+        <attr name="color" format="color"/>
+    </declare-styleable>
 </resources>

@@ -2,7 +2,9 @@ package com.lollipop.qin1sptools.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
+import com.lollipop.qin1sptools.utils.log
 
 /**
  * @author lollipop
@@ -20,19 +22,12 @@ class PagedLayout(context: Context, attributeSet: AttributeSet?, defStyle: Int) 
             offsetChildLocation()
         }
 
+    private var pageOffset = 0
+
+    private var onPageChangedListener: OnPageChangedListener? = null
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val widthSize = width
-        val heightSize = height
-        for (index in 0 until childCount) {
-            val childTop = 0
-            val childLeft = index * widthSize
-            getChildAt(index)?.layout(
-                childLeft,
-                childTop,
-                childLeft + widthSize,
-                childTop + heightSize
-            )
-        }
+        layoutChild()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -44,6 +39,22 @@ class PagedLayout(context: Context, attributeSet: AttributeSet?, defStyle: Int) 
             getChildAt(index)?.measure(childWidthMeasureSpec, childHeightMeasureSpec)
         }
         setMeasuredDimension(widthSize, heightSize)
+    }
+
+    private fun layoutChild() {
+        val widthSize = width
+        val heightSize = height
+        val xOffset = pageOffset
+        for (index in 0 until childCount) {
+            val childTop = 0
+            val childLeft = index * widthSize + xOffset
+            getChildAt(index)?.layout(
+                childLeft,
+                childTop,
+                childLeft + widthSize,
+                childTop + heightSize
+            )
+        }
     }
 
     override fun canScrollHorizontally(direction: Int): Boolean {
@@ -58,7 +69,46 @@ class PagedLayout(context: Context, attributeSet: AttributeSet?, defStyle: Int) 
     }
 
     private fun offsetChildLocation() {
-        scrollTo(currentItem * width, 0)
+        pageOffset = currentItem * width * -1
+
+        layoutChild()
+
+        this.onPageChangedListener?.onPageChanged(currentItem, childCount)
+    }
+
+    fun onPageChanged(listener: OnPageChangedListener?) {
+        this.onPageChangedListener = listener
+    }
+
+    fun reset() {
+        currentItem = 0
+    }
+
+    fun currentPage(): View? {
+        if (currentItem < 0 || childCount < 1 || currentItem >= childCount) {
+            return null
+        }
+        return getChildAt(currentItem)
+    }
+
+    fun nextPage(): View? {
+        val position = currentItem
+        if (position < childCount - 1) {
+            currentItem = position + 1
+        }
+        return currentPage()
+    }
+
+    fun lastPage(): View? {
+        val position = currentItem
+        if (position > 0) {
+            currentItem = position - 1
+        }
+        return currentPage()
+    }
+
+    fun interface OnPageChangedListener {
+        fun onPageChanged(index: Int, count: Int)
     }
 
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.lollipop.qin1sptools.view.PagedLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:id="@+id/pagedLayout"/>
+
+    <com.lollipop.qin1sptools.view.PageIndicatorView
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:padding="1dp"
+        android:id="@+id/indicatorView"
+        app:color="@color/indicatorColor"/>
+
+</LinearLayout>

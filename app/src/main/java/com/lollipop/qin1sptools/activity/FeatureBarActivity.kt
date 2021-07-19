@@ -28,4 +28,31 @@ open class FeatureBarActivity : BaseActivity() {
         )
     }
 
+    override fun setTitle(title: CharSequence?) {
+        super.setTitle(title)
+        featureBinding.titleView.text = title
+    }
+
+    protected fun setLeftFeatureButton(icon: Int) {
+        featureBinding.leftOptionBtn.setImageResource(icon)
+    }
+
+    protected fun setRightFeatureButton(icon: Int) {
+        featureBinding.rightOptionBtn.setImageResource(icon)
+    }
+
+    protected fun setCenterFeatureButton(icon: Int) {
+        featureBinding.centerOptionBtn.setImageResource(icon)
+    }
+
+    protected fun setFeatureButtons(
+        left: Int,
+        center: Int,
+        right: Int
+    ) {
+        setLeftFeatureButton(left)
+        setCenterFeatureButton(center)
+        setRightFeatureButton(right)
+    }
+
 }
