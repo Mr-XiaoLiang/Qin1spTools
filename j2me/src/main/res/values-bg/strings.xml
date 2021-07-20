@@ -24,7 +24,6 @@
     <string name="action_settings">Настройки</string>
     <string name="action_context_delete">Изтриване</string>
     <string name="action_context_rename">Преименуване</string>
-    <string name="donate">Даряване</string>
     <string name="START_CMD">Старт</string>
     <string name="CANCEL_CMD">Отказ</string>
     <string name="CLEAR_DATA_CMD">Изчистване на данните</string>

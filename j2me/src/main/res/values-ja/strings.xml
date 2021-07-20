@@ -20,7 +20,6 @@
     <string name="action_settings">設定</string>
     <string name="action_context_delete">削除</string>
     <string name="action_context_rename">名前を変更</string>
-    <string name="donate">寄付する</string>
     <string name="START_CMD">開始</string>
     <string name="CANCEL_CMD">キャンセル</string>
     <string name="CLEAR_DATA_CMD">データをクリア</string>

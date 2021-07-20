@@ -23,9 +23,6 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 
-import org.acra.ACRA;
-import org.acra.ErrorReporter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -127,7 +124,6 @@ public class MicroLoader {
 				dexOptDir.getAbsolutePath(), context.getClassLoader(), appDir);
 		Log.i(TAG, "loadMIDletList main: " + mainClass + " from dex:" + dexSource.getPath());
 		Log.i(TAG, "MIDlet-Name: " + appDirName);
-		ACRA.getErrorReporter().putCustomData("Running app", appDirName);
 		//noinspection unchecked
 		Class<MIDlet> clazz = (Class<MIDlet>) loader.loadClass(mainClass);
 		Constructor<MIDlet> init = clazz.getDeclaredConstructor();

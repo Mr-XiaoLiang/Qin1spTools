@@ -20,7 +20,6 @@
     <string name="action_settings">การตั้งค่า</string>
     <string name="action_context_delete">ลบ</string>
     <string name="action_context_rename">เปลี่ยนชื่อ</string>
-    <string name="donate">บริจาค</string>
     <string name="START_CMD">เริ่ม</string>
     <string name="CANCEL_CMD">ยกเลิก</string>
     <string name="CLEAR_DATA_CMD">ล้างข้อมูล</string>

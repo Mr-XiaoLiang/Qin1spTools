@@ -24,7 +24,6 @@
     <string name="action_settings">تنظیمات</string>
     <string name="action_context_delete">حذف</string>
     <string name="action_context_rename">تغییر نام</string>
-    <string name="donate">حمایت مالی</string>
     <string name="START_CMD">شروع</string>
     <string name="CANCEL_CMD">لغو</string>
     <string name="CLEAR_DATA_CMD">پاک کردن اطلاعات</string>

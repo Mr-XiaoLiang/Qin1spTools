@@ -24,7 +24,6 @@
     <string name="action_settings">Налаштування</string>
     <string name="action_context_delete">Видалити</string>
     <string name="action_context_rename">Перейменувати</string>
-    <string name="donate">Пожертвувати</string>
     <string name="START_CMD">Розпочати</string>
     <string name="CANCEL_CMD">Скасувати</string>
     <string name="CLEAR_DATA_CMD">Очистити дані</string>

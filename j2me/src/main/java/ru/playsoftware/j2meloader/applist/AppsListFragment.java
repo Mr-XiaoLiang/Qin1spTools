@@ -76,11 +76,8 @@ import ru.playsoftware.j2meloader.appsdb.AppRepository;
 import ru.playsoftware.j2meloader.config.Config;
 import ru.playsoftware.j2meloader.config.ConfigActivity;
 import ru.playsoftware.j2meloader.config.ProfilesActivity;
-import ru.playsoftware.j2meloader.donations.DonationsActivity;
 import ru.playsoftware.j2meloader.filepicker.FilteredFilePickerActivity;
 import ru.playsoftware.j2meloader.filepicker.FilteredFilePickerFragment;
-import ru.playsoftware.j2meloader.info.AboutDialogFragment;
-import ru.playsoftware.j2meloader.info.HelpDialogFragment;
 import ru.playsoftware.j2meloader.settings.SettingsActivity;
 import ru.playsoftware.j2meloader.util.AppUtils;
 import ru.playsoftware.j2meloader.util.JarConverter;
@@ -390,21 +387,12 @@ public class AppsListFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
-		if (itemId == R.id.action_about) {
-			AboutDialogFragment aboutDialogFragment = new AboutDialogFragment();
-			aboutDialogFragment.show(getChildFragmentManager(), "about");
-		} else if (itemId == R.id.action_settings) {
+		if (itemId == R.id.action_settings) {
 			Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
 			requireActivity().startActivityForResult(settingsIntent, REQUEST_SETTINGS);
 		} else if (itemId == R.id.action_profiles) {
 			Intent intentProfiles = new Intent(getActivity(), ProfilesActivity.class);
 			startActivity(intentProfiles);
-		} else if (itemId == R.id.action_help) {
-			HelpDialogFragment helpDialogFragment = new HelpDialogFragment();
-			helpDialogFragment.show(getChildFragmentManager(), "help");
-		} else if (itemId == R.id.action_donate) {
-			Intent donationsIntent = new Intent(getActivity(), DonationsActivity.class);
-			startActivity(donationsIntent);
 		} else if (itemId == R.id.action_save_log) {
 			try {
 				LogUtils.writeLog();

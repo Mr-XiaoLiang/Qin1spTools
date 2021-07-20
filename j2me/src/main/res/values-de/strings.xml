@@ -23,7 +23,6 @@
     <string name="action_settings">Einstellungen</string>
     <string name="action_context_delete">Löschen</string>
     <string name="action_context_rename">Umbenennung</string>
-    <string name="donate">Spenden</string>
     <string name="START_CMD">Starten</string>
     <string name="CANCEL_CMD">Abbrechen</string>
     <string name="CLEAR_DATA_CMD">Daten löschen</string>

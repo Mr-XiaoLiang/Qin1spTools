@@ -24,7 +24,6 @@
     <string name="action_settings">Paramètres</string>
     <string name="action_context_delete">Supprimer</string>
     <string name="action_context_rename">Renommer</string>
-    <string name="donate">Donner</string>
     <string name="START_CMD">Commencer</string>
     <string name="CANCEL_CMD">Annuler</string>
     <string name="CLEAR_DATA_CMD">Effacer les données</string>

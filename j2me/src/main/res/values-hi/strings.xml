@@ -24,7 +24,6 @@
     <string name="action_settings">सेटिंग्स</string>
     <string name="action_context_delete">मिटाए</string>
     <string name="action_context_rename">पुन: नाम दें</string>
-    <string name="donate">दान करें</string>
     <string name="START_CMD">शुरू करें</string>
     <string name="CANCEL_CMD">रद्द करें</string>
     <string name="CLEAR_DATA_CMD">डेटा मिटाएँ</string>

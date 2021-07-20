@@ -24,7 +24,6 @@
     <string name="action_settings">Beállítások</string>
     <string name="action_context_delete">Törlés</string>
     <string name="action_context_rename">Átnevezés</string>
-    <string name="donate">Támogatás</string>
     <string name="START_CMD">Indítás</string>
     <string name="CANCEL_CMD">Mégse</string>
     <string name="CLEAR_DATA_CMD">Adatok törlése</string>

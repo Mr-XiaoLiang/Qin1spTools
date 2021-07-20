@@ -38,7 +38,6 @@
     <string name="action_settings">설정</string>
     <string name="action_context_delete">삭제하다</string>
     <string name="action_context_rename">이름 바꾸기</string>
-    <string name="donate">기부하다</string>
     <string name="START_CMD">작동되다</string>
     <string name="CANCEL_CMD">취소</string>
     <string name="CLEAR_DATA_CMD">데이터 제거</string>

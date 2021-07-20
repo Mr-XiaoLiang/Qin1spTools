@@ -24,7 +24,6 @@ import com.android.dx.command.dexer.Main;
 
 import net.lingala.zip4j.exception.ZipException;
 
-import org.acra.ACRA;
 import org.microemu.android.asm.AndroidProducer;
 
 import java.io.File;
@@ -147,8 +146,6 @@ public class JarConverter {
 			tmpDir.mkdir();
 
 			// Add jar name to ACRA
-			String targetJarName = pathToJar.substring(pathToJar.lastIndexOf('/') + 1);
-			ACRA.getErrorReporter().putCustomData("Last installed app", targetJarName);
 			Log.d(TAG, "doInBackground$ pathToJar=" + pathToJar);
 			// Check extension
 			String extension = pathToJar.substring(pathToJar.lastIndexOf('.'));

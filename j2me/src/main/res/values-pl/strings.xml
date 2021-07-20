@@ -23,7 +23,6 @@
     <string name="action_settings">Ustawienia</string>
     <string name="action_context_delete">Usuń</string>
     <string name="action_context_rename">Zmień nazwę</string>
-    <string name="donate">Wesprzyj</string>
     <string name="START_CMD">Rozpocznij</string>
     <string name="CANCEL_CMD">Anuluj</string>
     <string name="CLEAR_DATA_CMD">Wyczyść dane</string>

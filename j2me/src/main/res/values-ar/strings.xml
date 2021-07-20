@@ -24,7 +24,6 @@
     <string name="action_settings">الاعدادات</string>
     <string name="action_context_delete">حذف</string>
     <string name="action_context_rename">اعادة تسمية</string>
-    <string name="donate">تبرع</string>
     <string name="START_CMD">إبدأ</string>
     <string name="CANCEL_CMD">الغاء</string>
     <string name="CLEAR_DATA_CMD">مسح البيانات</string>

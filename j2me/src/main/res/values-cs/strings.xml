@@ -23,7 +23,6 @@
     <string name="action_settings">Nastavení</string>
     <string name="action_context_delete">Vymazat</string>
     <string name="action_context_rename">Přejmenovat</string>
-    <string name="donate">Podpořit</string>
     <string name="START_CMD">Spustit</string>
     <string name="CANCEL_CMD">Zrušit</string>
     <string name="CLEAR_DATA_CMD">Vymazat data</string>

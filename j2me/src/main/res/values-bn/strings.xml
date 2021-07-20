@@ -24,7 +24,6 @@
     <string name="action_settings">সেটিংস</string>
     <string name="action_context_delete">মুছে ফেলুন</string>
     <string name="action_context_rename">নাম পরিবর্তন করুন</string>
-    <string name="donate">দান করুন ।</string>
     <string name="START_CMD">শুরু</string>
     <string name="CANCEL_CMD">বাতিল</string>
     <string name="CLEAR_DATA_CMD">উপাত্ত সাফ করুন</string>
