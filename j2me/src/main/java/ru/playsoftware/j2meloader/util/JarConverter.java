@@ -50,7 +50,7 @@ public class JarConverter {
 	private static final String TAG = JarConverter.class.getName();
 
 	private String appDirPath;
-	private String dataDirPath;
+	private final String dataDirPath;
 	private final File tmpDir;
 	private File appConverted;
 
@@ -145,8 +145,6 @@ public class JarConverter {
 
 			tmpDir.mkdir();
 
-			// Add jar name to ACRA
-			Log.d(TAG, "doInBackground$ pathToJar=" + pathToJar);
 			// Check extension
 			String extension = pathToJar.substring(pathToJar.lastIndexOf('.'));
 			if (extension.equalsIgnoreCase(".jad")) {

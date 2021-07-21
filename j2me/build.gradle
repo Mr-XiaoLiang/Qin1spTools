@@ -7,7 +7,7 @@ android {android
 
     defaultConfig {
 //        applicationId "ru.playsoftware.j2meloader"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 30
         versionCode 89
         versionName "1.7.0"

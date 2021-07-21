@@ -30,7 +30,6 @@ public class KeyMapper {
 	private static final int DEFAULT_LAYOUT = 0;
 	private static final int SIEMENS_LAYOUT = 1;
 	private static final int MOTOROLA_LAYOUT = 2;
-	private static final int CUSTOM_LAYOUT = 3;
 
 	private static final int SIEMENS_KEY_UP = -59;
 	private static final int SIEMENS_KEY_DOWN = -60;
@@ -46,15 +45,12 @@ public class KeyMapper {
 	private static final int MOTOROLA_KEY_SOFT_LEFT = -21;
 	private static final int MOTOROLA_KEY_SOFT_RIGHT = -22;
 
-	public static final int SE_KEY_SPECIAL_GAMING_A = -13;
-	public static final int SE_KEY_SPECIAL_GAMING_B = -14;
-
 	private static final SparseArrayCompat<String> keyCodeToKeyName = new SparseArrayCompat<>();
 	private static final SparseIntArray keyCodeToCustom = new SparseIntArray();
 	private static final SparseIntArray keyCodeToGameAction = new SparseIntArray();
 	private static final SparseIntArray gameActionToKeyCode = new SparseIntArray();
 	private static SparseIntArray androidToMIDP;
-	private static int layoutType;
+	private static int layoutType = DEFAULT_LAYOUT;
 
 	static {
 		mapKeyCode(KEY_NUM0, 0, "0");
@@ -157,7 +153,6 @@ public class KeyMapper {
 	}
 
 	public static void setKeyMapping(ProfileModel params) {
-		layoutType = params.keyCodesLayout;
 		androidToMIDP = params.keyMappings;
 		if (androidToMIDP == null) {
 			androidToMIDP = getDefaultKeyMap();

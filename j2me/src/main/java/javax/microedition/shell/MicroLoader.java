@@ -42,7 +42,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.event.EventQueue;
 import javax.microedition.lcdui.keyboard.KeyMapper;
-import javax.microedition.lcdui.keyboard.VirtualKeyboard;
 import javax.microedition.m3g.Graphics3D;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.util.ContextHolder;
@@ -156,11 +155,6 @@ public class MicroLoader {
 	void applyConfiguration() {
 		try {
 			// Apply configuration to the launching MIDlet
-			if (params.showKeyboard) {
-				ContextHolder.setVk(new VirtualKeyboard(params));
-			} else {
-				ContextHolder.setVk(null);
-			}
 			setProperties();
 
 			final String[] propLines = params.systemProperties.split("\n");

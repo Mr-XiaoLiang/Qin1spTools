@@ -23,7 +23,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.File;
 
-import javax.microedition.lcdui.keyboard.VirtualKeyboard;
 import javax.microedition.util.ContextHolder;
 
 import ru.playsoftware.j2meloader.util.SparseIntArrayAdapter;
@@ -110,49 +109,6 @@ public class ProfileModel {
 	@SerializedName("TouchInput")
 	public boolean touchInput;
 
-	@SerializedName("ShowKeyboard")
-	public boolean showKeyboard;
-
-	@SerializedName("VirtualKeyboardType")
-	public int vkType;
-
-	@SerializedName("ButtonShape")
-	public int vkButtonShape;
-
-	@SerializedName("VirtualKeyboardAlpha")
-	public int vkAlpha;
-
-	@SerializedName("VirtualKeyboardForceOpacity")
-	public boolean vkForceOpacity;
-
-	@SerializedName("VirtualKeyboardFeedback")
-	public boolean vkFeedback;
-
-	@SerializedName("VirtualKeyboardDelay")
-	public int vkHideDelay;
-
-	@SerializedName("VirtualKeyboardColorBackground")
-	public int vkBgColor;
-
-	@SerializedName("VirtualKeyboardColorBackgroundSelected")
-	public int vkBgColorSelected;
-
-	@SerializedName("VirtualKeyboardColorForeground")
-	public int vkFgColor;
-
-	@SerializedName("VirtualKeyboardColorForegroundSelected")
-	public int vkFgColorSelected;
-
-	@SerializedName("VirtualKeyboardColorOutline")
-	public int vkOutlineColor;
-
-	@SerializedName("Layout")
-	public int keyCodesLayout;
-
-	@JsonAdapter(SparseIntArrayAdapter.class)
-	@SerializedName("KeyCodeMap")
-	public SparseIntArray keyCodeMap;
-
 	@JsonAdapter(SparseIntArrayAdapter.class)
 	@SerializedName("KeyMappings")
 	public SparseIntArray keyMappings;
@@ -184,17 +140,8 @@ public class ProfileModel {
 		fontSizeLarge = 26;
 		fontAA = true;
 
-		showKeyboard = true;
 		touchInput = true;
 
-		vkButtonShape = VirtualKeyboard.ROUND_RECT_SHAPE;
-		vkAlpha = 64;
-
-		vkBgColor = 0xD0D0D0;
-		vkFgColor = 0x000080;
-		vkBgColorSelected = 0x000080;
-		vkFgColorSelected = 0xFFFFFF;
-		vkOutlineColor = 0xFFFFFF;
 		systemProperties = ContextHolder.getAssetAsString("defaults/system.props");
 	}
 }

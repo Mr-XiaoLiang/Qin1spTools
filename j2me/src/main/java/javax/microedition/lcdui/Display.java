@@ -114,12 +114,6 @@ public class Display {
 	}
 
 	private void changeCurrent(Displayable disp) {
-		if (current instanceof Canvas) {
-			((Canvas) current).setOverlay(null);
-		}
-		if (disp instanceof Canvas) {
-			((Canvas) disp).setOverlay(ContextHolder.getVk());
-		}
 		current = disp;
 	}
 

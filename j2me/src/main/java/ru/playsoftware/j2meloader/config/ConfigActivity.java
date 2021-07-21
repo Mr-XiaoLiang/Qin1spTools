@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,7 +71,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 import ru.playsoftware.j2meloader.R;
 import ru.playsoftware.j2meloader.base.BaseActivity;
-import ru.playsoftware.j2meloader.settings.KeyMapperActivity;
 import ru.playsoftware.j2meloader.util.FileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -103,23 +103,6 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 	protected EditText tfFontSizeLarge;
 	protected Checkable cxFontSizeInSP;
 	protected Checkable cxFontAA;
-	protected CompoundButton cxShowKeyboard;
-
-	private View rootInputConfig;
-	private View groupVkConfig;
-	protected Checkable cxVKFeedback;
-	protected Checkable cxTouchInput;
-
-	protected Spinner spLayout;
-	private Spinner spButtonsShape;
-	protected SeekBar sbVKAlpha;
-	protected Checkable cxVKForceOpacity;
-	protected EditText tfVKHideDelay;
-	protected EditText tfVKFore;
-	protected EditText tfVKBack;
-	protected EditText tfVKSelFore;
-	protected EditText tfVKSelBack;
-	protected EditText tfVKOutline;
 
 	protected EditText tfSystemProperties;
 
@@ -236,23 +219,6 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 		cxFontAA = findViewById(R.id.cxFontAA);
 		tfSystemProperties = findViewById(R.id.tfSystemProperties);
 
-		rootInputConfig = findViewById(R.id.rootInputConfig);
-		cxTouchInput = findViewById(R.id.cxTouchInput);
-		cxShowKeyboard = findViewById(R.id.cxIsShowKeyboard);
-		groupVkConfig = findViewById(R.id.groupVkConfig);
-		cxVKFeedback = findViewById(R.id.cxVKFeedback);
-		cxVKForceOpacity = findViewById(R.id.cxVKForceOpacity);
-
-		spLayout = findViewById(R.id.spLayout);
-		spButtonsShape = findViewById(R.id.spButtonsShape);
-		sbVKAlpha = findViewById(R.id.sbVKAlpha);
-		tfVKHideDelay = findViewById(R.id.tfVKHideDelay);
-		tfVKFore = findViewById(R.id.tfVKFore);
-		tfVKBack = findViewById(R.id.tfVKBack);
-		tfVKSelFore = findViewById(R.id.tfVKSelFore);
-		tfVKSelBack = findViewById(R.id.tfVKSelBack);
-		tfVKOutline = findViewById(R.id.tfVKOutline);
-
 		fillScreenSizePresets(display.getWidth(), display.getHeight());
 
 		addFontSizePreset("128 x 128", 9, 13, 15);
@@ -266,12 +232,6 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 		findViewById(R.id.cmdAddToPreset).setOnClickListener(v -> addResolutionToPresets());
 		findViewById(R.id.cmdFontSizePresets).setOnClickListener(this);
 		findViewById(R.id.cmdScreenBack).setOnClickListener(this);
-		findViewById(R.id.cmdKeyMappings).setOnClickListener(this);
-		findViewById(R.id.cmdVKBack).setOnClickListener(this);
-		findViewById(R.id.cmdVKFore).setOnClickListener(this);
-		findViewById(R.id.cmdVKSelBack).setOnClickListener(this);
-		findViewById(R.id.cmdVKSelFore).setOnClickListener(this);
-		findViewById(R.id.cmdVKOutline).setOnClickListener(this);
 		findViewById(R.id.btEncoding).setOnClickListener(this::showCharsetPicker);
 		btShaderTune.setOnClickListener(this::showShaderSettings);
 		sbScaleRatio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -345,25 +305,7 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
-		cxShowKeyboard.setOnClickListener((b) -> {
-			View.OnLayoutChangeListener onLayoutChangeListener = new View.OnLayoutChangeListener() {
-				@Override
-				public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-					View focus = rootContainer.findFocus();
-					if (focus != null) focus.clearFocus();
-					v.scrollTo(0, rootInputConfig.getTop());
-					v.removeOnLayoutChangeListener(this);
-				}
-			};
-			rootContainer.addOnLayoutChangeListener(onLayoutChangeListener);
-			groupVkConfig.setVisibility(cxShowKeyboard.isChecked() ? View.VISIBLE : View.GONE);
-		});
 		tfScreenBack.addTextChangedListener(new ColorTextWatcher(tfScreenBack));
-		tfVKFore.addTextChangedListener(new ColorTextWatcher(tfVKFore));
-		tfVKBack.addTextChangedListener(new ColorTextWatcher(tfVKBack));
-		tfVKSelFore.addTextChangedListener(new ColorTextWatcher(tfVKSelFore));
-		tfVKSelBack.addTextChangedListener(new ColorTextWatcher(tfVKSelBack));
-		tfVKOutline.addTextChangedListener(new ColorTextWatcher(tfVKOutline));
 	}
 
 	private void onLockAspectChanged(CompoundButton cb, boolean isChecked) {
@@ -572,7 +514,9 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		fillScreenSizePresets(display.getWidth(), display.getHeight());
+		Point size = new Point();
+		display.getSize(size);
+		fillScreenSizePresets(size.x, size.y);
 	}
 
 	private void fillScreenSizePresets(int w, int h) {
@@ -671,30 +615,10 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 		tfFontSizeLarge.setText(Integer.toString(params.fontSizeLarge));
 		cxFontSizeInSP.setChecked(params.fontApplyDimensions);
 		cxFontAA.setChecked(params.fontAA);
-		boolean showVk = params.showKeyboard;
-		cxShowKeyboard.setChecked(showVk);
-		groupVkConfig.setVisibility(showVk ? View.VISIBLE : View.GONE);
-		cxVKFeedback.setChecked(params.vkFeedback);
-		cxVKForceOpacity.setChecked(params.vkForceOpacity);
-		cxTouchInput.setChecked(params.touchInput);
 		int fpsLimit = params.fpsLimit;
 		if (fpsLimit > 0) {
 			tfFpsLimit.setText(Integer.toString(fpsLimit));
 		}
-
-		spLayout.setSelection(params.keyCodesLayout);
-		spButtonsShape.setSelection(params.vkButtonShape);
-		sbVKAlpha.setProgress(params.vkAlpha);
-		int vkHideDelay = params.vkHideDelay;
-		if (vkHideDelay > 0) {
-			tfVKHideDelay.setText(Integer.toString(vkHideDelay));
-		}
-
-		tfVKBack.setText(String.format("%06X", params.vkBgColor));
-		tfVKFore.setText(String.format("%06X", params.vkFgColor));
-		tfVKSelBack.setText(String.format("%06X", params.vkBgColorSelected));
-		tfVKSelFore.setText(String.format("%06X", params.vkFgColorSelected));
-		tfVKOutline.setText(String.format("%06X", params.vkOutlineColor));
 
 		String systemProperties = params.systemProperties;
 		if (systemProperties == null) {
@@ -705,10 +629,8 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 
 	private void saveParams() {
 		try {
-			int width = parseInt(tfScreenWidth.getText().toString());
-			params.screenWidth = width;
-			int height = parseInt(tfScreenHeight.getText().toString());
-			params.screenHeight = height;
+			params.screenWidth = parseInt(tfScreenWidth.getText().toString());
+			params.screenHeight = parseInt(tfScreenHeight.getText().toString());
 			try {
 				params.screenBackgroundColor = Integer.parseInt(tfScreenBack.getText().toString(), 16);
 			} catch (NumberFormatException ignored) {
@@ -749,35 +671,7 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 			}
 			params.fontApplyDimensions = cxFontSizeInSP.isChecked();
 			params.fontAA = cxFontAA.isChecked();
-			params.showKeyboard = cxShowKeyboard.isChecked();
-			params.vkFeedback = cxVKFeedback.isChecked();
-			params.vkForceOpacity = cxVKForceOpacity.isChecked();
-			params.touchInput = cxTouchInput.isChecked();
 
-			params.keyCodesLayout = spLayout.getSelectedItemPosition();
-			params.vkButtonShape = spButtonsShape.getSelectedItemPosition();
-			params.vkAlpha = sbVKAlpha.getProgress();
-			params.vkHideDelay = parseInt(tfVKHideDelay.getText().toString());
-			try {
-				params.vkBgColor = Integer.parseInt(tfVKBack.getText().toString(), 16);
-			} catch (Exception ignored) {
-			}
-			try {
-				params.vkFgColor = Integer.parseInt(tfVKFore.getText().toString(), 16);
-			} catch (Exception ignored) {
-			}
-			try {
-				params.vkBgColorSelected = Integer.parseInt(tfVKSelBack.getText().toString(), 16);
-			} catch (Exception ignored) {
-			}
-			try {
-				params.vkFgColorSelected = Integer.parseInt(tfVKSelFore.getText().toString(), 16);
-			} catch (Exception ignored) {
-			}
-			try {
-				params.vkOutlineColor = Integer.parseInt(tfVKOutline.getText().toString(), 16);
-			} catch (Exception ignored) {
-			}
 			params.systemProperties = getSystemProperties();
 
 			ProfilesManager.saveConfig(params);
@@ -884,20 +778,6 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 					.show();
 		} else if (id == R.id.cmdScreenBack) {
 			showColorPicker(tfScreenBack);
-		} else if (id == R.id.cmdVKBack) {
-			showColorPicker(tfVKBack);
-		} else if (id == R.id.cmdVKFore) {
-			showColorPicker(tfVKFore);
-		} else if (id == R.id.cmdVKSelFore) {
-			showColorPicker(tfVKSelFore);
-		} else if (id == R.id.cmdVKSelBack) {
-			showColorPicker(tfVKSelBack);
-		} else if (id == R.id.cmdVKOutline) {
-			showColorPicker(tfVKOutline);
-		} else if (id == R.id.cmdKeyMappings) {
-			Intent i = new Intent(getIntent().getAction(), Uri.parse(configDir.getPath()),
-					this, KeyMapperActivity.class);
-			startActivity(i);
 		}
 	}
 
@@ -1050,6 +930,7 @@ public class ConfigActivity extends BaseActivity implements View.OnClickListener
 
 		}
 
+		@SuppressLint("SetTextI18n")
 		@Override
 		public void afterTextChanged(Editable s) {
 			try {

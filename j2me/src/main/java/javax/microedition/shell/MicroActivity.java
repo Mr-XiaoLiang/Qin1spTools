@@ -18,7 +18,6 @@
 package javax.microedition.shell;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -30,7 +29,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
-import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,7 +40,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,8 +60,6 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.ViewHandler;
 import javax.microedition.lcdui.event.SimpleEvent;
-import javax.microedition.lcdui.keyboard.VirtualKeyboard;
-import javax.microedition.lcdui.overlay.OverlayView;
 import javax.microedition.util.ContextHolder;
 
 import io.reactivex.SingleObserver;
@@ -75,7 +70,12 @@ import ru.playsoftware.j2meloader.R;
 import ru.playsoftware.j2meloader.config.Config;
 import ru.playsoftware.j2meloader.util.LogUtils;
 
-import static ru.playsoftware.j2meloader.util.Constants.*;
+import static ru.playsoftware.j2meloader.util.Constants.KEY_MIDLET_NAME;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_KEEP_SCREEN;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_STATUSBAR;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_THEME;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_TOOLBAR;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_VIBRATION;
 
 public class MicroActivity extends AppCompatActivity {
 	private static final int ORIENTATION_DEFAULT = 0;
@@ -100,7 +100,6 @@ public class MicroActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		ContextHolder.setCurrentActivity(this);
 		setContentView(R.layout.activity_micro);
-		OverlayView overlayView = findViewById(R.id.vOverlay);
 		layout = findViewById(R.id.displayable_container);
 		toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -125,16 +124,7 @@ public class MicroActivity extends AppCompatActivity {
 			return;
 		}
 		microLoader.applyConfiguration();
-		VirtualKeyboard vk = ContextHolder.getVk();
-		int orientation = microLoader.getOrientation();
-		if (vk != null) {
-			vk.setView(overlayView);
-			overlayView.addLayer(vk);
-			if (vk.isPhone()) {
-				orientation = ORIENTATION_PORTRAIT;
-			}
-		}
-		setOrientation(orientation);
+		setOrientation(microLoader.getOrientation());
 		try {
 			loadMIDlet();
 		} catch (Exception e) {
@@ -374,13 +364,6 @@ public class MicroActivity extends AppCompatActivity {
 			} else {
 				inflater.inflate(R.menu.midlet_canvas_no_bar, group);
 			}
-			VirtualKeyboard vk = ContextHolder.getVk();
-			if (vk != null) {
-				inflater.inflate(R.menu.midlet_vk, group);
-				if (vk.getLayoutEditMode() == VirtualKeyboard.LAYOUT_EOF) {
-					menu.findItem(R.id.action_layout_edit_finish).setVisible(false);
-				}
-			}
 		}
 		if (!hasCommands) {
 			return true;
@@ -404,9 +387,6 @@ public class MicroActivity extends AppCompatActivity {
 				saveLog();
 			} else if (id == R.id.action_limit_fps){
 				showLimitFpsDialog();
-			} else if (ContextHolder.getVk() != null) {
-				// Handled only when virtual keyboard is enabled
-				handleVkOptions(id);
 			}
 			return true;
 		}
@@ -415,28 +395,6 @@ public class MicroActivity extends AppCompatActivity {
 		}
 
 		return super.onOptionsItemSelected(item);
-	}
-
-	private void handleVkOptions(int id) {
-		VirtualKeyboard vk = ContextHolder.getVk();
-		if (id == R.id.action_layout_edit_mode) {
-			vk.setLayoutEditMode(VirtualKeyboard.LAYOUT_KEYS);
-			Toast.makeText(this, R.string.layout_edit_mode,
-					Toast.LENGTH_SHORT).show();
-		} else if (id == R.id.action_layout_scale_mode) {
-			vk.setLayoutEditMode(VirtualKeyboard.LAYOUT_SCALES);
-			Toast.makeText(this, R.string.layout_scale_mode,
-					Toast.LENGTH_SHORT).show();
-		} else if (id == R.id.action_layout_edit_finish) {
-			vk.setLayoutEditMode(VirtualKeyboard.LAYOUT_EOF);
-			Toast.makeText(this, R.string.layout_edit_finished,
-					Toast.LENGTH_SHORT).show();
-			showSaveVkAlert();
-		} else if (id == R.id.action_layout_switch) {
-			showSetLayoutDialog();
-		} else if (id == R.id.action_hide_buttons) {
-			showHideButtonDialog();
-		}
 	}
 
 	@SuppressLint("CheckResult")
@@ -471,52 +429,6 @@ public class MicroActivity extends AppCompatActivity {
 			e.printStackTrace();
 			Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
 		}
-	}
-
-	private void showHideButtonDialog() {
-		final VirtualKeyboard vk = ContextHolder.getVk();
-		boolean[] states = vk.getKeysVisibility();
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setTitle(R.string.hide_buttons)
-				.setMultiChoiceItems(vk.getKeyNames(), states, null)
-				.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-					ListView lv = ((AlertDialog) dialog).getListView();
-					SparseBooleanArray current = lv.getCheckedItemPositions();
-					for (int i = 0; i < current.size(); i++) {
-						if (states[current.keyAt(i)] != current.valueAt(i)) {
-							vk.setKeysVisibility(current);
-							showSaveVkAlert();
-							return;
-						}
-					}
-				});
-		builder.show();
-	}
-
-	private void showSaveVkAlert() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setTitle(R.string.CONFIRMATION_REQUIRED)
-				.setMessage(R.string.pref_vk_save_alert)
-				.setNegativeButton(android.R.string.no, null)
-				.setPositiveButton(android.R.string.yes,
-						(d, w) -> ContextHolder.getVk().onLayoutChanged(VirtualKeyboard.TYPE_CUSTOM));
-		builder.show();
-	}
-
-	private void showSetLayoutDialog() {
-		final VirtualKeyboard vk = ContextHolder.getVk();
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setTitle(R.string.layout_switch)
-				.setSingleChoiceItems(R.array.PREF_VK_TYPE_ENTRIES, vk.getLayout(), null)
-				.setPositiveButton(android.R.string.ok, (d, w) -> {
-					vk.setLayout(((AlertDialog) d).getListView().getCheckedItemPosition());
-					if (vk.isPhone()) {
-						setOrientation(ORIENTATION_PORTRAIT);
-					} else {
-						setOrientation(microLoader.getOrientation());
-					}
-				});
-		builder.show();
 	}
 
 	private void showLimitFpsDialog(){

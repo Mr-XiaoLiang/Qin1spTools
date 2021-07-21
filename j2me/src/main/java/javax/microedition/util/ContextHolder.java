@@ -21,10 +21,12 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Process;
 import android.os.Vibrator;
 import android.view.Display;
 import android.view.WindowManager;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,18 +41,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import javax.microedition.lcdui.keyboard.VirtualKeyboard;
 import javax.microedition.shell.AppClassLoader;
 import javax.microedition.shell.MicroActivity;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import ru.playsoftware.j2meloader.config.Config;
 
 public class ContextHolder {
 
 	private static Display display;
-	private static VirtualKeyboard vk;
 	private static WeakReference<MicroActivity> currentActivity;
 	private static Vibrator vibrator;
 	private static Context appContext;
@@ -59,14 +55,6 @@ public class ContextHolder {
 
 	public static Context getAppContext() {
 		return appContext;
-	}
-
-	public static VirtualKeyboard getVk() {
-		return vk;
-	}
-
-	public static void setVk(VirtualKeyboard vk) {
-		ContextHolder.vk = vk;
 	}
 
 	private static Display getDisplay() {

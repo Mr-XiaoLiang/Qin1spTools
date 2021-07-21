@@ -19,6 +19,9 @@ package ru.playsoftware.j2meloader.config;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -33,11 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import javax.microedition.lcdui.keyboard.VirtualKeyboard;
 import javax.microedition.util.ContextHolder;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import ru.playsoftware.j2meloader.util.FileUtils;
 import ru.playsoftware.j2meloader.util.XmlUtils;
 
@@ -127,10 +127,6 @@ public class ProfilesManager {
 					JsonElement json = gson.toJsonTree(map);
 					params = gson.fromJson(json, ProfileModel.class);
 					params.dir = dir;
-					// Fix keyboard shape for old configs
-					if (params.vkType == 1 || params.vkType == 2) {
-						params.vkButtonShape = VirtualKeyboard.ROUND_RECT_SHAPE;
-					}
 					if (saveConfig(params) && oldFile.delete()) {
 						Log.d(TAG, "loadConfig: old config file deleted");
 					}
