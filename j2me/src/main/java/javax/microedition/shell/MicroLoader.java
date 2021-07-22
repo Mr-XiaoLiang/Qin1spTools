@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.File;
@@ -58,6 +59,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 public class MicroLoader {
 	private static final String TAG = MicroLoader.class.getName();
+	private static final int MIN_SCREEN_SIZE = 720 * 1280;
 
 	private final File appDir;
 	private final Context context;
@@ -170,9 +172,20 @@ public class MicroLoader {
 				System.setProperty("microedition.encoding", "ISO-8859-1");
 			}
 
-			int screenWidth = params.screenWidth;
-			int screenHeight = params.screenHeight;
-			Displayable.setVirtualSize(screenWidth, screenHeight);
+			int paramsWidth = params.screenWidth;
+			int paramsHeight = params.screenHeight;
+			DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+			int screenWidth = displayMetrics.widthPixels;
+			int screenHeight = displayMetrics.heightPixels;
+			boolean useRealScreenSize;
+			if (screenWidth * screenHeight > MIN_SCREEN_SIZE) {
+				useRealScreenSize = false;
+				Displayable.setVirtualSize(paramsWidth, paramsHeight);
+			} else {
+				useRealScreenSize = true;
+				Displayable.setVirtualSize(screenWidth, screenHeight);
+			}
+
 			Canvas.setBackgroundColor(params.screenBackgroundColor);
 			Canvas.setScale(params.screenGravity, params.screenScaleType, params.screenScaleRatio);
 			Canvas.setFilterBitmap(params.screenFilter);
