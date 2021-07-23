@@ -4,12 +4,18 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
+import com.lollipop.qin1sptools.utils.FeatureIcon
 
 class MainActivity : GridMenuActivity() {
 
+    override val baseFeatureIconArray = arrayOf(
+        FeatureIcon.NONE,
+        FeatureIcon.NONE,
+        FeatureIcon.BACK
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFeatureButtons(0, R.drawable.featurebar_select, R.drawable.featurebar_back)
         initData()
     }
 
