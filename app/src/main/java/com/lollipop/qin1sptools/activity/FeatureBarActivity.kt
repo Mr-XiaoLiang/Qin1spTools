@@ -1,9 +1,12 @@
 package com.lollipop.qin1sptools.activity
 
+import android.os.Bundle
 import android.view.ViewGroup
 import android.view.ViewManager
 import androidx.viewbinding.ViewBinding
+import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.ActivityFeatureBarBinding
+import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.utils.lazyBind
 
 /**
@@ -13,6 +16,11 @@ import com.lollipop.qin1sptools.utils.lazyBind
 open class FeatureBarActivity : BaseActivity() {
 
     private val featureBinding: ActivityFeatureBarBinding by lazyBind()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setRightFeatureButton(R.drawable.featurebar_back)
+    }
 
     override fun setContentView(binding: ViewBinding) {
         super.setContentView(featureBinding.root)
@@ -53,6 +61,49 @@ open class FeatureBarActivity : BaseActivity() {
         setLeftFeatureButton(left)
         setCenterFeatureButton(center)
         setRightFeatureButton(right)
+    }
+
+    override fun onKeyUp(event: KeyEvent): Boolean {
+        if (super.onKeyUp(event)) {
+            return true
+        }
+        when (event) {
+            KeyEvent.OPTION -> {
+                if (onLeftFeatureButtonClick()) {
+                    return true
+                }
+            }
+
+            KeyEvent.BACK -> {
+                if (onRightFeatureButtonClick()) {
+                    return true
+                }
+            }
+
+            KeyEvent.CENTER -> {
+                if (onCenterFeatureButtonClick()) {
+                    return true
+                }
+            }
+
+            else -> {
+
+            }
+        }
+        return false
+    }
+
+    protected open fun  onLeftFeatureButtonClick(): Boolean {
+        return false
+    }
+
+    protected open fun  onCenterFeatureButtonClick(): Boolean {
+        return false
+    }
+
+    protected open fun  onRightFeatureButtonClick(): Boolean {
+        onBackPressed()
+        return true
     }
 
 }
