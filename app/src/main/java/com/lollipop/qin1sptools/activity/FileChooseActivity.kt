@@ -1,9 +1,7 @@
 package com.lollipop.qin1sptools.activity
 
 import android.os.Bundle
-import com.lollipop.qin1sptools.R
-import com.lollipop.qin1sptools.databinding.ActivityFileChooseBinding
-import com.lollipop.qin1sptools.utils.lazyBind
+import com.lollipop.qin1sptools.utils.FeatureIcon
 
 /**
  * 文件选择的Activity
@@ -11,19 +9,22 @@ import com.lollipop.qin1sptools.utils.lazyBind
  * @author Lollipop
  * @date 2021/07/23
  */
-class FileChooseActivity : FeatureBarActivity() {
+class FileChooseActivity : SimpleListActivity() {
 
-    private val binding: ActivityFileChooseBinding by lazyBind()
+    override val baseFeatureIconArray = arrayOf(
+        FeatureIcon.ADD,
+        FeatureIcon.SELECT,
+        FeatureIcon.BACK
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding)
         initView()
         initData()
     }
 
     private fun initView() {
-        setCenterFeatureButton(R.drawable.featurebar_select)
+
     }
 
     private fun initData() {
