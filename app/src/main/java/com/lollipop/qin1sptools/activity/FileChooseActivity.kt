@@ -1,5 +1,6 @@
 package com.lollipop.qin1sptools.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import com.lollipop.qin1sptools.R
@@ -24,10 +25,12 @@ class FileChooseActivity : SimpleListActivity() {
     companion object {
         private const val KEY_FILE_FILTER = "KEY_FILE_FILTER"
         private const val KEY_CHOOSE_FILE = "KEY_CHOOSE_FILE"
+
+        private const val KEY_SELECTED_FILE = "KEY_SELECTED_FILE"
     }
 
     override val baseFeatureIconArray = arrayOf(
-        FeatureIcon.ADD,
+        FeatureIcon.OK,
         FeatureIcon.SELECT,
         FeatureIcon.BACK
     )
@@ -48,12 +51,7 @@ class FileChooseActivity : SimpleListActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
         initData()
-    }
-
-    private fun initView() {
-
     }
 
     private fun initData() {
@@ -137,11 +135,31 @@ class FileChooseActivity : SimpleListActivity() {
     override fun onKeyUp(event: KeyEvent): Boolean {
         if (isLoading && event == KeyEvent.BACK) {
             back()
+            return true
+        }
+        when (event) {
+            KeyEvent.LEFT -> {
+                back()
+                return true
+            }
+            KeyEvent.RIGHT -> {
+                return toNextDir()
+            }
+            else -> {
+
+            }
         }
         return super.onKeyUp(event)
     }
 
     override fun onCenterFeatureButtonClick(): Boolean {
+        if (toNextDir()) {
+            return true
+        }
+        return super.onCenterFeatureButtonClick()
+    }
+
+    private fun toNextDir(): Boolean {
         val index = selectedIndex
         if (index >= 0 && index < currentFiles.size) {
             val last = breadCrumbs.last ?: return true
@@ -151,11 +169,42 @@ class FileChooseActivity : SimpleListActivity() {
                 return true
             }
         }
-        return super.onCenterFeatureButtonClick()
+        return false
     }
 
     override fun onRightFeatureButtonClick(): Boolean {
         return back() || super.onRightFeatureButtonClick()
+    }
+
+    override fun onLeftFeatureButtonClick(): Boolean {
+        choose()
+        return true
+    }
+
+    private fun choose() {
+        if (breadCrumbs.isEmpty()) {
+            return
+        }
+        val last = breadCrumbs.last
+        val index = selectedIndex
+        if (last.childrenFile.size <= index) {
+            return
+        }
+        val file: File
+        if (chooseFile) {
+            file = last.childrenFile[index]
+            if (file.isDirectory) {
+                toNextDir()
+                return
+            }
+        } else {
+            file = last.file
+        }
+        setResult(RESULT_OK, Intent().apply {
+            putExtra(KEY_SELECTED_FILE, file)
+        })
+        finish()
+        return
     }
 
     private class DirInfo(

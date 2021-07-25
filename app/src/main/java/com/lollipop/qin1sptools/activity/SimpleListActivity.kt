@@ -9,6 +9,7 @@ import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.ActivitySimpleListBinding
 import com.lollipop.qin1sptools.databinding.ItemTextBinding
 import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.list.SimpleTextAdapter
 import com.lollipop.qin1sptools.utils.bind
 import com.lollipop.qin1sptools.utils.lazyBind
 import com.lollipop.qin1sptools.utils.visibleOrGone
@@ -119,44 +120,17 @@ open class SimpleListActivity : FeatureBarActivity() {
     private class ListAdapter(
         private val data: List<String>,
         private val selectedProvider: () -> Int
-    ) : RecyclerView.Adapter<ItemHolder>() {
+    ) : SimpleTextAdapter() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-            return ItemHolder.create(parent)
+        override fun getText(position: Int): String {
+            return data[position]
         }
 
-        override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-            holder.bind(data[position], selectedProvider() == position)
-        }
+        override val selectedPosition: Int
+            get() = selectedProvider()
 
         override fun getItemCount(): Int {
             return data.size
-        }
-
-    }
-
-    private class ItemHolder(private val binding: ItemTextBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        companion object {
-            fun create(parent: ViewGroup): ItemHolder {
-                return ItemHolder(parent.bind(true))
-            }
-        }
-
-        private val selectedColor =
-            ContextCompat.getColor(itemView.context, R.color.itemSelectedBackground)
-        private val defaultColor =
-            ContextCompat.getColor(itemView.context, R.color.itemDefaultBackground)
-
-        fun bind(text: String, isSelected: Boolean) {
-            binding.root.setBackgroundColor(
-                if (isSelected) {
-                    selectedColor
-                } else {
-                    defaultColor
-                }
-            )
-            binding.textView.text = text
         }
 
     }
