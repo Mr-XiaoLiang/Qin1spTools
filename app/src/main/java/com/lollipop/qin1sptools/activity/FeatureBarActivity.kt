@@ -23,6 +23,9 @@ open class FeatureBarActivity : BaseActivity() {
 
     private val featureBinding: ActivityFeatureBarBinding by lazyBind()
 
+    protected var isLoading = false
+        private set
+
     protected open val baseFeatureIconArray = arrayOf(
         FeatureIcon.NONE,
         FeatureIcon.NONE,
@@ -51,6 +54,16 @@ open class FeatureBarActivity : BaseActivity() {
     override fun setTitle(title: CharSequence?) {
         super.setTitle(title)
         featureBinding.titleView.text = title
+    }
+
+    protected fun startLoading() {
+        isLoading = true
+        featureBinding.contentLoadingView.show()
+    }
+
+    protected fun endLoading() {
+        isLoading = false
+        featureBinding.contentLoadingView.hide()
     }
 
     protected fun setLeftFeatureButton(icon: FeatureIcon) {

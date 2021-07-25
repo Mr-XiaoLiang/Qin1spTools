@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.ActivitySimpleListBinding
 import com.lollipop.qin1sptools.databinding.ItemTextBinding
+import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.utils.bind
 import com.lollipop.qin1sptools.utils.lazyBind
+import com.lollipop.qin1sptools.utils.visibleOrGone
 
 /**
  * @author lollipop
@@ -23,10 +25,7 @@ open class SimpleListActivity : FeatureBarActivity() {
     private val simpleListData = ArrayList<String>()
 
     protected var selectedIndex = 0
-        private set(value) {
-            field = value
-            onSelectedIndexChanged(value)
-        }
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +49,7 @@ open class SimpleListActivity : FeatureBarActivity() {
         } else {
             0
         }
+        onSelectedIndexChanged()
     }
 
     protected fun addData(data: List<String>) {
@@ -58,12 +58,62 @@ open class SimpleListActivity : FeatureBarActivity() {
         listBinding.recyclerView.adapter?.notifyItemRangeInserted(lastCount, data.size)
     }
 
-    protected open fun onSelectedIndexChanged(index: Int) {
+    protected fun setError(msg: String) {
+        listBinding.errorMsgView.visibleOrGone(true) {
+            text = msg
+        }
+        listBinding.recyclerView.visibleOrGone(false)
+    }
 
+    protected fun clearError() {
+        listBinding.errorMsgView.visibleOrGone(false)
+        listBinding.recyclerView.visibleOrGone(true) {
+            adapter?.notifyDataSetChanged()
+        }
+    }
+
+    protected open fun onSelectedIndexChanged() {
+
+    }
+
+    protected fun selectNext(): Boolean {
+        if (selectedIndex < simpleListData.size - 1) {
+            val lastIndex = selectedIndex
+            selectedIndex++
+            listBinding.recyclerView.adapter?.notifyItemRangeChanged(lastIndex, 2)
+            onSelectedIndexChanged()
+            return true
+        }
+        return false
+    }
+
+    protected fun selectLast(): Boolean {
+        if (selectedIndex > 0) {
+            selectedIndex--
+            listBinding.recyclerView.adapter?.notifyItemRangeChanged(selectedIndex, 2)
+            onSelectedIndexChanged()
+            return true
+        }
+        return false
     }
 
     private fun getSelectedPosition(): Int {
         return selectedIndex
+    }
+
+    override fun onKeyUp(event: KeyEvent): Boolean {
+        when (event) {
+            KeyEvent.UP -> {
+                return selectLast()
+            }
+            KeyEvent.DOWN -> {
+                return selectNext()
+            }
+            else -> {
+
+            }
+        }
+        return super.onKeyUp(event)
     }
 
     private class ListAdapter(
