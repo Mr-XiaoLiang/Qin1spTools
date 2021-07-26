@@ -1,5 +1,6 @@
 package com.lollipop.qin1sptools.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
@@ -26,7 +27,42 @@ class FileChooseActivity : SimpleListActivity() {
         private const val KEY_FILE_FILTER = "KEY_FILE_FILTER"
         private const val KEY_CHOOSE_FILE = "KEY_CHOOSE_FILE"
 
+        const val REQUEST_CODE = 0xF11E
+
         private const val KEY_SELECTED_FILE = "KEY_SELECTED_FILE"
+
+        fun start(
+            activity: Activity,
+            requestCode: Int = REQUEST_CODE,
+            filter: String = "",
+            chooseFile: Boolean = false
+        ) {
+            activity.startActivityForResult(
+                Intent(activity, FileChooseActivity::class.java).apply {
+                    putExtra(KEY_FILE_FILTER, filter)
+                    putExtra(KEY_CHOOSE_FILE, chooseFile)
+                },
+                requestCode
+            )
+        }
+
+        fun getResultFile(resultCode: Int, intent: Intent): File? {
+            if (resultCode != RESULT_OK) {
+                return null
+            }
+            val file = intent.getSerializableExtra(KEY_SELECTED_FILE) ?: return null
+            if (file is File) {
+                return file
+            }
+            return null
+        }
+
+        private fun setResultFile(activity: Activity, file: File) {
+            activity.setResult(RESULT_OK, Intent().apply {
+                putExtra(KEY_SELECTED_FILE, file)
+            })
+        }
+
     }
 
     override val baseFeatureIconArray = arrayOf(
@@ -200,9 +236,7 @@ class FileChooseActivity : SimpleListActivity() {
         } else {
             file = last.file
         }
-        setResult(RESULT_OK, Intent().apply {
-            putExtra(KEY_SELECTED_FILE, file)
-        })
+        setResultFile(this, file)
         finish()
         return
     }
