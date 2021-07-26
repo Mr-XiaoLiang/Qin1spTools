@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import com.lollipop.qin1sptools.BuildConfig
 import java.io.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -36,6 +37,11 @@ object CommonUtil {
      * 全局的打印日志的关键字
      */
     var logTag = "WindowsLauncher"
+
+    /**
+     * Log开关
+     */
+    val LOG_ENABLE = BuildConfig.DEBUG
 
     /**
      * 异步线程池
@@ -192,7 +198,9 @@ inline fun <reified T> T.delay(
  * 一个全局的打印Log的方法
  */
 inline fun <reified T : Any> T.log(vararg value: Any) {
-    Log.d(CommonUtil.logTag, "${this.javaClass.simpleName} -> ${CommonUtil.print(value)}")
+    if (CommonUtil.LOG_ENABLE) {
+        Log.d(CommonUtil.logTag, "${this.javaClass.simpleName} -> ${CommonUtil.print(value)}")
+    }
 }
 
 

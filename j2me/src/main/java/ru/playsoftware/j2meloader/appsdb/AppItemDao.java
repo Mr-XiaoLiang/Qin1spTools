@@ -16,24 +16,25 @@
 
 package ru.playsoftware.j2meloader.appsdb;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import io.reactivex.Flowable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.playsoftware.j2meloader.applist.AppItem;
 
 @Dao
 public interface AppItemDao {
-	@Query("SELECT * FROM apps ORDER BY title COLLATE LOCALIZED ASC")
-	Flowable<List<AppItem>> getAllByName();
 
-	@Query("SELECT * FROM apps ORDER BY id ASC")
-	Flowable<List<AppItem>> getAllByDate();
+	@Query("SELECT * FROM apps ORDER BY title COLLATE LOCALIZED ASC")
+	List<AppItem> getAllByName();
+
+//	@Query("SELECT * FROM apps ORDER BY id ASC")
+//	Flowable<List<AppItem>> getAllByDate();
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	void insert(AppItem item);

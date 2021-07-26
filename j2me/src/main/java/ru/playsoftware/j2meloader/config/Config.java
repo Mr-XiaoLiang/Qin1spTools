@@ -33,7 +33,7 @@ import static ru.playsoftware.j2meloader.util.Constants.*;
 
 public class Config {
 
-	public static final String APP_NAME = "J2ME-Loader";
+	public static final String APP_NAME = "J2ME-Lollipop";
 	public static final String DEX_OPT_CACHE_DIR = "dex_opt";
 	public static final String MIDLET_CONFIG_FILE = "/config.json";
 	public static final String MIDLET_CONFIGS_DIR = "/configs/";
@@ -95,21 +95,11 @@ public class Config {
 		return emulatorDir + SHADERS_DIR;
 	}
 
-	public static void startApp(Context context, String name, String path, boolean showSettings) {
-		File appDir = new File(path);
-		String workDir = appDir.getParentFile().getParent();
-		File file = new File(workDir + Config.MIDLET_CONFIGS_DIR + appDir.getName());
-		if (showSettings || !file.exists()) {
-			Intent intent = new Intent(ACTION_EDIT, Uri.parse(path),
-					context, ConfigActivity.class);
-			intent.putExtra(KEY_MIDLET_NAME, name);
-			context.startActivity(intent);
-		} else {
-			Intent intent = new Intent(Intent.ACTION_DEFAULT, Uri.parse(path),
-					context, MicroActivity.class);
-			intent.putExtra(KEY_MIDLET_NAME, name);
-			context.startActivity(intent);
-		}
+	public static void startApp(Context context, String name, String path) {
+		Intent intent = new Intent(Intent.ACTION_DEFAULT, Uri.parse(path),
+				context, MicroActivity.class);
+		intent.putExtra(KEY_MIDLET_NAME, name);
+		context.startActivity(intent);
 	}
 
 	private static void initDirs(String path) {

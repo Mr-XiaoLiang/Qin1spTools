@@ -1,4 +1,4 @@
-package com.lollipop.qin1sptools.activity
+package com.lollipop.qin1sptools.activity.base
 
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity

@@ -78,7 +78,8 @@ public class MicroLoader {
 		File config = new File(workDir + Config.MIDLET_CONFIGS_DIR + appDirName);
 		this.params = ProfilesManager.loadConfig(config);
 		if (params == null) {
-			return false;
+			this.params = new ProfileModel(config);
+			ProfilesManager.saveConfig(this.params);
 		}
 		Display.initDisplay();
 		Graphics3D.initGraphics3D();

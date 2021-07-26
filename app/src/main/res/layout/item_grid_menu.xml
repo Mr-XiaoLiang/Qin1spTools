@@ -2,9 +2,11 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:cropToPadding="false">
 
     <ImageView
+        android:cropToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
@@ -12,6 +14,7 @@
         android:id="@+id/iconView"/>
 
     <TextView
+        android:cropToPadding="false"
         android:id="@+id/positionView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

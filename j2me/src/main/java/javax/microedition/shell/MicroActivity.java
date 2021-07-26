@@ -119,7 +119,6 @@ public class MicroActivity extends AppCompatActivity {
 		String appPath = data.toString();
 		microLoader = new MicroLoader(this, appPath);
 		if (!microLoader.init()) {
-			Config.startApp(this, appName, appPath, true);
 			finish();
 			return;
 		}
@@ -297,7 +296,7 @@ public class MicroActivity extends AppCompatActivity {
 				.setNeutralButton(R.string.action_settings, (d, w) -> {
 					Intent intent = getIntent();
 					Config.startApp(this, intent.getStringExtra(KEY_MIDLET_NAME),
-							intent.getDataString(), true);
+							intent.getDataString());
 					MidletThread.destroyApp();
 				})
 				.setNegativeButton(android.R.string.cancel, null);

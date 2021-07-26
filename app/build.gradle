@@ -23,8 +23,6 @@ android {
         }
         debug {
             applicationIdSuffix '.debug'
-            jniDebuggable true
-            multiDexEnabled true
         }
     }
     compileOptions {

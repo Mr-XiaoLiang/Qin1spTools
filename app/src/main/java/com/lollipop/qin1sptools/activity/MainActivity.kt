@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
+import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.utils.FeatureIcon
 
 class MainActivity : GridMenuActivity() {
@@ -36,7 +37,7 @@ class MainActivity : GridMenuActivity() {
     }
 
     override fun onGridItemClick(item: GridItem, index: Int) {
-        Toast.makeText(this, "${item.label}", Toast.LENGTH_SHORT).show()
+        showToast("${item.label}")
         FileChooseActivity.start(this)
     }
 

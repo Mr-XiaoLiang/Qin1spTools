@@ -127,119 +127,118 @@ public class JarConverter {
 		return null;
 	}
 
-	public Single<String> convert(final Uri path) {
-		return Single.create(emitter -> {
-			boolean jadInstall = false;
-			String pathToJad = null;
-			String pathToJar = null;
-			Exception error = null;
+	public String convert(Uri path) throws ConverterException, IOException {
+
+		boolean jadInstall = false;
+		String pathToJad = null;
+		String pathToJar = null;
+		Exception error = null;
+		try {
+			pathToJar = FileUtils.getAppPath(ContextHolder.getAppContext(), path);
+		} catch (Exception e) {
+			error = e;
+		}
+
+		if (pathToJar == null){
+			throw new ConverterException("decode input uri path error: " + path.toString(), error);
+		}
+
+		tmpDir.mkdir();
+
+		// Check extension
+		String extension = pathToJar.substring(pathToJar.lastIndexOf('.'));
+		if (extension.equalsIgnoreCase(".jad")) {
+			jadInstall = true;
+			// Fix path to jar
+			pathToJad = pathToJar;
+			pathToJar = pathToJar.substring(0, pathToJar.length() - 1).concat("r");
+		}
+		// Get jad file
+		File conf = null;
+		if (jadInstall) {
+			conf = new File(pathToJad);
+		}
+
+		File inputJar = new File(pathToJar);
+		// Check if jar exists
+		if (jadInstall && !inputJar.exists()) {
+			String url = FileUtils.loadManifest(conf).get("MIDlet-Jar-URL");
 			try {
-				pathToJar = FileUtils.getAppPath(ContextHolder.getAppContext(), path);
-			} catch (Exception e) {
-				error = e;
-			}
-
-			if (pathToJar == null){
-				throw new ConverterException("decode input uri path error: " + path.toString(), error);
-			}
-
-			tmpDir.mkdir();
-
-			// Check extension
-			String extension = pathToJar.substring(pathToJar.lastIndexOf('.'));
-			if (extension.equalsIgnoreCase(".jad")) {
-				jadInstall = true;
-				// Fix path to jar
-				pathToJad = pathToJar;
-				pathToJar = pathToJar.substring(0, pathToJar.length() - 1).concat("r");
-			}
-			// Get jad file
-			File conf = null;
-			if (jadInstall) {
-				conf = new File(pathToJad);
-			}
-
-			File inputJar = new File(pathToJar);
-			// Check if jar exists
-			if (jadInstall && !inputJar.exists()) {
-				String url = FileUtils.loadManifest(conf).get("MIDlet-Jar-URL");
-				try {
-					download(url, inputJar);
-				} catch (IOException e) {
-					inputJar.delete();
-					deleteTemp();
-					throw new ConverterException("Can't download jar", e);
-				}
-			}
-			// Patch and unzip
-			File patchedJar;
-			try {
-				patchedJar = patchJar(inputJar);
-			} catch (ZipException e) {
-				deleteTemp();
-				throw new ConverterException("Invalid jar", e);
-			} catch (Exception e) {
-				deleteTemp();
-				throw new ConverterException("Can't patch", e);
-			}
-			try {
-				ZipUtils.unzip(patchedJar, tmpDir);
+				download(url, inputJar);
 			} catch (IOException e) {
+				inputJar.delete();
 				deleteTemp();
-				throw new ConverterException("Invalid jar", e);
+				throw new ConverterException("Can't download jar", e);
 			}
-
-			// Find manifest file and load it
-			if (!jadInstall) {
-				conf = findManifest(tmpDir);
-				if (conf == null) {
-					deleteTemp();
-					throw new ConverterException("Manifest not found");
-				}
-			}
-			LinkedHashMap<String, String> params = FileUtils.loadManifest(conf);
-			appDirPath = params.get("MIDlet-Name");
-			if (appDirPath == null) {
-				deleteTemp();
-				throw new ConverterException("Invalid manifest");
-			}
-			// Remove invalid characters from app path
-			appDirPath = appDirPath.replaceAll("[?:\"*|/\\\\<>]", "");
-			if (appDirPath.isEmpty()) {
-				deleteTemp();
-				throw new ConverterException("Invalid manifest");
-			}
-			appConverted = new File(Config.getAppDir(), appDirPath);
-			// Create target directory
-			FileUtils.deleteDirectory(appConverted);
-			appConverted.mkdirs();
-			Log.d(TAG, "appConverted=" + appConverted.getPath());
-
-			// Convert jar
-			try {
-				Main.main(new String[]{
-						"--no-optimize", "--output=" + appConverted.getPath()
-						+ Config.MIDLET_DEX_FILE, patchedJar.getAbsolutePath()});
-			} catch (IOException e) {
-				deleteTemp();
-				FileUtils.deleteDirectory(appConverted);
-				throw new ConverterException("Can't convert", e);
-			}
-			// Copy other resources from jar.
-			try {
-				FileUtils.copyFileUsingChannel(conf, new File(appConverted, Config.MIDLET_MANIFEST_FILE));
-				File image = new File(tmpDir, AppUtils.getImagePathFromManifest(params));
-				FileUtils.copyFileUsingChannel(image, new File(appConverted, Config.MIDLET_ICON_FILE));
-			} catch (IOException | NullPointerException e) {
-				e.printStackTrace();
-			} catch (ArrayIndexOutOfBoundsException e) {
-				deleteTemp();
-				FileUtils.deleteDirectory(appConverted);
-				throw new ConverterException("Invalid manifest");
-			}
-			FileUtils.copyFileUsingChannel(inputJar, new File(appConverted, Config.MIDLET_RES_FILE));
+		}
+		// Patch and unzip
+		File patchedJar;
+		try {
+			patchedJar = patchJar(inputJar);
+		} catch (ZipException e) {
 			deleteTemp();
-			emitter.onSuccess(appDirPath);
-		});
+			throw new ConverterException("Invalid jar", e);
+		} catch (Exception e) {
+			deleteTemp();
+			throw new ConverterException("Can't patch", e);
+		}
+		try {
+			ZipUtils.unzip(patchedJar, tmpDir);
+		} catch (IOException e) {
+			deleteTemp();
+			throw new ConverterException("Invalid jar", e);
+		}
+
+		// Find manifest file and load it
+		if (!jadInstall) {
+			conf = findManifest(tmpDir);
+			if (conf == null) {
+				deleteTemp();
+				throw new ConverterException("Manifest not found");
+			}
+		}
+		LinkedHashMap<String, String> params = FileUtils.loadManifest(conf);
+		appDirPath = params.get("MIDlet-Name");
+		if (appDirPath == null) {
+			deleteTemp();
+			throw new ConverterException("Invalid manifest");
+		}
+		// Remove invalid characters from app path
+		appDirPath = appDirPath.replaceAll("[?:\"*|/\\\\<>]", "");
+		if (appDirPath.isEmpty()) {
+			deleteTemp();
+			throw new ConverterException("Invalid manifest");
+		}
+		appConverted = new File(Config.getAppDir(), appDirPath);
+		// Create target directory
+		FileUtils.deleteDirectory(appConverted);
+		appConverted.mkdirs();
+		Log.d(TAG, "appConverted=" + appConverted.getPath());
+
+		// Convert jar
+		try {
+			Main.main(new String[]{
+					"--no-optimize", "--output=" + appConverted.getPath()
+					+ Config.MIDLET_DEX_FILE, patchedJar.getAbsolutePath()});
+		} catch (IOException e) {
+			deleteTemp();
+			FileUtils.deleteDirectory(appConverted);
+			throw new ConverterException("Can't convert", e);
+		}
+		// Copy other resources from jar.
+		try {
+			FileUtils.copyFileUsingChannel(conf, new File(appConverted, Config.MIDLET_MANIFEST_FILE));
+			File image = new File(tmpDir, AppUtils.getImagePathFromManifest(params));
+			FileUtils.copyFileUsingChannel(image, new File(appConverted, Config.MIDLET_ICON_FILE));
+		} catch (IOException | NullPointerException e) {
+			e.printStackTrace();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			deleteTemp();
+			FileUtils.deleteDirectory(appConverted);
+			throw new ConverterException("Invalid manifest");
+		}
+		FileUtils.copyFileUsingChannel(inputJar, new File(appConverted, Config.MIDLET_RES_FILE));
+		deleteTemp();
+		return appDirPath;
 	}
 }

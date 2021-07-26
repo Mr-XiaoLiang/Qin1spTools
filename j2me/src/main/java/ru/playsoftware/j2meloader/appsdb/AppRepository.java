@@ -16,57 +16,40 @@
 
 package ru.playsoftware.j2meloader.appsdb;
 
-import android.app.Application;
+import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import ru.playsoftware.j2meloader.applist.AppItem;
 
 public class AppRepository {
 
 	private AppItemDao appItemDao;
-	private boolean appDateSort;
 
-	public AppRepository(Application application, boolean dateSort) {
-		AppDatabase db = AppDatabase.getDatabase(application);
-		appDateSort = dateSort;
+	public AppRepository(Context context) {
+		AppDatabase db = AppDatabase.getDatabase(context);
 		appItemDao = db.appItemDao();
 	}
 
-	public Flowable<List<AppItem>> getAll() {
-		if (appDateSort) {
-			return appItemDao.getAllByDate();
-		} else {
-			return appItemDao.getAllByName();
-		}
+	public List<AppItem> getAll() {
+		return appItemDao.getAllByName();
 	}
 
 	public void insert(AppItem item) {
-		Completable.fromAction(() -> appItemDao.insert(item))
-				.subscribeOn(Schedulers.io())
-				.subscribe();
+		appItemDao.insert(item);
 	}
 
 	public void insertAll(ArrayList<AppItem> items) {
-		Completable.fromAction(() -> appItemDao.insertAll(items))
-				.subscribeOn(Schedulers.io())
-				.subscribe();
+		appItemDao.insertAll(items);
 	}
 
 	public void delete(AppItem item) {
-		Completable.fromAction(() -> appItemDao.delete(item))
-				.subscribeOn(Schedulers.io())
-				.subscribe();
+		appItemDao.delete(item);
 	}
 
 	public void deleteAll() {
-		Completable.fromAction(() -> appItemDao.deleteAll())
-				.subscribeOn(Schedulers.io())
-				.subscribe();
+		appItemDao.deleteAll();
 	}
 
 }

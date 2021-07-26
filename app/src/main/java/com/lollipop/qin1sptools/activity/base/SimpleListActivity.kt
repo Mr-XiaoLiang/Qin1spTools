@@ -1,16 +1,11 @@
-package com.lollipop.qin1sptools.activity
+package com.lollipop.qin1sptools.activity.base
 
 import android.os.Bundle
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.ActivitySimpleListBinding
-import com.lollipop.qin1sptools.databinding.ItemTextBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.list.SimpleTextAdapter
-import com.lollipop.qin1sptools.utils.bind
 import com.lollipop.qin1sptools.utils.lazyBind
 import com.lollipop.qin1sptools.utils.range
 import com.lollipop.qin1sptools.utils.visibleOrGone

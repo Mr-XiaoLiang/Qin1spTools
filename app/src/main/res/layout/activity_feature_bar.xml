@@ -53,6 +53,18 @@
             tools:listitem="@layout/item_text"
             android:background="@color/optionMenuBackground"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="@string/app_name"
+             android:background="@color/actionBarColor"
+            android:id="@+id/toastView"
+            android:visibility="gone"/>
+
     </FrameLayout>
 
     <LinearLayout

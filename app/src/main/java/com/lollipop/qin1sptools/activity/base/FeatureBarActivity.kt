@@ -1,4 +1,4 @@
-package com.lollipop.qin1sptools.activity
+package com.lollipop.qin1sptools.activity.base
 
 import android.os.Bundle
 import android.view.ViewGroup
@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.lollipop.qin1sptools.databinding.ActivityFeatureBarBinding
 import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.event.KeyEventListener
 import com.lollipop.qin1sptools.list.SimpleTextAdapter
 import com.lollipop.qin1sptools.utils.FeatureIcon
 import com.lollipop.qin1sptools.utils.lazyBind
+import com.lollipop.qin1sptools.utils.task
 import com.lollipop.qin1sptools.utils.visibleOrGone
 
 /**
@@ -27,8 +29,15 @@ open class FeatureBarActivity : BaseActivity() {
 
     private val featureBinding: ActivityFeatureBarBinding by lazyBind()
 
-    protected var isLoading = false
-        private set
+    private val loadingKeyFilter = LoadingKeyFilter()
+
+    protected var isLoading: Boolean
+        private set(value) {
+            loadingKeyFilter.isLoading = value
+        }
+        get() {
+            return loadingKeyFilter.isLoading
+        }
 
     protected open val baseFeatureIconArray = arrayOf(
         FeatureIcon.NONE,
@@ -45,8 +54,13 @@ open class FeatureBarActivity : BaseActivity() {
             return featureBinding.optionMenuView.isShown
         }
 
+    private val toastHideTask = task {
+        featureBinding.toastView.visibleOrGone(false)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        addKeyEventListener(loadingKeyFilter)
         setFeatureButtons()
         initOptionMenu()
         endLoading()
@@ -276,6 +290,16 @@ open class FeatureBarActivity : BaseActivity() {
 
     }
 
+    protected fun showToast(value: Int) {
+        showToast(getString(value))
+    }
+
+    protected fun showToast(value: String) {
+        featureBinding.toastView.text = value
+        toastHideTask.cancel()
+        toastHideTask.delay(2600)
+    }
+
     private fun changeOptionMenu(isShow: Boolean) {
         featureBinding.optionMenuView.visibleOrGone(isShow) {
             adapter?.notifyDataSetChanged()
@@ -303,5 +327,22 @@ open class FeatureBarActivity : BaseActivity() {
         val label: String,
         val id: Int
     )
+
+    private class LoadingKeyFilter: KeyEventListener {
+
+        var isLoading = false
+
+        override fun onKeyDown(event: KeyEvent): Boolean {
+            return isLoading
+        }
+
+        override fun onKeyUp(event: KeyEvent): Boolean {
+            return isLoading
+        }
+
+        override fun onKeyLongPress(event: KeyEvent): Boolean {
+            return isLoading
+        }
+    }
 
 }

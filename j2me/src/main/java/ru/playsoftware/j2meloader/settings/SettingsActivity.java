@@ -52,7 +52,6 @@ public class SettingsActivity extends BaseActivity {
 	public void finish() {
 		String defPath = Environment.getExternalStorageDirectory() + "/" + Config.APP_NAME;
 		if (preferences.getString(PREF_THEME, "light").equals(oldParams.get(PREF_THEME))
-				&& preferences.getString(PREF_APP_SORT, "name").equals(oldParams.get(PREF_APP_SORT))
 				&& preferences.getString(PREF_EMULATOR_DIR, defPath).equals(oldParams.get(PREF_EMULATOR_DIR))) {
 			setResult(RESULT_OK);
 		} else {

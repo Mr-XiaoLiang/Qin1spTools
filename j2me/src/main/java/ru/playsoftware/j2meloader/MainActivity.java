@@ -28,9 +28,6 @@ import android.os.Handler;
 import android.view.ViewConfiguration;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.IOException;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -38,14 +35,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
+
+import java.io.File;
+
 import ru.playsoftware.j2meloader.applist.AppsListFragment;
 import ru.playsoftware.j2meloader.base.BaseActivity;
 import ru.playsoftware.j2meloader.config.Config;
 import ru.playsoftware.j2meloader.settings.SettingsActivity;
-import ru.playsoftware.j2meloader.util.FileUtils;
 import ru.playsoftware.j2meloader.util.MigrationUtils;
 
-import static ru.playsoftware.j2meloader.util.Constants.*;
+import static ru.playsoftware.j2meloader.util.Constants.KEY_APP_PATH;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_FIRST_START;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_TOOLBAR;
+import static ru.playsoftware.j2meloader.util.Constants.REQUEST_PERMISSIONS;
+import static ru.playsoftware.j2meloader.util.Constants.REQUEST_WORK_DIR;
+import static ru.playsoftware.j2meloader.util.Constants.RESULT_NEED_RECREATE;
 
 public class MainActivity extends BaseActivity {
 	private SharedPreferences sp;
@@ -89,9 +93,7 @@ public class MainActivity extends BaseActivity {
 		checkActionBar();
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		MigrationUtils.check(this);
-		String appSort = sp.getString(PREF_APP_SORT, "name");
 		Bundle bundleLoad = new Bundle();
-		bundleLoad.putString(KEY_APP_SORT, appSort);
 		if (intentUri) {
 			bundleLoad.putParcelable(KEY_APP_PATH, getIntent().getData());
 		}

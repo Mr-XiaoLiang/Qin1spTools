@@ -91,7 +91,6 @@ public class AppsListFragment extends ListFragment {
 	private CompositeDisposable compositeDisposable;
 	private AppsListAdapter adapter;
 	private JarConverter converter;
-	private String appSort;
 	private Uri appPath;
 
 	@Override
@@ -104,7 +103,6 @@ public class AppsListFragment extends ListFragment {
 		if (args == null) {
 			return;
 		}
-		appSort = args.getString(KEY_APP_SORT);
 		appPath = args.getParcelable(KEY_APP_PATH);
 	}
 
@@ -149,29 +147,29 @@ public class AppsListFragment extends ListFragment {
 
 	@SuppressLint("CheckResult")
 	private void initDb() {
-		appRepository = new AppRepository(getActivity().getApplication(), appSort.equals("date"));
-		ConnectableFlowable<List<AppItem>> listConnectableFlowable = appRepository.getAll()
-				.subscribeOn(Schedulers.io())
-				.doOnError(this::alertDbError)
-				.publish();
-		listConnectableFlowable
-				.firstElement()
-				.subscribe(list -> AppUtils.updateDb(appRepository, list), this::alertDbError);
-		listConnectableFlowable
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(list -> adapter.setItems(list), this::alertDbError);
-		compositeDisposable.add(listConnectableFlowable.connect());
+		appRepository = new AppRepository(getActivity().getApplication());
+//		ConnectableFlowable<List<AppItem>> listConnectableFlowable = appRepository.getAll()
+//				.subscribeOn(Schedulers.io())
+//				.doOnError(this::alertDbError)
+//				.publish();
+//		listConnectableFlowable
+//				.firstElement()
+//				.subscribe(list -> AppUtils.updateDb(appRepository, list), this::alertDbError);
+//		listConnectableFlowable
+//				.observeOn(AndroidSchedulers.mainThread())
+//				.subscribe(list -> adapter.setItems(list), this::alertDbError);
+//		compositeDisposable.add(listConnectableFlowable.connect());
 	}
 
-	private void alertDbError(Throwable throwable) {
-		if (throwable instanceof SQLiteDiskIOException) {
-			requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
-					R.string.error_disk_io, Toast.LENGTH_SHORT).show());
-		} else {
-			requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
-					getString(R.string.error) + ": " + throwable.getMessage(), Toast.LENGTH_SHORT).show());
-		}
-	}
+//	private void alertDbError(Throwable throwable) {
+//		if (throwable instanceof SQLiteDiskIOException) {
+//			requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
+//					R.string.error_disk_io, Toast.LENGTH_SHORT).show());
+//		} else {
+//			requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
+//					getString(R.string.error) + ": " + throwable.getMessage(), Toast.LENGTH_SHORT).show());
+//		}
+//	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -192,32 +190,32 @@ public class AppsListFragment extends ListFragment {
 		dialog.setCancelable(false);
 		dialog.setMessage(getText(R.string.converting_message));
 		dialog.setTitle(R.string.converting_wait);
-		converter.convert(path.buildUpon().build())
-				.subscribeOn(Schedulers.computation())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribeWith(new SingleObserver<String>() {
-					@Override
-					public void onSubscribe(Disposable d) {
-						dialog.show();
-					}
-
-					@Override
-					public void onSuccess(String s) {
-						AppItem app = AppUtils.getApp(s);
-						appRepository.insert(app);
-						if (!isAdded()) return;
-						dialog.dismiss();
-						showStartDialog(app);
-					}
-
-					@Override
-					public void onError(Throwable e) {
-						e.printStackTrace();
-						if (!isAdded()) return;
-						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-						dialog.dismiss();
-					}
-				});
+//		converter.convert(path.buildUpon().build())
+//				.subscribeOn(Schedulers.computation())
+//				.observeOn(AndroidSchedulers.mainThread())
+//				.subscribeWith(new SingleObserver<String>() {
+//					@Override
+//					public void onSubscribe(Disposable d) {
+//						dialog.show();
+//					}
+//
+//					@Override
+//					public void onSuccess(String s) {
+//						AppItem app = AppUtils.getApp(s);
+//						appRepository.insert(app);
+//						if (!isAdded()) return;
+//						dialog.dismiss();
+//						showStartDialog(app);
+//					}
+//
+//					@Override
+//					public void onError(Throwable e) {
+//						e.printStackTrace();
+//						if (!isAdded()) return;
+//						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+//						dialog.dismiss();
+//					}
+//				});
 	}
 
 	private void showStartDialog(AppItem app) {
@@ -232,7 +230,7 @@ public class AppsListFragment extends ListFragment {
 		Drawable drawable = Drawable.createFromPath(app.getImagePathExt());
 		if (drawable != null) dialog.setIcon(drawable);
 		dialog.setPositiveButton(R.string.START_CMD, (d, w) -> {
-			Config.startApp(getActivity(), app.getTitle(), app.getPathExt(), false);
+			Config.startApp(getActivity(), app.getTitle(), app.getPathExt());
 		});
 		dialog.setNegativeButton(R.string.close, null);
 		dialog.show();
@@ -284,7 +282,7 @@ public class AppsListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
 		AppItem item = adapter.getItem(position);
-		Config.startApp(getActivity(), item.getTitle(), item.getPathExt(), false);
+		Config.startApp(getActivity(), item.getTitle(), item.getPathExt());
 	}
 
 	@Override
@@ -308,8 +306,6 @@ public class AppsListFragment extends ListFragment {
 			requestAddShortcut(appItem);
 		} else if (itemId == R.id.action_context_rename) {
 			showRenameDialog(index);
-		} else if (itemId == R.id.action_context_settings) {
-			Config.startApp(getActivity(), appItem.getTitle(), appItem.getPathExt(), true);
 		} else if (itemId == R.id.action_context_delete) {
 			showDeleteDialog(index);
 		} else {
