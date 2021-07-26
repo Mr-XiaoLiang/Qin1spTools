@@ -49,6 +49,7 @@ open class FeatureBarActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setFeatureButtons()
         initOptionMenu()
+        endLoading()
     }
 
     private fun initOptionMenu() {
@@ -74,6 +75,10 @@ open class FeatureBarActivity : BaseActivity() {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+    }
+
+    override fun setTitle(titleId: Int) {
+        super.setTitle(titleId)
     }
 
     override fun setTitle(title: CharSequence?) {

@@ -31,6 +31,10 @@ class FileChooseActivity : SimpleListActivity() {
 
         private const val KEY_SELECTED_FILE = "KEY_SELECTED_FILE"
 
+        fun isResult(requestCode: Int): Boolean {
+            return REQUEST_CODE == requestCode
+        }
+
         fun start(
             activity: Activity,
             requestCode: Int = REQUEST_CODE,
@@ -46,8 +50,8 @@ class FileChooseActivity : SimpleListActivity() {
             )
         }
 
-        fun getResultFile(resultCode: Int, intent: Intent): File? {
-            if (resultCode != RESULT_OK) {
+        fun getResultFile(resultCode: Int, intent: Intent?): File? {
+            if (resultCode != RESULT_OK || intent == null) {
                 return null
             }
             val file = intent.getSerializableExtra(KEY_SELECTED_FILE) ?: return null
@@ -138,11 +142,12 @@ class FileChooseActivity : SimpleListActivity() {
                 }
             }
             if (actionIndexer.active(nowAction)) {
-                breadCrumbs.addLast(DirInfo(dir, childrenList, childrenFileList))
+                breadCrumbs.addLast(DirInfo(dir, 0, childrenList, childrenFileList))
                 currentFiles.addAll(childrenList)
                 onUI {
                     updateData()
                     endLoading()
+                    updateTitle()
                 }
             }
         }
@@ -161,6 +166,8 @@ class FileChooseActivity : SimpleListActivity() {
         currentFiles.clear()
         currentFiles.addAll(last.children)
         updateData()
+        selectedTo(last.selectedPosition)
+        updateTitle()
         return true
     }
 
@@ -202,10 +209,24 @@ class FileChooseActivity : SimpleListActivity() {
             val childrenFile = last.childrenFile
             if (childrenFile.size == currentFiles.size) {
                 next(childrenFile[index])
+                last.selectedPosition = index
                 return true
             }
         }
         return false
+    }
+
+    private fun updateTitle() {
+        if (breadCrumbs.isEmpty()) {
+            setTitle(R.string.app_name)
+            return
+        }
+        val last = breadCrumbs.last
+        if (last == breadCrumbs.first) {
+            setTitle(R.string.app_name)
+            return
+        }
+        title = last.file.name
     }
 
     override fun onRightFeatureButtonClick(): Boolean {
@@ -243,6 +264,7 @@ class FileChooseActivity : SimpleListActivity() {
 
     private class DirInfo(
         val file: File,
+        var selectedPosition: Int = 0,
         val children: List<String>,
         val childrenFile: List<File>
     )

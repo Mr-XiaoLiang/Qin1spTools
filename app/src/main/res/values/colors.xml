@@ -13,7 +13,7 @@
     <color name="indicatorColor">#ffffffff</color>
 
     <color name="itemDefaultBackground">#00000000</color>
-    <color name="itemSelectedBackground">#336E6C6E</color>
+    <color name="itemSelectedBackground">#FF6E6C6E</color>
 
     <color name="optionMenuBackground">#33000000</color>
 

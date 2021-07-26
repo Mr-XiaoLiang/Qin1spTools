@@ -12,6 +12,7 @@ import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.list.SimpleTextAdapter
 import com.lollipop.qin1sptools.utils.bind
 import com.lollipop.qin1sptools.utils.lazyBind
+import com.lollipop.qin1sptools.utils.range
 import com.lollipop.qin1sptools.utils.visibleOrGone
 
 /**
@@ -35,6 +36,12 @@ open class SimpleListActivity : FeatureBarActivity() {
     }
 
     private fun initView() {
+        listBinding.recyclerView.itemAnimator?.let { animator ->
+            animator.changeDuration = 150
+            animator.addDuration = 150
+            animator.moveDuration = 150
+            animator.removeDuration = 150
+        }
         listBinding.recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listBinding.recyclerView.adapter = ListAdapter(simpleListData, ::getSelectedPosition)
@@ -50,6 +57,7 @@ open class SimpleListActivity : FeatureBarActivity() {
         } else {
             0
         }
+        listBinding.emptyView.visibleOrGone(simpleListData.isEmpty())
         onSelectedIndexChanged()
     }
 
@@ -57,6 +65,7 @@ open class SimpleListActivity : FeatureBarActivity() {
         val lastCount = simpleListData.size
         simpleListData.addAll(data)
         listBinding.recyclerView.adapter?.notifyItemRangeInserted(lastCount, data.size)
+        listBinding.emptyView.visibleOrGone(simpleListData.isEmpty())
     }
 
     protected fun setError(msg: String) {
@@ -77,11 +86,21 @@ open class SimpleListActivity : FeatureBarActivity() {
 
     }
 
+    protected fun selectedTo(position: Int) {
+        if (simpleListData.isEmpty()) {
+            selectedIndex - 1
+            return
+        }
+        selectedIndex = position.range(0, simpleListData.size - 1)
+        listBinding.recyclerView.scrollToPosition(selectedIndex)
+    }
+
     protected fun selectNext(): Boolean {
         if (selectedIndex < simpleListData.size - 1) {
             val lastIndex = selectedIndex
             selectedIndex++
             listBinding.recyclerView.adapter?.notifyItemRangeChanged(lastIndex, 2)
+            listBinding.recyclerView.scrollToPosition(selectedIndex)
             onSelectedIndexChanged()
             return true
         }
@@ -92,6 +111,7 @@ open class SimpleListActivity : FeatureBarActivity() {
         if (selectedIndex > 0) {
             selectedIndex--
             listBinding.recyclerView.adapter?.notifyItemRangeChanged(selectedIndex, 2)
+            listBinding.recyclerView.scrollToPosition(selectedIndex)
             onSelectedIndexChanged()
             return true
         }

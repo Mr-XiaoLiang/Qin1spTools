@@ -2,4 +2,5 @@
     <string name="app_name">Lollipop</string>
     <string name="external_storage_not_found">找不到可用的储存空间</string>
     <string name="folder_unavailable">当前文件夹不可用</string>
+    <string name="empty">什么也没有</string>
 </resources>

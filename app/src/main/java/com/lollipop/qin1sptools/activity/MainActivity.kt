@@ -1,5 +1,6 @@
 package com.lollipop.qin1sptools.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -36,6 +37,16 @@ class MainActivity : GridMenuActivity() {
 
     override fun onGridItemClick(item: GridItem, index: Int) {
         Toast.makeText(this, "${item.label}", Toast.LENGTH_SHORT).show()
+        FileChooseActivity.start(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (FileChooseActivity.isResult(requestCode)) {
+            val file = FileChooseActivity.getResultFile(resultCode, data)
+            Toast.makeText(this, "$file", Toast.LENGTH_SHORT).show()
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }
