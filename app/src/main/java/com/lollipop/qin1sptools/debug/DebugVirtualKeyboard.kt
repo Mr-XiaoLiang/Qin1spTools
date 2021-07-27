@@ -52,6 +52,14 @@ class DebugVirtualKeyboard(
         keyboardBinding.num9Btn.bindClickEvent(KeyEvent.KEY_9)
         keyboardBinding.starBtn.bindClickEvent(KeyEvent.KEY_STAR)
         keyboardBinding.poundBtn.bindClickEvent(KeyEvent.KEY_POUND)
+
+        keyboardBinding.closeBtn.setOnClickListener {
+            if (keyboardBinding.keyboardContentView.visibility == View.VISIBLE) {
+                keyboardBinding.keyboardContentView.visibility = View.INVISIBLE
+            } else {
+                keyboardBinding.keyboardContentView.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun View.bindClickEvent(event: KeyEvent) {
