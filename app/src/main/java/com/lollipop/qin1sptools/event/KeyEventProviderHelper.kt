@@ -17,16 +17,6 @@ class KeyEventProviderHelper(
     override fun removeKeyEventListener(listener: KeyEventListener) {
         listenerList.remove(listener)
     }
-
-    override fun onKeyDown(event: KeyEvent): Boolean {
-        listenerList.forEach {
-            if (it.onKeyDown(event)) {
-                return true
-            }
-        }
-        return false
-    }
-
     private fun isActive(event: android.view.KeyEvent?): Boolean {
         event ?: return false
         return !event.isCanceled
@@ -63,7 +53,7 @@ class KeyEventProviderHelper(
             return false
         }
         val key = findKeyByCode(keyCode)
-        return onKeyUp(key) || selfListener?.onKeyUp(key) ?: false
+        return onKeyUp(key)
     }
 
     fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean {
@@ -82,13 +72,23 @@ class KeyEventProviderHelper(
         return onKeyLongPress(key) || selfListener?.onKeyLongPress(key) ?: false
     }
 
+
+    override fun onKeyDown(event: KeyEvent): Boolean {
+        listenerList.forEach {
+            if (it.onKeyDown(event)) {
+                return true
+            }
+        }
+        return selfListener?.onKeyLongPress(event) ?: false
+    }
+
     override fun onKeyUp(event: KeyEvent): Boolean {
         listenerList.forEach {
             if (it.onKeyUp(event)) {
                 return true
             }
         }
-        return false
+        return selfListener?.onKeyUp(event) ?: false
     }
 
     override fun onKeyLongPress(event: KeyEvent): Boolean {
@@ -97,7 +97,7 @@ class KeyEventProviderHelper(
                 return true
             }
         }
-        return false
+        return selfListener?.onKeyLongPress(event) ?: false
     }
 
     fun clear() {
