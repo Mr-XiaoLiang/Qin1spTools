@@ -1,4 +1,4 @@
-package com.lollipop.qin1sptools.activity
+package com.lollipop.qin1sptools.activity.games
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
+import com.lollipop.qin1sptools.activity.FileChooseActivity
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.utils.FeatureIcon
 import com.lollipop.qin1sptools.utils.doAsync

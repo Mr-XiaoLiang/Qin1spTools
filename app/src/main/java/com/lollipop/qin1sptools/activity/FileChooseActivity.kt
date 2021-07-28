@@ -28,7 +28,7 @@ class FileChooseActivity : SimpleListActivity() {
         private const val KEY_FILE_FILTER = "KEY_FILE_FILTER"
         private const val KEY_CHOOSE_FILE = "KEY_CHOOSE_FILE"
 
-        const val REQUEST_CODE = 0xF11E
+        private const val REQUEST_CODE = 0xF11E
 
         private const val KEY_SELECTED_FILE = "KEY_SELECTED_FILE"
 
@@ -209,7 +209,14 @@ class FileChooseActivity : SimpleListActivity() {
             val last = breadCrumbs.last ?: return true
             val childrenFile = last.childrenFile
             if (childrenFile.size == currentFiles.size) {
-                next(childrenFile[index])
+                val file = childrenFile[index]
+                if (!file.isDirectory) {
+                    if (chooseFile) {
+                        choose()
+                    }
+                    return true
+                }
+                next(file)
                 last.selectedPosition = index
                 return true
             }
