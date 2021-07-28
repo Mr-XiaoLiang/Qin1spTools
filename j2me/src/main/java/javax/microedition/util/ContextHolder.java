@@ -17,6 +17,7 @@
 
 package javax.microedition.util;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -42,148 +43,174 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.microedition.shell.AppClassLoader;
-import javax.microedition.shell.MicroActivity;
 
 public class ContextHolder {
 
-	private static Display display;
-	private static WeakReference<MicroActivity> currentActivity;
-	private static Vibrator vibrator;
-	private static Context appContext;
-	private static final ArrayList<ActivityResultListener> resultListeners = new ArrayList<>();
-	private static boolean vibrationEnabled;
+    private static Display display = null;
+    private static WeakReference<DisplayHost> currentHost = null;
+    private static Vibrator vibrator = null;
+    private static Context appContext = null;
+    private static final ArrayList<ActivityResultListener> resultListeners = new ArrayList<>();
+    private static boolean vibrationEnabled = false;
 
-	public static Context getAppContext() {
-		return appContext;
-	}
+    public static Context getAppContext() {
+        return appContext;
+    }
 
-	private static Display getDisplay() {
-		if (display == null) {
-			display = ((WindowManager) Objects.requireNonNull(getAppContext().getSystemService(Context.WINDOW_SERVICE))).getDefaultDisplay();
-		}
-		return display;
-	}
+    private static Display getDisplay() {
+        if (display == null) {
+            display = ((WindowManager) Objects.requireNonNull(
+                    getAppContext().getSystemService(Context.WINDOW_SERVICE))
+            ).getDefaultDisplay();
+        }
+        return display;
+    }
 
-	public static int getDisplayWidth() {
-		return getDisplay().getWidth();
-	}
+    public static int getDisplayWidth() {
+        return getDisplay().getWidth();
+    }
 
 	public static int getDisplayHeight() {
-		return getDisplay().getHeight();
+        return getDisplay().getHeight();
 	}
 
-	public static void setCurrentActivity(MicroActivity activity) {
-		currentActivity = new WeakReference<>(activity);
-	}
+    public static void setCurrentHost(DisplayHost host) {
+        currentHost = new WeakReference<>(host);
+    }
 
-	public static void addActivityResultListener(ActivityResultListener listener) {
-		if (!resultListeners.contains(listener)) {
-			resultListeners.add(listener);
-		}
-	}
+    public static void addActivityResultListener(ActivityResultListener listener) {
+        if (!resultListeners.contains(listener)) {
+            resultListeners.add(listener);
+        }
+    }
 
-	public static void removeActivityResultListener(ActivityResultListener listener) {
-		resultListeners.remove(listener);
-	}
+    public static void removeActivityResultListener(ActivityResultListener listener) {
+        resultListeners.remove(listener);
+    }
 
-	public static void notifyOnActivityResult(int requestCode, int resultCode, Intent data) {
-		for (ActivityResultListener listener : resultListeners) {
-			listener.onActivityResult(requestCode, resultCode, data);
-		}
-	}
+    public static void notifyOnActivityResult(int requestCode, int resultCode, Intent data) {
+        for (ActivityResultListener listener : resultListeners) {
+            listener.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
-	public static InputStream getResourceAsStream(Class resClass, String resName) {
-		return AppClassLoader.getResourceAsStream(resClass, resName);
-	}
+    public static InputStream getResourceAsStream(Class<?> resClass, String resName) {
+        return AppClassLoader.getResourceAsStream(resClass, resName);
+    }
 
-	public static FileOutputStream openFileOutput(String name) throws FileNotFoundException {
-		File dir = new File(AppClassLoader.getDataDir());
-		File file = new File(dir, name);
-		if (!dir.isDirectory() && !dir.mkdirs()) {
-			throw new FileNotFoundException("Can't create directory: " + dir);
-		}
-		return new FileOutputStream(file);
-	}
+    public static FileOutputStream openFileOutput(String name) throws FileNotFoundException {
+        File dir = new File(AppClassLoader.getDataDir());
+        File file = new File(dir, name);
+        if (!dir.isDirectory() && !dir.mkdirs()) {
+            throw new FileNotFoundException("Can't create directory: " + dir);
+        }
+        return new FileOutputStream(file);
+    }
 
-	public static FileInputStream openFileInput(String name) throws FileNotFoundException {
-		return new FileInputStream(getFileByName(name));
-	}
+    public static FileInputStream openFileInput(String name) throws FileNotFoundException {
+        return new FileInputStream(getFileByName(name));
+    }
 
-	public static boolean deleteFile(String name) {
-		return getFileByName(name).delete();
-	}
+    public static boolean deleteFile(String name) {
+        return getFileByName(name).delete();
+    }
 
-	public static File getFileByName(String name) {
-		return new File(AppClassLoader.getDataDir(), name);
-	}
+    public static File getFileByName(String name) {
+        return new File(AppClassLoader.getDataDir(), name);
+    }
 
-	public static File getCacheDir() {
-		return getAppContext().getExternalCacheDir();
-	}
+    public static File getCacheDir() {
+        return getAppContext().getExternalCacheDir();
+    }
 
-	public static boolean requestPermission(String permission) {
-		if (ContextCompat.checkSelfPermission(currentActivity.get(), permission) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(currentActivity.get(), new String[]{permission}, 0);
-			return false;
-		} else {
-			return true;
-		}
-	}
+    public static boolean requestPermission(String permission) {
+        if (currentHost == null) {
+            return false;
+        }
+        DisplayHost displayHost = currentHost.get();
+        if (displayHost == null) {
+            return false;
+        }
+        Activity activity = displayHost.getActivity();
+        if (activity == null) {
+            return false;
+        }
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{permission}, 0);
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-	public static String getAssetAsString(String fileName) {
-		StringBuilder sb = new StringBuilder();
+    public static String getAssetAsString(String fileName) {
+        StringBuilder sb = new StringBuilder();
 
-		try (InputStream is = getAppContext().getAssets().open(fileName);
-			 BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")))) {
-			String str;
-			while ((str = br.readLine()) != null) {
-				sb.append(str).append('\n');
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return sb.toString();
-	}
+        try (InputStream is = getAppContext().getAssets().open(fileName);
+             BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")))) {
+            String str;
+            while ((str = br.readLine()) != null) {
+                sb.append(str).append('\n');
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return sb.toString();
+    }
 
-	public static MicroActivity getActivity() {
-		return currentActivity.get();
-	}
+    public static Activity getActivity() {
+        if (currentHost == null) {
+            return null;
+        }
+        DisplayHost displayHost = currentHost.get();
+        if (displayHost == null) {
+            return null;
+        }
+        return displayHost.getActivity();
+    }
 
-	public static boolean vibrate(int duration) {
-		if (!vibrationEnabled) {
-			return false;
-		}
-		if (vibrator == null) {
-			vibrator = (Vibrator) getAppContext().getSystemService(Context.VIBRATOR_SERVICE);
-		}
-		if (vibrator == null || !vibrator.hasVibrator()) {
-			return false;
-		}
-		if (duration > 0) {
-			vibrator.vibrate(duration);
-		} else if (duration < 0) {
-			throw new IllegalStateException();
-		} else {
-			vibrator.cancel();
-		}
-		return true;
-	}
+    public static DisplayHost getDisplayHost() {
+        if (currentHost == null) {
+            return null;
+        }
+        return currentHost.get();
+    }
 
-	public static void vibrateKey(int duration) {
-		if (vibrator == null) {
-			vibrator = (Vibrator) getAppContext().getSystemService(Context.VIBRATOR_SERVICE);
-		}
-		if (vibrator == null || !vibrator.hasVibrator()) {
-			return;
-		}
-		vibrator.vibrate(duration);
-	}
+    public static boolean vibrate(int duration) {
+        if (!vibrationEnabled) {
+            return false;
+        }
+        if (vibrator == null) {
+            vibrator = (Vibrator) getAppContext().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+        if (vibrator == null || !vibrator.hasVibrator()) {
+            return false;
+        }
+        if (duration > 0) {
+            vibrator.vibrate(duration);
+        } else if (duration < 0) {
+            throw new IllegalStateException();
+        } else {
+            vibrator.cancel();
+        }
+        return true;
+    }
 
-	public static void setApplication(Application application) {
-		appContext = application;
-	}
+    public static void vibrateKey(int duration) {
+        if (vibrator == null) {
+            vibrator = (Vibrator) getAppContext().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+        if (vibrator == null || !vibrator.hasVibrator()) {
+            return;
+        }
+        vibrator.vibrate(duration);
+    }
 
-	public static void setVibration(boolean vibrationEnabled) {
-		ContextHolder.vibrationEnabled = vibrationEnabled;
-	}
+    public static void setApplication(Application application) {
+        appContext = application;
+    }
+
+    public static void setVibration(boolean vibrationEnabled) {
+        ContextHolder.vibrationEnabled = vibrationEnabled;
+    }
 }

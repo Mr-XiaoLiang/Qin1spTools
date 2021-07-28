@@ -18,6 +18,7 @@
 
 package javax.microedition.lcdui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -87,7 +88,7 @@ public class Form extends Screen {
 		items.add(item);
 		item.setOwnerForm(this);
 		if (layout != null) {
-			AppCompatActivity a = getParentActivity();
+			Activity a = getDisplayHost().getActivity();
 			if (a != null) {
 				View v = item.getItemView();
 				a.runOnUiThread(() -> layout.addView(v));
@@ -104,7 +105,7 @@ public class Form extends Screen {
 		items.add(index, item);
 		item.setOwnerForm(this);
 		if (layout != null) {
-			AppCompatActivity a = getParentActivity();
+			Activity a = getDisplayHost().getActivity();
 			if (a != null) {
 				View v = item.getItemView();
 				a.runOnUiThread(() -> layout.addView(v, index));
@@ -120,7 +121,7 @@ public class Form extends Screen {
 		items.set(index, item).setOwnerForm(null);
 		item.setOwnerForm(this);
 		if (layout != null) {
-			AppCompatActivity a = getParentActivity();
+			Activity a = getDisplayHost().getActivity();
 			if (a != null) {
 				a.runOnUiThread(() -> {
 					View v = item.getItemView();
@@ -135,7 +136,7 @@ public class Form extends Screen {
 		items.remove(index).setOwnerForm(null);
 
 		if (layout != null) {
-			AppCompatActivity a = getParentActivity();
+			Activity a = getDisplayHost().getActivity();
 			if (a != null) {
 				a.runOnUiThread(() -> layout.removeViewAt(index));
 			}
@@ -150,7 +151,7 @@ public class Form extends Screen {
 		items.clear();
 
 		if (layout != null) {
-			AppCompatActivity a = getParentActivity();
+			Activity a = getDisplayHost().getActivity();
 			if (a != null) {
 				a.runOnUiThread(() -> layout.removeAllViews());
 			}
@@ -170,7 +171,7 @@ public class Form extends Screen {
 	@Override
 	public View getScreenView() {
 		if (scrollview == null) {
-			Context context = getParentActivity();
+			Context context = getDisplayHost().getActivity();
 
 			layout = new LinearLayout(context);
 			layout.setOrientation(LinearLayout.VERTICAL);

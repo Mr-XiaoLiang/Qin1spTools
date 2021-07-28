@@ -103,7 +103,7 @@ public class TextField extends Item {
 
 	@Override
 	public View getItemContentView() {
-		Context context = getOwnerForm().getParentActivity();
+		Context context = getContext();
 		return textField.getView(context, this);
 	}
 

@@ -272,7 +272,7 @@ public class List extends Screen implements Choice {
 
 	@Override
 	public View getScreenView() {
-		Context context = getParentActivity();
+		Context context = getDisplayHost().getActivity();
 
 		list = new ListView(context);
 		list.setAdapter(adapter);

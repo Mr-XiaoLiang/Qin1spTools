@@ -139,6 +139,10 @@ public abstract class Item implements View.OnCreateContextMenuListener {
 		return owner;
 	}
 
+	protected Context getContext() {
+		return getOwnerForm().getDisplayHost().getActivity();
+	}
+
 	public boolean hasOwnerForm() {
 		return owner != null;
 	}
@@ -164,7 +168,7 @@ public abstract class Item implements View.OnCreateContextMenuListener {
 	 */
 	public View getItemView() {
 		if (layout == null) {
-			Context context = owner.getParentActivity();
+			Context context = owner.getDisplayHost().getActivity();
 
 			layout = new LinearLayout(context);
 			layout.setOrientation(LinearLayout.VERTICAL);

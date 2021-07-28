@@ -131,7 +131,7 @@ public class Alert extends Screen implements DialogInterface.OnClickListener {
 	}
 
 	public AlertDialog prepareDialog() {
-		Context context = getParentActivity();
+		Context context = getDisplayHost().getActivity();
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
 		builder.setTitle(getTitle());

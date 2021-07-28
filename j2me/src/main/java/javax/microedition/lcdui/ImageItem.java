@@ -81,7 +81,7 @@ public class ImageItem extends Item {
 	@Override
 	public View getItemContentView() {
 		if (imgview == null) {
-			imgview = new ImageView(getOwnerForm().getParentActivity());
+			imgview = new ImageView(getContext());
 			imgview.setScaleType(ImageView.ScaleType.FIT_XY);
 			imgview.setOnClickListener(v -> fireDefaultCommandAction());
 			updateImageView();

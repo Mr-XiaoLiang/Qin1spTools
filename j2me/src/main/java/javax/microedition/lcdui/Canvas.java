@@ -57,7 +57,6 @@ import javax.microedition.lcdui.graphics.ShaderProgram;
 import javax.microedition.lcdui.keyboard.KeyMapper;
 import javax.microedition.lcdui.overlay.FpsCounter;
 import javax.microedition.lcdui.overlay.OverlayView;
-import javax.microedition.shell.MicroActivity;
 import javax.microedition.util.ContextHolder;
 
 import ru.playsoftware.j2meloader.R;
@@ -455,7 +454,7 @@ public abstract class Canvas extends Displayable {
     public View getDisplayableView() {
         if (layout == null) {
             layout = (LinearLayout) super.getDisplayableView();
-            MicroActivity activity = getParentActivity();
+            Activity activity = getDisplayHost().getActivity();
             if (graphicsMode == 1) {
                 GlesView glesView = new GlesView(activity);
                 glesView.setRenderer(renderer);

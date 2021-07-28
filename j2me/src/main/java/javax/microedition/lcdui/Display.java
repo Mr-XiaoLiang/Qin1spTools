@@ -22,6 +22,7 @@ import javax.microedition.lcdui.event.EventQueue;
 import javax.microedition.lcdui.event.RunnableEvent;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.util.ContextHolder;
+import javax.microedition.util.DisplayHost;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -118,7 +119,10 @@ public class Display {
 	}
 
 	private void showCurrent() {
-		ContextHolder.getActivity().setCurrent(current);
+		DisplayHost displayHost = ContextHolder.getDisplayHost();
+		if (displayHost != null) {
+			displayHost.setCurrent(current);
+		}
 	}
 
 	public Displayable getCurrent() {

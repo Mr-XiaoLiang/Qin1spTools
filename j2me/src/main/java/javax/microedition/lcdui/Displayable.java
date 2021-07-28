@@ -18,6 +18,7 @@
 
 package javax.microedition.lcdui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -30,8 +31,8 @@ import java.util.ArrayList;
 
 import javax.microedition.lcdui.event.CommandActionEvent;
 import javax.microedition.lcdui.event.SimpleEvent;
-import javax.microedition.shell.MicroActivity;
 import javax.microedition.util.ContextHolder;
+import javax.microedition.util.DisplayHost;
 
 public abstract class Displayable {
 	private static final int TICKER_NO_ACTION = 0;
@@ -84,15 +85,15 @@ public abstract class Displayable {
 		return virtualHeight;
 	}
 
-	public MicroActivity getParentActivity() {
-		return ContextHolder.getActivity();
+	public DisplayHost getDisplayHost() {
+		return ContextHolder.getDisplayHost();
 	}
 
 	public void setTitle(String title) {
 		this.title = title;
 
-		MicroActivity activity = ContextHolder.getActivity();
-		if (isShown()) {
+		Activity activity = ContextHolder.getActivity();
+		if (activity != null && isShown()) {
 			activity.runOnUiThread(() -> activity.setTitle(title));
 		}
 	}
@@ -102,16 +103,16 @@ public abstract class Displayable {
 	}
 
 	public boolean isShown() {
-		MicroActivity activity = ContextHolder.getActivity();
-		if (activity != null) {
-			return activity.isVisible() && activity.getCurrent() == this;
+		DisplayHost displayHost = ContextHolder.getDisplayHost();
+		if (displayHost != null) {
+			return displayHost.isVisible() && displayHost.getCurrent() == this;
 		}
 		return false;
 	}
 
 	public View getDisplayableView() {
 		if (layout == null) {
-			Context context = getParentActivity();
+			Context context = getDisplayHost().getActivity();
 
 			layout = new LinearLayout(context);
 			layout.setOrientation(LinearLayout.VERTICAL);

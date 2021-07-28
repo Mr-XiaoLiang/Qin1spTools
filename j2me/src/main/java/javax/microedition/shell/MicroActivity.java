@@ -18,6 +18,7 @@
 package javax.microedition.shell;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -61,6 +62,7 @@ import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.ViewHandler;
 import javax.microedition.lcdui.event.SimpleEvent;
 import javax.microedition.util.ContextHolder;
+import javax.microedition.util.DisplayHost;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -73,11 +75,10 @@ import ru.playsoftware.j2meloader.util.LogUtils;
 import static ru.playsoftware.j2meloader.util.Constants.KEY_MIDLET_NAME;
 import static ru.playsoftware.j2meloader.util.Constants.PREF_KEEP_SCREEN;
 import static ru.playsoftware.j2meloader.util.Constants.PREF_STATUSBAR;
-import static ru.playsoftware.j2meloader.util.Constants.PREF_THEME;
 import static ru.playsoftware.j2meloader.util.Constants.PREF_TOOLBAR;
 import static ru.playsoftware.j2meloader.util.Constants.PREF_VIBRATION;
 
-public class MicroActivity extends AppCompatActivity {
+public class MicroActivity extends AppCompatActivity implements DisplayHost {
 	private static final int ORIENTATION_DEFAULT = 0;
 	private static final int ORIENTATION_AUTO = 1;
 	private static final int ORIENTATION_PORTRAIT = 2;
@@ -96,9 +97,8 @@ public class MicroActivity extends AppCompatActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		setTheme(sp.getString(PREF_THEME, "light"));
 		super.onCreate(savedInstanceState);
-		ContextHolder.setCurrentActivity(this);
+		ContextHolder.setCurrentHost(this);
 		setContentView(R.layout.activity_micro);
 		layout = findViewById(R.id.displayable_container);
 		toolbar = findViewById(R.id.toolbar);
@@ -170,14 +170,6 @@ public class MicroActivity extends AppCompatActivity {
 			default:
 				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 				break;
-		}
-	}
-
-	private void setTheme(String theme) {
-		if (theme.equals("dark")) {
-			setTheme(R.style.AppTheme_NoActionBar);
-		} else {
-			setTheme(R.style.AppTheme_Light_NoActionBar);
 		}
 	}
 
@@ -282,6 +274,11 @@ public class MicroActivity extends AppCompatActivity {
 
 	public Displayable getCurrent() {
 		return current;
+	}
+
+	@Override
+	public Activity getActivity() {
+		return this;
 	}
 
 	public boolean isVisible() {

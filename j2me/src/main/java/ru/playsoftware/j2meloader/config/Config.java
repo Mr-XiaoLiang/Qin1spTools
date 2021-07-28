@@ -22,14 +22,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 
-import java.io.File;
+import androidx.preference.PreferenceManager;
 
 import javax.microedition.shell.MicroActivity;
 import javax.microedition.util.ContextHolder;
 
-import androidx.preference.PreferenceManager;
-
-import static ru.playsoftware.j2meloader.util.Constants.*;
+import static ru.playsoftware.j2meloader.util.Constants.KEY_MIDLET_NAME;
+import static ru.playsoftware.j2meloader.util.Constants.PREF_EMULATOR_DIR;
 
 public class Config {
 

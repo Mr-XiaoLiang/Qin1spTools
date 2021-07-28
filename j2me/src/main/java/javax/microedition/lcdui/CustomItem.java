@@ -171,7 +171,7 @@ public abstract class CustomItem extends Item {
 	@Override
 	protected View getItemContentView() {
 		if (view == null) {
-			view = new InnerView(getOwnerForm().getParentActivity());
+			view = new InnerView(getContext());
 			int width = getMinContentWidth();
 			int height = getMinContentHeight();
 			view.setMinimumWidth(width);

@@ -89,10 +89,10 @@ public class Gauge extends Item {
 	protected View getItemContentView() {
 		if (pbar == null) {
 			if (interactive) {
-				pbar = new SeekBar(getOwnerForm().getParentActivity());
+				pbar = new SeekBar(getContext());
 				((SeekBar) pbar).setOnSeekBarChangeListener(listener);
 			} else {
-				pbar = new ProgressBar(getOwnerForm().getParentActivity(), null, android.R.attr.progressBarStyleHorizontal);
+				pbar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleHorizontal);
 			}
 
 			pbar.setMax(maxValue);

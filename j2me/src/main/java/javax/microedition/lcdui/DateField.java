@@ -119,7 +119,7 @@ public class DateField extends Item {
 	@Override
 	protected View getItemContentView() {
 		if (layout == null) {
-			Context context = getOwnerForm().getParentActivity();
+			Context context = getContext();
 
 			layout = new LinearLayout(context);
 			layout.setOrientation(LinearLayout.VERTICAL);

@@ -16,19 +16,21 @@
 
 package javax.microedition.shell;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.util.ContextHolder;
-
-import androidx.annotation.NonNull;
+import javax.microedition.util.DisplayHost;
 
 public class MidletThread extends HandlerThread implements Handler.Callback {
 	private static final String TAG = MidletThread.class.getName();
@@ -66,7 +68,7 @@ public class MidletThread extends HandlerThread implements Handler.Callback {
 	public static void notifyDestroyed() {
 		Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
 		instance.state = DESTROYED;
-		MicroActivity activity = ContextHolder.getActivity();
+		Activity activity = ContextHolder.getActivity();
 		if (activity != null) {
 			activity.finish();
 		}
@@ -77,14 +79,14 @@ public class MidletThread extends HandlerThread implements Handler.Callback {
 		instance.state = PAUSED;
 	}
 
-	static void pauseApp() {
+	public static void pauseApp() {
 		if (instance != null)
 			instance.handler.obtainMessage(PAUSE).sendToTarget();
 	}
 
 	public static void resumeApp() {
-		MicroActivity activity = ContextHolder.getActivity();
-		if (instance != null && activity != null && activity.isVisible())
+		DisplayHost displayHost = ContextHolder.getDisplayHost();
+		if (instance != null && displayHost != null && displayHost.isVisible())
 			instance.handler.obtainMessage(START).sendToTarget();
 	}
 
@@ -98,9 +100,9 @@ public class MidletThread extends HandlerThread implements Handler.Callback {
 			}
 			Process.killProcess(Process.myPid());
 		}, "ForceDestroyTimer").start();
-		MicroActivity activity = ContextHolder.getActivity();
-		if (activity != null) {
-			Displayable current = activity.getCurrent();
+		DisplayHost displayHost = ContextHolder.getDisplayHost();
+		if (displayHost != null) {
+			Displayable current = displayHost.getCurrent();
 			if (current instanceof Canvas) {
 				Canvas canvas = (Canvas) current;
 				canvas.postKeyPressed(Canvas.KEY_END);

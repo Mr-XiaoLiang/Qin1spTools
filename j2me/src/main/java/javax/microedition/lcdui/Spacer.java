@@ -40,7 +40,7 @@ public class Spacer extends Item {
 	@Override
 	public View getItemContentView() {
 		if (view == null) {
-			view = new View(getOwnerForm().getParentActivity());
+			view = new View(getContext());
 
 			view.setMinimumWidth(width);
 			view.setMinimumHeight(height);
