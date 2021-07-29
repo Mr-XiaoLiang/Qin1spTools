@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.lollipop.qin1sptools.databinding.ActivityMicroDisplayBinding
 import com.lollipop.qin1sptools.utils.lazyBind
+import com.lollipop.qin1sptools.utils.task
 import ru.playsoftware.j2meloader.base.BaseActivity
 import javax.microedition.lcdui.Displayable
 import javax.microedition.shell.MidletThread
@@ -16,6 +17,12 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     private val binding: ActivityMicroDisplayBinding by lazyBind()
 
     private var isResumed = false
+
+    private var display: Displayable? = null
+
+    private val updateCurrentTask = task {
+        // TODO
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +55,14 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         return isResumed
     }
 
-    override fun getCurrent(): Displayable {
-        TODO("Not yet implemented")
+    override fun getCurrent(): Displayable? {
+        return display
     }
 
     override fun setCurrent(displayable: Displayable?) {
-        TODO("Not yet implemented")
+        this.display = displayable
+        updateCurrentTask.cancel()
+        updateCurrentTask.sync()
     }
 
 }
