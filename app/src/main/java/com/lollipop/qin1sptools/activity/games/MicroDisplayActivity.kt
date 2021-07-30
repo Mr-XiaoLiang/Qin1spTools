@@ -3,10 +3,10 @@ package com.lollipop.qin1sptools.activity.games
 import android.app.Activity
 import android.os.Bundle
 import android.view.WindowManager
+import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.databinding.ActivityMicroDisplayBinding
 import com.lollipop.qin1sptools.utils.lazyBind
 import com.lollipop.qin1sptools.utils.task
-import ru.playsoftware.j2meloader.base.BaseActivity
 import javax.microedition.lcdui.Displayable
 import javax.microedition.shell.MidletThread
 import javax.microedition.util.ContextHolder

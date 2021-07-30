@@ -9,8 +9,6 @@ android {android
 //        applicationId "ru.playsoftware.j2meloader"
         minSdkVersion 17
         targetSdkVersion 30
-        versionCode 89
-        versionName "1.7.0"
         setProperty("archivesBaseName", "J2ME_Loader-$versionName")
         ndkVersion '21.3.6528147'
         ndk {
