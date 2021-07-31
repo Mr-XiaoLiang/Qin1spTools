@@ -67,10 +67,14 @@ public class MicroLoader {
 	private final String appDirName;
 	private ProfileModel params;
 
-	MicroLoader(Context context, String appPath) {
+	public MicroLoader(Context context, String appPath) {
 		this.context = context;
 		this.appDir = new File(appPath);
-		workDir = appDir.getParentFile().getParent();
+		File parentFile = appDir.getParentFile();
+		if (parentFile == null) {
+			throw new RuntimeException("appPath has error");
+		}
+		workDir = parentFile.getParent();
 		appDirName = appDir.getName();
 	}
 
@@ -96,8 +100,8 @@ public class MicroLoader {
 		return true;
 	}
 
-	LinkedHashMap<String, String> loadMIDletList() throws IOException {
-		LinkedHashMap<String, String> midlets = new LinkedHashMap<>();
+	public LinkedHashMap<String, String> loadMIDletList() {
+		LinkedHashMap<String, String> midletMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> params =
 				FileUtils.loadManifest(new File(appDir, Config.MIDLET_MANIFEST_FILE));
 		MIDlet.initProps(params);
@@ -106,13 +110,13 @@ public class MicroLoader {
 				String tmp = entry.getValue();
 				String clazz = tmp.substring(tmp.lastIndexOf(',') + 1).trim();
 				String title = tmp.substring(0, tmp.indexOf(',')).trim();
-				midlets.put(clazz, title);
+				midletMap.put(clazz, title);
 			}
 		}
-		return midlets;
+		return midletMap;
 	}
 
-	MIDlet loadMIDlet(String mainClass) throws ClassNotFoundException, InstantiationException,
+	public MIDlet loadMIDlet(String mainClass) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, NoSuchMethodException, InvocationTargetException, IOException {
 		File dexSource = new File(appDir, Config.MIDLET_DEX_FILE);
 		File codeCacheDir = SDK_INT >= LOLLIPOP ? context.getCodeCacheDir() : context.getCacheDir();
@@ -150,12 +154,12 @@ public class MicroLoader {
 		return params.orientation;
 	}
 
-	void setLimitFps(int fps) {
+	public void setLimitFps(int fps) {
 		if (fps == -1) Canvas.setLimitFps(params.fpsLimit);
 		else Canvas.setLimitFps(fps);
 	}
 
-	void applyConfiguration() {
+	public void applyConfiguration() {
 		try {
 			// Apply configuration to the launching MIDlet
 			setProperties();
@@ -178,15 +182,11 @@ public class MicroLoader {
 			DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
 			int screenWidth = displayMetrics.widthPixels;
 			int screenHeight = displayMetrics.heightPixels;
-			boolean useRealScreenSize;
 			if (screenWidth * screenHeight > MIN_SCREEN_SIZE) {
-				useRealScreenSize = false;
 				Displayable.setVirtualSize(paramsWidth, paramsHeight);
 			} else {
-				useRealScreenSize = true;
 				Displayable.setVirtualSize(screenWidth, screenHeight);
 			}
-
 			Canvas.setBackgroundColor(params.screenBackgroundColor);
 			Canvas.setScale(params.screenGravity, params.screenScaleType, params.screenScaleRatio);
 			Canvas.setFilterBitmap(params.screenFilter);

@@ -61,7 +61,7 @@ public class MidletThread extends HandlerThread implements Handler.Callback {
 		handler.obtainMessage(INIT).sendToTarget();
 	}
 
-	static void create(MicroLoader microLoader, String mainClass) {
+	public static void create(MicroLoader microLoader, String mainClass) {
 		instance = new MidletThread(microLoader, mainClass);
 	}
 
