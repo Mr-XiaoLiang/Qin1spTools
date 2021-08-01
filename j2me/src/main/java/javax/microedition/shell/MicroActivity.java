@@ -60,7 +60,10 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.ViewHandler;
+import javax.microedition.lcdui.event.KeyEventPostHelper;
 import javax.microedition.lcdui.event.SimpleEvent;
+import javax.microedition.lcdui.keyboard.KeyMapper;
+import javax.microedition.lcdui.overlay.OverlayView;
 import javax.microedition.util.ContextHolder;
 import javax.microedition.util.DisplayHost;
 
@@ -272,6 +275,16 @@ public class MicroActivity extends AppCompatActivity implements DisplayHost {
 		ViewHandler.postEvent(msgSetCurrent);
 	}
 
+	@Override
+	public ViewGroup getRootView() {
+		return findViewById(R.id.midletFrame);
+	}
+
+	@Override
+	public OverlayView getOverlayView() {
+		return findViewById(R.id.vOverlay);
+	}
+
 	public Displayable getCurrent() {
 		return current;
 	}
@@ -334,7 +347,34 @@ public class MicroActivity extends AppCompatActivity implements DisplayHost {
 			return true;
 		}
 		keyLongPressed = false;
+		Displayable current = getCurrent();
+		if (current instanceof Canvas) {
+			keyCode = KeyMapper.convertAndroidKeyCode(keyCode);
+			if (keyCode == Integer.MAX_VALUE) {
+				return super.onKeyUp(keyCode, event);
+			}
+			return KeyEventPostHelper.postKeyReleased(current, keyCode) || super.onKeyUp(keyCode, event);
+		}
 		return super.onKeyUp(keyCode, event);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Displayable current = getCurrent();
+		if (current instanceof Canvas) {
+			keyCode = KeyMapper.convertAndroidKeyCode(keyCode);
+			if (keyCode == Integer.MAX_VALUE) {
+				return super.onKeyDown(keyCode, event);
+			}
+			boolean eventResult;
+			if (event.getRepeatCount() == 0) {
+				eventResult = KeyEventPostHelper.postKeyPressed(current, keyCode);
+			} else {
+				eventResult = KeyEventPostHelper.postKeyRepeated(current, keyCode);
+			}
+			return eventResult || super.onKeyDown(keyCode, event);
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override

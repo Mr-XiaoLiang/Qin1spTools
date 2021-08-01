@@ -17,51 +17,6 @@
 
 package javax.microedition.lcdui;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.opengl.GLUtils;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.lcdui.event.CanvasEvent;
-import javax.microedition.lcdui.event.Event;
-import javax.microedition.lcdui.event.EventFilter;
-import javax.microedition.lcdui.event.EventQueue;
-import javax.microedition.lcdui.graphics.CanvasView;
-import javax.microedition.lcdui.graphics.CanvasWrapper;
-import javax.microedition.lcdui.graphics.GlesView;
-import javax.microedition.lcdui.graphics.ShaderProgram;
-import javax.microedition.lcdui.keyboard.KeyMapper;
-import javax.microedition.lcdui.overlay.FpsCounter;
-import javax.microedition.lcdui.overlay.OverlayView;
-import javax.microedition.util.ContextHolder;
-
-import ru.playsoftware.j2meloader.R;
-import ru.playsoftware.j2meloader.config.ShaderInfo;
-
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
@@ -89,6 +44,50 @@ import static android.opengl.GLES20.glUniform2f;
 import static android.opengl.GLES20.glUniform4fv;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.lcdui.event.CanvasEvent;
+import javax.microedition.lcdui.event.Event;
+import javax.microedition.lcdui.event.EventFilter;
+import javax.microedition.lcdui.event.EventQueue;
+import javax.microedition.lcdui.graphics.CanvasView;
+import javax.microedition.lcdui.graphics.CanvasWrapper;
+import javax.microedition.lcdui.graphics.GlesView;
+import javax.microedition.lcdui.graphics.ShaderProgram;
+import javax.microedition.lcdui.keyboard.KeyMapper;
+import javax.microedition.lcdui.overlay.FpsCounter;
+import javax.microedition.lcdui.overlay.OverlayView;
+import javax.microedition.util.ContextHolder;
+import javax.microedition.util.DisplayHost;
+
+import ru.playsoftware.j2meloader.config.ShaderInfo;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class Canvas extends Displayable {
@@ -469,10 +468,9 @@ public abstract class Canvas extends Displayable {
                 canvasView.getHolder().setFormat(PixelFormat.RGBA_8888);
                 innerView = canvasView;
             }
-            ViewCallbacks callback = new ViewCallbacks(innerView);
+            ViewCallbacks callback = new ViewCallbacks(innerView, getDisplayHost());
             innerView.getHolder().addCallback(callback);
             innerView.setOnTouchListener(callback);
-            innerView.setOnKeyListener(callback);
             innerView.setFocusableInTouchMode(true);
             layout.addView(innerView);
         }
@@ -868,49 +866,16 @@ public abstract class Canvas extends Displayable {
         }
     }
 
-    private class ViewCallbacks implements View.OnTouchListener, SurfaceHolder.Callback, View.OnKeyListener {
+    private class ViewCallbacks implements View.OnTouchListener, SurfaceHolder.Callback {
 
         private final View mView;
         OverlayView overlayView;
-        private final FrameLayout rootView;
+        private final ViewGroup rootView;
 
-        public ViewCallbacks(View view) {
+        public ViewCallbacks(View view, DisplayHost host) {
             mView = view;
-            rootView = ((Activity) view.getContext()).findViewById(R.id.midletFrame);
-            overlayView = rootView.findViewById(R.id.vOverlay);
-        }
-
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            switch (event.getAction()) {
-                case KeyEvent.ACTION_DOWN:
-                    return onKeyDown(keyCode, event);
-                case KeyEvent.ACTION_UP:
-                    return onKeyUp(keyCode, event);
-            }
-            return false;
-        }
-
-        public boolean onKeyDown(int keyCode, KeyEvent event) {
-            keyCode = KeyMapper.convertAndroidKeyCode(keyCode);
-            if (keyCode == Integer.MAX_VALUE) {
-                return false;
-            }
-            if (event.getRepeatCount() == 0) {
-                postKeyPressed(keyCode);
-            } else {
-                postKeyRepeated(keyCode);
-            }
-            return true;
-        }
-
-        public boolean onKeyUp(int keyCode, KeyEvent event) {
-            keyCode = KeyMapper.convertAndroidKeyCode(keyCode);
-            if (keyCode == Integer.MAX_VALUE) {
-                return false;
-            }
-            postKeyReleased(keyCode);
-            return true;
+            rootView = host.getRootView();
+            overlayView = host.getOverlayView();
         }
 
         @Override

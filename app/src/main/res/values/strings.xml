@@ -6,4 +6,6 @@
     <string name="j2me_name">Java</string>
     <string name="error">出错了</string>
     <string name="convert_error">Java文件解析出错，无法完成转换</string>
+    <string name="screenshot_save_in">截图保存至：%1$s</string>
+    <string name="screenshot_save_error">截图保存失败</string>
 </resources>

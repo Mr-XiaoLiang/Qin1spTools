@@ -1,23 +1,43 @@
 package com.lollipop.qin1sptools.activity.games
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.databinding.ActivityMicroDisplayBinding
-import com.lollipop.qin1sptools.utils.lazyBind
-import com.lollipop.qin1sptools.utils.task
+import com.lollipop.qin1sptools.event.EventRepeater
+import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.event.KeyEventProviderHelper
+import com.lollipop.qin1sptools.utils.*
 import ru.playsoftware.j2meloader.util.Constants
-import java.lang.Exception
-import java.lang.RuntimeException
+import javax.microedition.lcdui.Canvas
 import javax.microedition.lcdui.Displayable
+import javax.microedition.lcdui.event.KeyEventPostHelper
+import javax.microedition.lcdui.overlay.OverlayView
 import javax.microedition.shell.MicroLoader
 import javax.microedition.shell.MidletThread
 import javax.microedition.util.ContextHolder
 import javax.microedition.util.DisplayHost
 
 class MicroDisplayActivity : BaseActivity(), DisplayHost {
+
+    companion object {
+        fun start(context: Context, name: String?, path: String) {
+            context.startActivity(
+                Intent(context, MicroDisplayActivity::class.java).apply {
+                    data = Uri.parse(path)
+                    putExtra(Constants.KEY_MIDLET_NAME, name)
+                }
+            )
+        }
+    }
 
     private val binding: ActivityMicroDisplayBinding by lazyBind()
 
@@ -29,14 +49,64 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     private var microLoader: MicroLoader? = null
 
+    private val toastHelper by lazy {
+        ViewToastHelper(binding.toastView) { view, value ->
+            view.text = value
+        }
+    }
+
+    private val eventRepeater = EventRepeater { repeater, event ->
+        log("onRepeat ---- $event")
+        val canvas = current
+        if (canvas == null) {
+            repeater.onKeyUp(event)
+        } else {
+            if (!KeyEventPostHelper.postKeyRepeated(
+                    canvas,
+                    KeyEventProviderHelper.keyToGameCode(event)
+                )
+            ) {
+                repeater.onKeyUp(event)
+            }
+        }
+    }
+
     private val updateCurrentTask = task {
-        TODO("更新当前的画板")
+        val currentDisplay = current
+        currentDisplay?.clearDisplayableView()
+        binding.displayableContainer.removeAllViews()
+        currentDisplay?.let {
+            binding.displayableContainer.addView(
+                currentDisplay.displayableView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        hideSystemUI()
         initView()
+    }
+
+    private fun hideSystemUI() {
+        window.decorView.systemUiVisibility = plusFlags(
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION,
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY,
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION,
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
+            View.SYSTEM_UI_FLAG_FULLSCREEN
+        )
+    }
+
+    private fun plusFlags(vararg flags: Int): Int {
+        var value = 0
+        flags.forEach {
+            value = value or it
+        }
+        return value
     }
 
     private fun initView() {
@@ -86,7 +156,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     private fun showMidletDialog(nameArray: Array<String>, classArray: Array<String>) {
-        TODO("程序选择器")
+        // TODO("程序选择器")
     }
 
     private fun onError() {
@@ -101,6 +171,46 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         }
         requestedOrientation = o.value
     }
+
+    override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
+        log("onDown ---- $event")
+        val keyCode = KeyEventProviderHelper.keyToGameCode(event)
+        if (repeatCount == 0) {
+            if (KeyEventPostHelper.postKeyPressed(current, keyCode)) {
+                eventRepeater.onKeyDown(event)
+                return true
+            }
+        } else {
+            if (KeyEventPostHelper.postKeyRepeated(current, keyCode)) {
+                eventRepeater.onKeyDown(event)
+                return true
+            }
+        }
+        return super.onKeyDown(event, repeatCount)
+    }
+
+    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
+        log("onUp ---- $event")
+        eventRepeater.onKeyUp(event)
+        if (KeyEventPostHelper.postKeyReleased(
+                current,
+                KeyEventProviderHelper.keyToGameCode(event)
+            )
+        ) {
+            return true
+        }
+        return super.onKeyUp(event, repeatCount)
+    }
+
+    override fun onKeyLongPress(event: KeyEvent): Boolean {
+        log("onLongPress ---- $event")
+        if (event == KeyEvent.BACK) {
+            onBackPressed()
+            return true
+        }
+        return super.onKeyLongPress(event)
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -130,6 +240,35 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         this.display = displayable
         updateCurrentTask.cancel()
         updateCurrentTask.sync()
+    }
+
+    override fun getRootView(): ViewGroup {
+        return binding.root
+    }
+
+    override fun getOverlayView(): OverlayView {
+        return binding.microOverlayView
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        eventRepeater.destroy()
+    }
+
+    private fun takeScreenshot() {
+        doAsync({
+            onUI {
+                toastHelper.show(getString(R.string.screenshot_save_error))
+            }
+        }) {
+            val currentDisplay = current
+            if (currentDisplay is Canvas) {
+                val takeScreenshotSync = MicroLoader.takeScreenshotSync(currentDisplay)
+                onUI {
+                    toastHelper.show(getString(R.string.screenshot_save_in, takeScreenshotSync))
+                }
+            }
+        }
     }
 
     private enum class Orientation(val value: Int) {

@@ -1,8 +1,11 @@
 package javax.microedition.util;
 
 import android.app.Activity;
+import android.view.View;
+import android.view.ViewGroup;
 
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.overlay.OverlayView;
 
 /**
  * @author lollipop
@@ -17,5 +20,9 @@ public interface DisplayHost {
     public Displayable getCurrent();
 
     public void setCurrent(Displayable displayable);
+
+    public ViewGroup getRootView();
+
+    public OverlayView getOverlayView();
 
 }

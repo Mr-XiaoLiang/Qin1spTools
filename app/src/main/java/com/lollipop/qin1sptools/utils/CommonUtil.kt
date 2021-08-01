@@ -85,6 +85,20 @@ object CommonUtil {
     }
 
     /**
+     * 移除普通任务
+     */
+    fun remove(runnable: Runnable) {
+        mainThread.removeCallbacks(runnable)
+    }
+
+    /**
+     * 延迟任务
+     */
+    fun delay(delay: Long, runnable: Runnable) {
+        mainThread.postDelayed(runnable, delay)
+    }
+
+    /**
      * 将一组对象打印合并为一个字符串
      */
     fun print(value: Array<out Any>): String {

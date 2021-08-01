@@ -12,6 +12,30 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/overlayContainer"/>
+        android:id="@+id/overlayContainer">
+        <javax.microedition.lcdui.overlay.OverlayView
+            android:id="@+id/microOverlayView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/osdContainer">
+
+        <TextView
+            android:id="@+id/toastView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_header_toast"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"/>
+
+    </FrameLayout>
 
 </FrameLayout>

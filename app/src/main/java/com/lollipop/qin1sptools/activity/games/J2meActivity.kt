@@ -95,7 +95,8 @@ class J2meActivity : GridMenuActivity() {
     override fun onGridItemClick(item: GridItem, index: Int) {
         val id = item.id
         val gameInfo = gameList.find { it.id == id } ?: return
-        Config.startApp(this, gameInfo.title, gameInfo.pathExt)
+//        Config.startApp(this, gameInfo.title, gameInfo.pathExt)
+        MicroDisplayActivity.start(this, gameInfo.title, gameInfo.pathExt)
     }
 
     override fun onLeftFeatureButtonClick(): Boolean {
