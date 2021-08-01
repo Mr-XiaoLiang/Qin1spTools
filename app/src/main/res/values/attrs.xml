@@ -7,4 +7,8 @@
     <declare-styleable name="PageIndicatorView">
         <attr name="color" format="color"/>
     </declare-styleable>
+    <declare-styleable name="ContentLoadingProgressBar">
+        <attr name="loadingColor" format="color"/>
+        <attr name="progressBarWidth" format="dimension"/>
+    </declare-styleable>
 </resources>

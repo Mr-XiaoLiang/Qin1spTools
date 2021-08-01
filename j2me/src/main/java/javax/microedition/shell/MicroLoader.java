@@ -16,6 +16,9 @@
 
 package javax.microedition.shell;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.N;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -53,9 +56,6 @@ import ru.playsoftware.j2meloader.config.ProfileModel;
 import ru.playsoftware.j2meloader.config.ProfilesManager;
 import ru.playsoftware.j2meloader.config.ShaderInfo;
 import ru.playsoftware.j2meloader.util.FileUtils;
-
-import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 public class MicroLoader {
     private static final String TAG = MicroLoader.class.getName();
@@ -119,11 +119,11 @@ public class MicroLoader {
     public MIDlet loadMIDlet(String mainClass) throws ClassNotFoundException, InstantiationException,
             IllegalAccessException, NoSuchMethodException, InvocationTargetException, IOException {
         File dexSource = new File(appDir, Config.MIDLET_DEX_FILE);
-        File codeCacheDir = SDK_INT >= LOLLIPOP ? context.getCodeCacheDir() : context.getCacheDir();
+        File codeCacheDir = SDK_INT >= N ? context.getDataDir() : context.getFilesDir();
         File dexOptDir = new File(codeCacheDir, Config.DEX_OPT_CACHE_DIR);
         if (dexOptDir.exists()) {
             FileUtils.clearDirectory(dexOptDir);
-        } else if (!dexOptDir.mkdir()) {
+        } else if (!dexOptDir.mkdirs()) {
             throw new IOException("Cant't create directory: [" + dexOptDir + ']');
         }
         ClassLoader loader = new AppClassLoader(dexSource.getAbsolutePath(),

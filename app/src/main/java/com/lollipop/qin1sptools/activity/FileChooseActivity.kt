@@ -25,6 +25,7 @@ import kotlin.collections.ArrayList
 class FileChooseActivity : SimpleListActivity() {
 
     companion object {
+        private const val KEY_ROOT_DIR = "KEY_ROOT_DIR"
         private const val KEY_FILE_FILTER = "KEY_FILE_FILTER"
         private const val KEY_CHOOSE_FILE = "KEY_CHOOSE_FILE"
 
@@ -39,12 +40,14 @@ class FileChooseActivity : SimpleListActivity() {
         fun start(
             activity: Activity,
             requestCode: Int = REQUEST_CODE,
+            rootDir: String = "",
             filter: String = "",
             chooseFile: Boolean = false
         ) {
             activity.startActivityForResult(
                 Intent(activity, FileChooseActivity::class.java).apply {
                     putExtra(KEY_FILE_FILTER, filter)
+                    putExtra(KEY_ROOT_DIR, rootDir)
                     putExtra(KEY_CHOOSE_FILE, chooseFile)
                 },
                 requestCode
@@ -101,8 +104,14 @@ class FileChooseActivity : SimpleListActivity() {
             setError(getString(R.string.external_storage_not_found))
             return
         }
+        val rootDirPath = intent.getStringExtra(KEY_ROOT_DIR) ?: ""
+        val root = if (rootDirPath.isEmpty()) {
+            Environment.getExternalStorageDirectory()
+        } else {
+            File(rootDirPath)
+        }
         //获取根目录
-        next(Environment.getExternalStorageDirectory())
+        next(root)
     }
 
     private fun next(dir: File) {
@@ -121,7 +130,13 @@ class FileChooseActivity : SimpleListActivity() {
         updateData()
         doAsync {
             val nowAction = actionIndexer.now
-            val pattern: Pattern? = fileFilter?.let { Pattern.compile(it) }
+            val pattern: Pattern? = fileFilter?.let {
+                if (it.isEmpty()) {
+                    null
+                } else {
+                    Pattern.compile(it)
+                }
+            }
             val childrenList = ArrayList<String>()
             val childrenFileList = ArrayList<File>()
             if (dir.isDirectory) {

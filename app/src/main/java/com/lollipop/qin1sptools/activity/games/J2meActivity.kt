@@ -99,6 +99,16 @@ class J2meActivity : GridMenuActivity() {
         MicroDisplayActivity.start(this, gameInfo.title, gameInfo.pathExt)
     }
 
+    override fun onGridItemInfoClick(item: GridItem?, index: Int) {
+        if (item == null) {
+            FileChooseActivity.start(this, rootDir = Config.emulatorDir)
+        } else {
+            val id = item.id
+            val gameInfo = gameList.find { it.id == id } ?: return
+            FileChooseActivity.start(this, rootDir = gameInfo.pathExt)
+        }
+    }
+
     override fun onLeftFeatureButtonClick(): Boolean {
         FileChooseActivity.start(this, filter = JAR_FILTER, chooseFile = true)
         return true

@@ -24,12 +24,13 @@
             android:textColor="@color/white"
             android:textSize="18sp" />
 
-        <androidx.core.widget.ContentLoadingProgressBar
+        <com.lollipop.qin1sptools.view.ContentLoadingProgressBar
             android:id="@+id/contentLoadingView"
-            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="@dimen/feature_bar_size"
             android:layout_height="@dimen/feature_bar_size"
-            android:padding="2dp" />
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            app:tint="@color/white"/>
 
     </FrameLayout>
 

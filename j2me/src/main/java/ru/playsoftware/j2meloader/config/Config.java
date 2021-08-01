@@ -46,28 +46,17 @@ public class Config {
 	public static final String SCREENSHOTS_DIR;
 	public static final String SHADERS_DIR = "/shaders/";
 
-	private static String emulatorDir;
+	public static String emulatorDir;
 	private static String dataDir;
 	private static String configsDir;
 	private static String profilesDir;
 	private static String appDir;
 
-	private static final SharedPreferences.OnSharedPreferenceChangeListener sPrefListener =
-			(sharedPreferences, key) -> {
-				if (key.equals(PREF_EMULATOR_DIR)) {
-					initDirs(sharedPreferences.getString(key, emulatorDir));
-				}
-			};
-
 	static {
 		Context context = ContextHolder.getAppContext();
 		SCREENSHOTS_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 				+ "/" + APP_NAME;
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		String path = preferences.getString(PREF_EMULATOR_DIR, null);
-		if (path == null) path = Environment.getExternalStorageDirectory() + "/" + APP_NAME;
-		initDirs(path);
-		preferences.registerOnSharedPreferenceChangeListener(sPrefListener);
+		initDirs(context.getFilesDir().getPath());
 	}
 
 	public static String getEmulatorDir() {

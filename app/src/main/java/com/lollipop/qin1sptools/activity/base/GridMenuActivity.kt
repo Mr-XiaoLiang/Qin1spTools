@@ -81,6 +81,8 @@ open class GridMenuActivity : FeatureBarActivity() {
 
     protected open fun onGridItemClick(item: GridItem, index: Int) {}
 
+    protected open fun onGridItemInfoClick(item: GridItem?, index: Int) {}
+
     private fun bindGridItem(pageView: NineGridsLayout, itemList: List<GridItem>, offset: Int) {
         val itemCount = min(min(offset + 9, itemList.size) - offset, 9)
         val space = resources.getDimensionPixelSize(R.dimen.grid_menu_space)
@@ -173,13 +175,13 @@ open class GridMenuActivity : FeatureBarActivity() {
                 }
                 onNumberClick(position)
             }
-            KeyEvent.LEFT, KeyEvent.UP, KeyEvent.KEY_STAR -> {
+            KeyEvent.LEFT, KeyEvent.UP -> {
                 // 翻页后重置选中序号
                 selectedItemIndex = DEFAULT_ITEM_POSITION
                 binding.pagedLayout.currentPage()?.resetSelectedFlag()
                 binding.pagedLayout.lastPage()?.resetSelectedFlag()
             }
-            KeyEvent.RIGHT, KeyEvent.DOWN, KeyEvent.KEY_POUND -> {
+            KeyEvent.RIGHT, KeyEvent.DOWN -> {
                 // 翻页后重置选中序号
                 selectedItemIndex = DEFAULT_ITEM_POSITION
                 binding.pagedLayout.currentPage()?.resetSelectedFlag()
@@ -211,6 +213,9 @@ open class GridMenuActivity : FeatureBarActivity() {
             }
             KeyEvent.KEY_9 -> {
                 onNumberClick(9)
+            }
+            KeyEvent.KEY_STAR -> {
+                onStarClick()
             }
             else -> {
                 return super.onKeyUp(event)
@@ -247,6 +252,28 @@ open class GridMenuActivity : FeatureBarActivity() {
         } else {
             selectedItemIndex = position
             pageView.selectedChild = position - 1
+        }
+    }
+
+    private fun onStarClick() {
+        val pageView = findCurrentGridPage()
+        if (pageView == null) {
+            onGridItemInfoClick(null, -1)
+            return
+        }
+        if (selectedItemIndex < 0) {
+            onGridItemInfoClick(null, -1)
+            return
+        }
+        val itemIndex = getItemIndexByPosition(selectedItemIndex)
+        if (itemIndex < 0) {
+            onGridItemInfoClick(null, -1)
+            return
+        }
+        if (pageView.selectedChild >= 0 && pageView.selectedChild == selectedItemIndex - 1) {
+            onGridItemInfoClick(gridItemList[itemIndex], itemIndex)
+        } else {
+            onGridItemInfoClick(null, -1)
         }
     }
 

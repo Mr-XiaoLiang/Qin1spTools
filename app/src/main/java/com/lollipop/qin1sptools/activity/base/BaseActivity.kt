@@ -2,6 +2,7 @@ package com.lollipop.qin1sptools.activity.base
 
 import android.view.KeyEvent
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.lollipop.qin1sptools.BuildConfig

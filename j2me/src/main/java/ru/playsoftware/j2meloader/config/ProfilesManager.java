@@ -167,7 +167,18 @@ public class ProfilesManager {
 	}
 
 	public static boolean saveConfig(ProfileModel p) {
-		try (FileWriter writer = new FileWriter(new File(p.dir, Config.MIDLET_CONFIG_FILE))) {
+		try {
+			File file = new File(p.dir, Config.MIDLET_CONFIG_FILE);
+			File parentFile = file.getParentFile();
+			if (parentFile != null && !parentFile.exists()) {
+				boolean mkdirsResult = parentFile.mkdirs();
+				Log.e(TAG, "make config dir: " + mkdirsResult);
+			}
+			if (!file.exists()) {
+				boolean newFile = file.createNewFile();
+				Log.e(TAG, "make config file: " + newFile);
+			}
+			FileWriter writer = new FileWriter(file);
 			gson.toJson(p, writer);
 			writer.close();
 			return true;
