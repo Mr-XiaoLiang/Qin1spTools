@@ -30,8 +30,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -116,8 +114,7 @@ public class MicroLoader {
         return midletMap;
     }
 
-    public MIDlet loadMIDlet(String mainClass) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException, NoSuchMethodException, InvocationTargetException, IOException {
+    public MIDlet loadMIDlet(String mainClass) throws Exception {
         File dexSource = new File(appDir, Config.MIDLET_DEX_FILE);
         File codeCacheDir = SDK_INT >= N ? context.getDataDir() : context.getFilesDir();
         File dexOptDir = new File(codeCacheDir, Config.DEX_OPT_CACHE_DIR);
@@ -132,9 +129,7 @@ public class MicroLoader {
         Log.i(TAG, "MIDlet-Name: " + appDirName);
         //noinspection unchecked
         Class<MIDlet> clazz = (Class<MIDlet>) loader.loadClass(mainClass);
-        Constructor<MIDlet> init = clazz.getDeclaredConstructor();
-        init.setAccessible(true);
-        return init.newInstance();
+        return clazz.newInstance();
     }
 
     private void setProperties() {
