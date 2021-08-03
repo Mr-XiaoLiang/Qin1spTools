@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 
 import javax.microedition.util.ContextHolder;
@@ -204,7 +205,14 @@ public class JarConverter {
 			throw new ConverterException("Invalid manifest");
 		}
 		// Remove invalid characters from app path
-		appDirPath = appDirPath.replaceAll("[?:\"*|/\\\\<>]", "");
+//		appDirPath = appDirPath.replaceAll("[?:\"*|/\\\\<>]", "");
+		try {
+			appDirPath = FileUtils.md5(appDirPath);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			deleteTemp();
+			throw new ConverterException("Invalid manifest");
+		}
 		if (appDirPath.isEmpty()) {
 			deleteTemp();
 			throw new ConverterException("Invalid manifest");

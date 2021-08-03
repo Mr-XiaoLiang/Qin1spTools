@@ -23,16 +23,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -149,11 +147,21 @@ public class MicroLoader {
         try {
             Field pathListField = BaseDexClassLoader.class.getDeclaredField("pathList");
             pathListField.setAccessible(true);
-            Object o = pathListField.get(classLoader);
-            if (o == null) {
+            Object pathList = pathListField.get(classLoader);
+            if (pathList == null) {
                 return "null";
             }
-            return o.toString();
+            Field dexElementsField = pathList.getClass().getDeclaredField("dexElements");
+            dexElementsField.setAccessible(true);
+            Object dexElements = dexElementsField.get(pathList);
+            Object element = Array.get(dexElements, 0);
+            if (element == null) {
+                return "null";
+            }
+            Field fileField = element.getClass().getDeclaredField("file");
+            fileField.setAccessible(true);
+            Object file = fileField.get(element);
+            return file.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }

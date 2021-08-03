@@ -53,7 +53,6 @@ public class Config {
 		SCREENSHOTS_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 				+ "/" + APP_NAME;
 		initDirs(context.getFilesDir().getPath());
-//		initDirs(Environment.getExternalStorageDirectory().getPath() + "/" + APP_NAME);
 	}
 
 	public static String getEmulatorDir() {
