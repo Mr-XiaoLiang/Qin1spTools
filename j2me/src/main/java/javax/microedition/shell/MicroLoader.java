@@ -23,13 +23,17 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,6 +52,8 @@ import javax.microedition.m3g.Graphics3D;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.util.ContextHolder;
 
+import dalvik.system.BaseDexClassLoader;
+import dalvik.system.DexClassLoader;
 import io.reactivex.Single;
 import ru.playsoftware.j2meloader.config.Config;
 import ru.playsoftware.j2meloader.config.ProfileModel;
@@ -123,13 +129,35 @@ public class MicroLoader {
         } else if (!dexOptDir.mkdirs()) {
             throw new IOException("Cant't create directory: [" + dexOptDir + ']');
         }
-        ClassLoader loader = new AppClassLoader(dexSource.getAbsolutePath(),
-                dexOptDir.getAbsolutePath(), context.getClassLoader(), appDir);
+        DexClassLoader loader = new AppClassLoader(
+                dexSource.getAbsolutePath(),
+                dexOptDir.getAbsolutePath(),
+                MicroLoader.class.getClassLoader(),
+                appDir
+        );
+        // TODO class loader 可能存在兼容问题
         Log.i(TAG, "loadMIDletList main: " + mainClass + " from dex:" + dexSource.getPath());
         Log.i(TAG, "MIDlet-Name: " + appDirName);
+//        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(ContextHolder.getAppContext(), getDexList(loader), Toast.LENGTH_SHORT).show());
         //noinspection unchecked
         Class<MIDlet> clazz = (Class<MIDlet>) loader.loadClass(mainClass);
         return clazz.newInstance();
+//        return null;
+    }
+
+    private String getDexList(DexClassLoader classLoader) {
+        try {
+            Field pathListField = BaseDexClassLoader.class.getDeclaredField("pathList");
+            pathListField.setAccessible(true);
+            Object o = pathListField.get(classLoader);
+            if (o == null) {
+                return "null";
+            }
+            return o.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "error";
     }
 
     private void setProperties() {

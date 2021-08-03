@@ -101,7 +101,7 @@ class J2meActivity : GridMenuActivity() {
 
     override fun onGridItemInfoClick(item: GridItem?, index: Int) {
         if (item == null) {
-            FileChooseActivity.start(this, rootDir = Config.emulatorDir)
+            FileChooseActivity.start(this, rootDir = Config.getEmulatorDir())
         } else {
             val id = item.id
             val gameInfo = gameList.find { it.id == id } ?: return

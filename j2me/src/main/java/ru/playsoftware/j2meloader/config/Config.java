@@ -16,19 +16,15 @@
 
 package ru.playsoftware.j2meloader.config;
 
+import static ru.playsoftware.j2meloader.util.Constants.KEY_MIDLET_NAME;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 
-import androidx.preference.PreferenceManager;
-
 import javax.microedition.shell.MicroActivity;
 import javax.microedition.util.ContextHolder;
-
-import static ru.playsoftware.j2meloader.util.Constants.KEY_MIDLET_NAME;
-import static ru.playsoftware.j2meloader.util.Constants.PREF_EMULATOR_DIR;
 
 public class Config {
 
@@ -46,7 +42,7 @@ public class Config {
 	public static final String SCREENSHOTS_DIR;
 	public static final String SHADERS_DIR = "/shaders/";
 
-	public static String emulatorDir;
+	private static String emulatorDir;
 	private static String dataDir;
 	private static String configsDir;
 	private static String profilesDir;
@@ -57,6 +53,7 @@ public class Config {
 		SCREENSHOTS_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 				+ "/" + APP_NAME;
 		initDirs(context.getFilesDir().getPath());
+//		initDirs(Environment.getExternalStorageDirectory().getPath() + "/" + APP_NAME);
 	}
 
 	public static String getEmulatorDir() {
