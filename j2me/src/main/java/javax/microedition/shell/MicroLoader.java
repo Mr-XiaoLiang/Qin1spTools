@@ -136,11 +136,11 @@ public class MicroLoader {
         // TODO class loader 可能存在兼容问题
         Log.i(TAG, "loadMIDletList main: " + mainClass + " from dex:" + dexSource.getPath());
         Log.i(TAG, "MIDlet-Name: " + appDirName);
-//        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(ContextHolder.getAppContext(), getDexList(loader), Toast.LENGTH_SHORT).show());
-        //noinspection unchecked
+        // new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(ContextHolder.getAppContext(), getDexList(loader), Toast.LENGTH_SHORT).show());
+        // noinspection unchecked
         Class<MIDlet> clazz = (Class<MIDlet>) loader.loadClass(mainClass);
         return clazz.newInstance();
-//        return null;
+       // return null;
     }
 
     private String getDexList(DexClassLoader classLoader) {
