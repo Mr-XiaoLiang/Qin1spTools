@@ -23,9 +23,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -136,36 +139,9 @@ public class MicroLoader {
         // TODO class loader 可能存在兼容问题
         Log.i(TAG, "loadMIDletList main: " + mainClass + " from dex:" + dexSource.getPath());
         Log.i(TAG, "MIDlet-Name: " + appDirName);
-        // new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(ContextHolder.getAppContext(), getDexList(loader), Toast.LENGTH_SHORT).show());
         // noinspection unchecked
         Class<MIDlet> clazz = (Class<MIDlet>) loader.loadClass(mainClass);
         return clazz.newInstance();
-       // return null;
-    }
-
-    private String getDexList(DexClassLoader classLoader) {
-        try {
-            Field pathListField = BaseDexClassLoader.class.getDeclaredField("pathList");
-            pathListField.setAccessible(true);
-            Object pathList = pathListField.get(classLoader);
-            if (pathList == null) {
-                return "null";
-            }
-            Field dexElementsField = pathList.getClass().getDeclaredField("dexElements");
-            dexElementsField.setAccessible(true);
-            Object dexElements = dexElementsField.get(pathList);
-            Object element = Array.get(dexElements, 0);
-            if (element == null) {
-                return "null";
-            }
-            Field fileField = element.getClass().getDeclaredField("file");
-            fileField.setAccessible(true);
-            Object file = fileField.get(element);
-            return file.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "error";
     }
 
     private void setProperties() {

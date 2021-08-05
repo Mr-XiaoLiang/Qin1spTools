@@ -124,7 +124,6 @@ public class MidletThread extends HandlerThread implements Handler.Callback {
 				try {
 					midlet = microLoader.loadMIDlet(this.mainClass);
 					state = PAUSED;
-//					Thread.sleep(20000L);
 				} catch (Throwable t) {
 					throw new RuntimeException("Init midlet failed", t);
 				}
