@@ -64,6 +64,9 @@ open class FeatureBarActivity : BaseActivity() {
         setFeatureButtons()
         initOptionMenu()
         endLoading()
+        featureBinding.titleView.setOnClickListener {
+            showVirtualKeyboard()
+        }
     }
 
     private fun initOptionMenu() {
