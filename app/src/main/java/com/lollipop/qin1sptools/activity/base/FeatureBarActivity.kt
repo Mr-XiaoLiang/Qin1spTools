@@ -342,10 +342,6 @@ open class FeatureBarActivity : BaseActivity() {
         override fun onKeyUp(event: KeyEvent): Boolean {
             return isLoading
         }
-
-        override fun onKeyLongPress(event: KeyEvent): Boolean {
-            return isLoading
-        }
     }
 
 }

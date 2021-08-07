@@ -36,7 +36,7 @@ class KeyEventProviderHelper(
         }
 
         fun keyToGameCode(key: KeyEvent): Int {
-            return when(key) {
+            return when (key) {
                 KeyEvent.BACK -> javax.microedition.lcdui.Canvas.KEY_SOFT_RIGHT
                 KeyEvent.CALL -> javax.microedition.lcdui.Canvas.KEY_SEND
                 KeyEvent.OPTION -> javax.microedition.lcdui.Canvas.KEY_SOFT_LEFT
@@ -61,7 +61,7 @@ class KeyEventProviderHelper(
             }
         }
 
-        fun keyToCode(key: KeyEvent): Int {
+        private fun keyToCode(key: KeyEvent): Int {
             return when (key) {
                 KeyEvent.KEY_0 -> android.view.KeyEvent.KEYCODE_0
                 KeyEvent.KEY_1 -> android.view.KeyEvent.KEYCODE_1
@@ -121,19 +121,6 @@ class KeyEventProviderHelper(
         return onKeyDown(key, repeatCount) || selfListener?.onKeyDown(key, repeatCount) ?: false
     }
 
-    fun onKeyLongPress(keyCode: Int, event: android.view.KeyEvent?): Boolean {
-        if (!isActive(event)) {
-            return false
-        }
-        val key = findKeyByCode(keyCode)
-        val repeatCount = event?.repeatCount ?: 0
-        return onKeyLongPress(key, repeatCount) || selfListener?.onKeyLongPress(
-            key,
-            repeatCount
-        ) ?: false
-    }
-
-
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
         listenerList.forEach {
             if (it.onKeyDown(event, repeatCount)) {
@@ -150,15 +137,6 @@ class KeyEventProviderHelper(
             }
         }
         return selfListener?.onKeyUp(event, repeatCount) ?: false
-    }
-
-    override fun onKeyLongPress(event: KeyEvent, repeatCount: Int): Boolean {
-        listenerList.forEach {
-            if (it.onKeyLongPress(event, repeatCount)) {
-                return true
-            }
-        }
-        return selfListener?.onKeyLongPress(event, repeatCount) ?: false
     }
 
     fun clear() {

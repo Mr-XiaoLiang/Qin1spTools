@@ -2,9 +2,9 @@ package com.lollipop.qin1sptools.activity.base
 
 import android.view.KeyEvent
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.lollipop.qin1sptools.BuildConfig
 import com.lollipop.qin1sptools.debug.DebugVirtualKeyboard
 import com.lollipop.qin1sptools.event.KeyEventListener
 import com.lollipop.qin1sptools.event.KeyEventProvider
@@ -30,9 +30,6 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
                 return keyEventProviderHelper.onKeyUp(event, 0)
             }
 
-            override fun onKeyLongPress(event: com.lollipop.qin1sptools.event.KeyEvent): Boolean {
-                return keyEventProviderHelper.onKeyLongPress(event, 0)
-            }
         })
     }
 
@@ -58,13 +55,9 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Toast.makeText(this, "${KeyEventProviderHelper.findKeyByCode(keyCode)}", Toast.LENGTH_SHORT).show()
         return (keyEventProviderHelper.onKeyDown(keyCode, event)
                 || super<AppCompatActivity>.onKeyDown(keyCode, event))
-    }
-
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-        return (keyEventProviderHelper.onKeyLongPress(keyCode, event)
-                || super<AppCompatActivity>.onKeyLongPress(keyCode, event))
     }
 
     override fun addKeyEventListener(listener: KeyEventListener) {

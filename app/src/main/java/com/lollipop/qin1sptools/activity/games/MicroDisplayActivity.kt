@@ -37,6 +37,11 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 }
             )
         }
+
+        private const val CLICK_DELAY = 300L
+
+        private const val BACK_THRESHOLD = 5
+
     }
 
     private val binding: ActivityMicroDisplayBinding by lazyBind()
@@ -48,6 +53,10 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     private var appName = ""
 
     private var microLoader: MicroLoader? = null
+
+    private var lastPresBackTime = 0L
+
+    private var backClickCount = 0
 
     private val toastHelper by lazy {
         ViewToastHelper(binding.toastView) { view, value ->
@@ -174,6 +183,20 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
         log("onDown ---- $event")
+        if (event == KeyEvent.BACK) {
+            val now = System.currentTimeMillis()
+            if (now - lastPresBackTime < CLICK_DELAY) {
+                backClickCount ++
+                if (backClickCount >= BACK_THRESHOLD) {
+                    backClickCount = 0
+                    showBackDialog()
+                    return true
+                }
+            } else {
+                backClickCount = 0
+            }
+            lastPresBackTime = now
+        }
         val keyCode = KeyEventProviderHelper.keyToGameCode(event)
         if (repeatCount == 0) {
             if (KeyEventPostHelper.postKeyPressed(current, keyCode)) {
@@ -202,15 +225,10 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         return super.onKeyUp(event, repeatCount)
     }
 
-    override fun onKeyLongPress(event: KeyEvent): Boolean {
-        log("onLongPress ---- $event")
-        if (event == KeyEvent.BACK) {
-            onBackPressed()
-            return true
-        }
-        return super.onKeyLongPress(event)
+    private fun showBackDialog() {
+        // TODO
+        super.onBackPressed()
     }
-
 
     override fun onResume() {
         super.onResume()

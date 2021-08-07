@@ -9,7 +9,6 @@ import com.lollipop.qin1sptools.databinding.DebugVirtualKeyboardBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventListener
 import com.lollipop.qin1sptools.utils.lazyBind
-import com.lollipop.qin1sptools.utils.task
 
 /**
  * @author lollipop
@@ -75,19 +74,7 @@ class DebugVirtualKeyboard(
     }
 
     private fun View.bindClickEvent(event: KeyEvent) {
-//        setOnClickListener(ClickWrapper(keyEventListener, event))
-//        setOnLongClickListener(LongClickWrapper(keyEventListener, event))
         setOnTouchListener(TouchWrapper(keyEventListener, event))
-    }
-
-    private class ClickWrapper(
-        private val keyEventListener: KeyEventListener,
-        private val event: KeyEvent
-    ) : View.OnClickListener {
-        override fun onClick(v: View?) {
-            keyEventListener.onKeyDown(event)
-            keyEventListener.onKeyUp(event)
-        }
     }
 
     private class TouchWrapper(
@@ -99,15 +86,6 @@ class DebugVirtualKeyboard(
 
         private var isTouched = false
 
-        private val longPressTask = task {
-            if (keyEventListener.onKeyLongPress(keyEvent)) {
-                if (isTouched) {
-                    isTouched = false
-                    keyEventListener.onKeyUp(keyEvent)
-                }
-            }
-        }
-
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             v ?: return false
             event ?: return false
@@ -116,7 +94,6 @@ class DebugVirtualKeyboard(
                     actionId = event.getPointerId(0)
                     isTouched = true
                     keyEventListener.onKeyDown(keyEvent)
-                    longPressTask.delay(1000L)
                 }
                 MotionEvent.ACTION_POINTER_UP -> {
                     if (!isTouched) {
@@ -140,7 +117,6 @@ class DebugVirtualKeyboard(
         }
 
         private fun onTouchUp() {
-            longPressTask.cancel()
             if (!isTouched) {
                 return
             }
@@ -172,15 +148,6 @@ class DebugVirtualKeyboard(
             }
         }
 
-    }
-
-    private class LongClickWrapper(
-        private val keyEventListener: KeyEventListener,
-        private val event: KeyEvent
-    ) : View.OnLongClickListener {
-        override fun onLongClick(v: View?): Boolean {
-            return keyEventListener.onKeyLongPress(event)
-        }
     }
 
 }

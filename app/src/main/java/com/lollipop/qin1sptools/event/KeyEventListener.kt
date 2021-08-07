@@ -14,19 +14,11 @@ interface KeyEventListener {
         return onKeyUp(event)
     }
 
-    fun onKeyLongPress(event: KeyEvent, repeatCount: Int): Boolean {
-        return onKeyLongPress(event)
-    }
-
     fun onKeyDown(event: KeyEvent): Boolean {
         return false
     }
 
     fun onKeyUp(event: KeyEvent): Boolean {
-        return false
-    }
-
-    fun onKeyLongPress(event: KeyEvent): Boolean {
         return false
     }
 
