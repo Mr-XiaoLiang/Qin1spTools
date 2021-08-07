@@ -110,15 +110,7 @@ class J2meActivity : GridMenuActivity() {
     }
 
     override fun onLeftFeatureButtonClick(): Boolean {
-//        FileChooseActivity.start(this, filter = JAR_FILTER, chooseFile = true)
-        gridItemList.add(
-            GridItem(
-                0,
-                ContextCompat.getDrawable(this, R.mipmap.ic_launcher)!!,
-                "Test"
-            )
-        )
-        notifyDataSetChanged()
+        FileChooseActivity.start(this, filter = JAR_FILTER, chooseFile = true)
         return true
     }
 
