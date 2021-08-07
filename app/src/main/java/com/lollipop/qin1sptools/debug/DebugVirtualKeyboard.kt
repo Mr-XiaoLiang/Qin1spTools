@@ -4,6 +4,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewManager
+import com.lollipop.qin1sptools.BuildConfig
 import com.lollipop.qin1sptools.databinding.DebugVirtualKeyboardBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventListener
@@ -18,6 +19,15 @@ class DebugVirtualKeyboard(
     private val rootGroup: ViewGroup,
     private val keyEventListener: KeyEventListener
 ) {
+
+    companion object {
+        var AUTO_SHOW_VIRTUAL_KEYBOARD = BuildConfig.DEBUG
+            private set
+
+        fun enableVirtualKeyboard() {
+            AUTO_SHOW_VIRTUAL_KEYBOARD = true
+        }
+    }
 
     private val keyboardBinding: DebugVirtualKeyboardBinding by rootGroup.lazyBind(true)
 

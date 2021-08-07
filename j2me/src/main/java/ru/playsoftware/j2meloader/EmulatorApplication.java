@@ -28,9 +28,7 @@ public class EmulatorApplication extends Application {
 	@Override
 	protected void attachBaseContext(Context base) {
 		super.attachBaseContext(base);
-		if (BuildConfig.DEBUG) {
-			MultiDex.install(this);
-		}
+		MultiDex.install(this);
 		ContextHolder.setApplication(this);
 	}
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.ActivityGridMenuBinding
@@ -14,7 +15,6 @@ import com.lollipop.qin1sptools.utils.lazyBind
 import com.lollipop.qin1sptools.utils.withThis
 import com.lollipop.qin1sptools.view.NineGridsChild
 import com.lollipop.qin1sptools.view.NineGridsLayout
-import com.lollipop.qin1sptools.view.PagedLayout
 import kotlin.math.min
 
 /**
@@ -31,6 +31,8 @@ open class GridMenuActivity : FeatureBarActivity() {
     private val binding: ActivityGridMenuBinding by lazyBind()
 
     protected val gridItemList = ArrayList<GridItem>()
+
+    private val viewRecycler = ViewRecycler()
 
     private var selectedItemIndex = DEFAULT_ITEM_POSITION
         set(value) {
@@ -51,30 +53,28 @@ open class GridMenuActivity : FeatureBarActivity() {
 
     protected fun notifyDataSetChanged() {
         val pagedLayout = binding.pagedLayout
-        pagedLayout.currentItem = 0
         val itemSize = gridItemList.size
         val pageCount = if (itemSize % 9 == 0) {
             itemSize / 9
         } else {
             (itemSize / 9) + 1
         }
-        checkPageSize(pageCount)
 
-        var pageViewIndex = 0
+        for (index in 0 until pagedLayout.childCount) {
+            val page = pagedLayout.getChildAt(index)
+            if (page is NineGridsLayout) {
+                viewRecycler.recycle(page)
+            }
+        }
+        viewRecycler.recycle(pagedLayout)
+
         for (pageIndex in 0 until pageCount) {
-            pageViewIndex = findNextGridPage(pageViewIndex, pagedLayout)
-            if (pageViewIndex < 0) {
-                break
+            val pageView: NineGridsLayout = viewRecycler.find {
+                NineGridsLayout(pagedLayout.context)
             }
-            val pageView = pagedLayout.getChildAt(pageViewIndex)
-            if (pageView !is NineGridsLayout) {
-                break
-            }
-
+            pagedLayout.addView(pageView)
             pageView.pageIndex = pageIndex
             bindGridItem(pageView, gridItemList, pageIndex * 9)
-
-            pageViewIndex++
         }
         pagedLayout.reset()
     }
@@ -88,81 +88,15 @@ open class GridMenuActivity : FeatureBarActivity() {
         val space = resources.getDimensionPixelSize(R.dimen.grid_menu_space)
         pageView.setPadding(space, space, space, space)
         pageView.childSpace = space
-        val needRemovedList = ArrayList<View>()
-        for (index in 0 until pageView.childCount) {
-            pageView.getChildAt(index)?.let {
-                if (it !is GridHolder) {
-                    needRemovedList.add(it)
-                }
-            }
-        }
-        needRemovedList.forEach {
-            pageView.removeView(it)
-        }
-        while (pageView.childCount > 0 && pageView.childCount > itemCount) {
-            pageView.removeViewAt(0)
-        }
-        while (pageView.childCount < itemCount) {
-            pageView.addView(GridHolder(this))
-        }
+        viewRecycler.recycle(pageView)
         for (index in 0 until itemCount) {
-            pageView.getChildAt(index)?.let { child ->
-                if (child is GridHolder) {
-                    child.bind(itemList[index + offset])
-                }
+            val itemHolder = viewRecycler.find {
+                GridHolder(pageView.context)
             }
+            itemHolder.bind(itemList[index + offset])
+            pageView.addView(itemHolder)
         }
         pageView.notifyChildIndexChanged()
-    }
-
-    private fun checkPageSize(count: Int) {
-        val pagedLayout = binding.pagedLayout
-        var pageCount = 0
-        for (index in 0 until pagedLayout.childCount) {
-            pagedLayout.getChildAt(index)?.let {
-                if (it is NineGridsLayout) {
-                    pageCount++
-                }
-            }
-        }
-        // 如果数量一致，那么就不用继续处理了
-        if (pageCount == count) {
-            return
-        }
-        // 数量多了，选择性的删除
-        while (pagedLayout.childCount > 0 && pagedLayout.childCount > count) {
-            if (!removeLastPage(pagedLayout)) {
-                break
-            }
-        }
-        // 如果数量少了，就补上
-        while (pagedLayout.childCount < count && count > 0) {
-            pagedLayout.addView(NineGridsLayout(this))
-        }
-
-    }
-
-    private fun removeLastPage(pagedLayout: PagedLayout): Boolean {
-        for (index in pagedLayout.childCount - 1 downTo 0) {
-            pagedLayout.getChildAt(index)?.let {
-                if (it is NineGridsLayout) {
-                    pagedLayout.removeView(it)
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    private fun findNextGridPage(offset: Int, pagedLayout: PagedLayout): Int {
-        for (index in offset until pagedLayout.childCount) {
-            pagedLayout.getChildAt(index)?.let {
-                if (it is NineGridsLayout) {
-                    return index
-                }
-            }
-        }
-        return -1
     }
 
     override fun onKeyUp(event: KeyEvent): Boolean {
@@ -301,6 +235,11 @@ open class GridMenuActivity : FeatureBarActivity() {
         return null
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewRecycler.destroy()
+    }
+
     data class GridItem(
         val id: Int,
         val icon: Drawable,
@@ -318,6 +257,34 @@ open class GridMenuActivity : FeatureBarActivity() {
 
         fun bind(item: GridItem) {
             binding.iconView.setImageDrawable(item.icon)
+        }
+
+    }
+
+    private class ViewRecycler {
+        val viewPool = ArrayList<View>()
+
+        fun recycle(viewGroup: ViewGroup) {
+            // 暂时放弃回收View
+//            val childCount = viewGroup.childCount
+//            for (index in 0 until childCount) {
+//                viewPool.add(viewGroup.getChildAt(index))
+//            }
+            viewGroup.removeAllViewsInLayout()
+        }
+
+        inline fun <reified T: View> find(viewCreate: () -> T): T {
+            for (view in viewPool) {
+                if (view is T) {
+                    viewPool.remove(view)
+                    return view
+                }
+            }
+            return viewCreate()
+        }
+
+        fun destroy() {
+            viewPool.clear()
         }
 
     }

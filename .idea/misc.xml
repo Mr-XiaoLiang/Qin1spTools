@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_top_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/activity_feature_bar.xml" value="0.412962962962963" />
         <entry key="app/src/main/res/layout/activity_micro_display.xml" value="0.32650073206442165" />
+        <entry key="app/src/main/res/layout/item_grid_menu.xml" value="0.5" />
         <entry key="j2me/src/main/res/layout/activity_config.xml" value="0.10552536231884058" />
         <entry key="j2me/src/main/res/layout/activity_micro.xml" value="0.11018237082066869" />
       </map>

@@ -20,8 +20,6 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
         KeyEventProviderHelper(this)
     }
 
-    private val autoShow = BuildConfig.DEBUG
-
     private val debugVirtualKeyboard: DebugVirtualKeyboard by lazy {
         DebugVirtualKeyboard(window.decorView as ViewGroup, object : KeyEventListener{
             override fun onKeyDown(event: com.lollipop.qin1sptools.event.KeyEvent): Boolean {
@@ -44,12 +42,13 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
 
     override fun onStart() {
         super.onStart()
-        if (autoShow) {
-            showVirtualKeyboard()
+        if (DebugVirtualKeyboard.AUTO_SHOW_VIRTUAL_KEYBOARD) {
+            debugVirtualKeyboard.show()
         }
     }
 
     protected fun showVirtualKeyboard() {
+        DebugVirtualKeyboard.enableVirtualKeyboard()
         debugVirtualKeyboard.show()
     }
 
