@@ -44,11 +44,6 @@ public class ShaderInfo implements Comparable<ShaderInfo>, Parcelable {
 	public ShaderInfo() {
 	}
 
-	public ShaderInfo(String name, String author) {
-		this.name = name;
-		this.author = author;
-	}
-
 	public ShaderInfo(Parcel in) {
 		name = in.readString();
 		author = in.readString();

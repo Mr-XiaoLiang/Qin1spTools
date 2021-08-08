@@ -16,14 +16,9 @@
 
 package ru.playsoftware.j2meloader.config;
 
-import static ru.playsoftware.j2meloader.util.Constants.KEY_MIDLET_NAME;
-
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Environment;
 
-import javax.microedition.shell.MicroActivity;
 import javax.microedition.util.ContextHolder;
 
 public class Config {
@@ -73,17 +68,6 @@ public class Config {
 
 	public static String getAppDir() {
 		return appDir;
-	}
-
-	public static String getShadersDir() {
-		return emulatorDir + SHADERS_DIR;
-	}
-
-	public static void startApp(Context context, String name, String path) {
-		Intent intent = new Intent(Intent.ACTION_DEFAULT, Uri.parse(path),
-				context, MicroActivity.class);
-		intent.putExtra(KEY_MIDLET_NAME, name);
-		context.startActivity(intent);
 	}
 
 	private static void initDirs(String path) {

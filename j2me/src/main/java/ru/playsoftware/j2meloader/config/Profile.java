@@ -16,10 +16,11 @@
 
 package ru.playsoftware.j2meloader.config;
 
-import java.io.File;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.io.File;
+
 import ru.playsoftware.j2meloader.util.FileUtils;
 
 public class Profile implements Comparable<Profile> {
@@ -32,13 +33,6 @@ public class Profile implements Comparable<Profile> {
 
 	public void create() {
 		getDir().mkdirs();
-	}
-
-	public boolean renameTo(String newName) {
-		File oldDir = getDir();
-		File newDir = new File(Config.getProfilesDir(), newName);
-		name = newName;
-		return oldDir.renameTo(newDir);
 	}
 
 	public void delete() {
@@ -71,14 +65,6 @@ public class Profile implements Comparable<Profile> {
 		return name.toLowerCase().compareTo(o.name.toLowerCase());
 	}
 
-	boolean hasConfig() {
-		return getConfig().exists();
-	}
-
-	boolean hasKeyLayout() {
-		return getKeyLayout().exists();
-	}
-
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (this == obj) return true;
@@ -86,9 +72,5 @@ public class Profile implements Comparable<Profile> {
 			return false;
 		}
 		return name.equals(((Profile) obj).name);
-	}
-
-	public boolean hasOldConfig() {
-		return new File(Config.getProfilesDir(), name + "/config.xml").exists();
 	}
 }

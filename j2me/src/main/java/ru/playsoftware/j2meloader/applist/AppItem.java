@@ -17,13 +17,11 @@
 
 package ru.playsoftware.j2meloader.applist;
 
-import android.content.Context;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-import ru.playsoftware.j2meloader.R;
+
 import ru.playsoftware.j2meloader.config.Config;
 
 @Entity(tableName = "apps", indices = {@Index(value = {"path"}, unique = true)})
@@ -93,14 +91,6 @@ public class AppItem {
 
 	public String getImagePathExt() {
 		return Config.getAppDir() + imagePath;
-	}
-
-	public String getAuthorExt(Context context) {
-		return context.getString(R.string.author) + author;
-	}
-
-	public String getVersionExt(Context context) {
-		return context.getString(R.string.version) + version;
 	}
 
 }

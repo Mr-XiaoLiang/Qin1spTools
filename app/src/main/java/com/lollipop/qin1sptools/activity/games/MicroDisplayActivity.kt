@@ -197,6 +197,9 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             }
             lastPresBackTime = now
         }
+        if (event == KeyEvent.CALL) {
+            takeScreenshot()
+        }
         val keyCode = KeyEventProviderHelper.keyToGameCode(event)
         if (repeatCount == 0) {
             if (KeyEventPostHelper.postKeyPressed(current, keyCode)) {

@@ -38,7 +38,6 @@ import java.util.LinkedHashMap;
 
 import javax.microedition.util.ContextHolder;
 
-import io.reactivex.Single;
 import ru.playsoftware.j2meloader.config.Config;
 
 public class JarConverter {

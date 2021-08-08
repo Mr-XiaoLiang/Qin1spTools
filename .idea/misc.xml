@@ -9,8 +9,31 @@
         <entry key="app/src/main/res/layout/activity_feature_bar.xml" value="0.412962962962963" />
         <entry key="app/src/main/res/layout/activity_micro_display.xml" value="0.32650073206442165" />
         <entry key="app/src/main/res/layout/item_grid_menu.xml" value="0.5" />
+        <entry key="j2me/src/main/res/drawable/bg_button_dark.xml" value="0.3111111111111111" />
+        <entry key="j2me/src/main/res/drawable/bg_button_light.xml" value="0.3111111111111111" />
         <entry key="j2me/src/main/res/layout/activity_config.xml" value="0.10552536231884058" />
+        <entry key="j2me/src/main/res/layout/activity_donations.xml" value="0.2013677811550152" />
+        <entry key="j2me/src/main/res/layout/activity_keymapper.xml" value="0.1322463768115942" />
+        <entry key="j2me/src/main/res/layout/activity_main.xml" value="0.1322463768115942" />
         <entry key="j2me/src/main/res/layout/activity_micro.xml" value="0.11018237082066869" />
+        <entry key="j2me/src/main/res/layout/activity_profiles.xml" value="0.1793478260869565" />
+        <entry key="j2me/src/main/res/layout/activity_settings.xml" value="0.1793478260869565" />
+        <entry key="j2me/src/main/res/layout/dialog_change_name.xml" value="0.1793478260869565" />
+        <entry key="j2me/src/main/res/layout/dialog_load_profile.xml" value="0.1793478260869565" />
+        <entry key="j2me/src/main/res/layout/dialog_shader_tune.xml" value="0.5" />
+        <entry key="j2me/src/main/res/layout/fragment_appslist.xml" value="0.1793478260869565" />
+        <entry key="j2me/src/main/res/layout/list_row_jar.xml" value="0.1793478260869565" />
+        <entry key="j2me/src/main/res/menu/config.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/context_main.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/keymapper.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/main.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/midlet_canvas.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/midlet_canvas_no_bar.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/midlet_common.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/midlet_displayable.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/menu/profile.xml" value="0.20729166666666668" />
+        <entry key="j2me/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2234375" />
+        <entry key="j2me/src/main/res/xml/preferences.xml" value="0.1793478260869565" />
       </map>
     </option>
   </component>
