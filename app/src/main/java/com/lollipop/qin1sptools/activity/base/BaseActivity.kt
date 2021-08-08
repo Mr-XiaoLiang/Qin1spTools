@@ -55,7 +55,6 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        Toast.makeText(this, "${KeyEventProviderHelper.findKeyByCode(keyCode)}", Toast.LENGTH_SHORT).show()
         return (keyEventProviderHelper.onKeyDown(keyCode, event)
                 || super<AppCompatActivity>.onKeyDown(keyCode, event))
     }

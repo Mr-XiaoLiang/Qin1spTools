@@ -3,8 +3,6 @@ package com.lollipop.qin1sptools.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.utils.FeatureIcon
 
@@ -22,23 +20,11 @@ class MainActivity : GridMenuActivity() {
     }
 
     private fun initData() {
-        gridItemList.clear()
-        for (i in 0 until 39) {
-            val drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher) ?: break
-            gridItemList.add(
-                GridItem(
-                    i,
-                    drawable,
-                    "Label$i"
-                )
-            )
-        }
-        notifyDataSetChanged()
+
     }
 
     override fun onGridItemClick(item: GridItem, index: Int) {
-        showToast("${item.label}")
-        FileChooseActivity.start(this)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -62,7 +62,7 @@ class J2meActivity : GridMenuActivity() {
         val apps = appRepository.all
         AppUtils.updateDb(appRepository, apps)
 
-        val defaultIcon = ContextCompat.getDrawable(this, R.mipmap.ic_launcher)!!
+        val defaultIcon = ContextCompat.getDrawable(this, R.mipmap.ic_launcher_java)!!
 
         val menuList = ArrayList<GridItem>()
         apps.forEach { app ->
