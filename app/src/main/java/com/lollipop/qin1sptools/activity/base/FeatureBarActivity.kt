@@ -105,12 +105,14 @@ open class FeatureBarActivity : BaseActivity() {
 
     protected fun startLoading() {
         isLoading = true
-        featureBinding.contentLoadingView.show()
+        featureBinding.contentLoadingGroup.visibleOrGone(true)
+        featureBinding.contentLoadingProgressBar.isIndeterminate = true
     }
 
     protected fun endLoading() {
         isLoading = false
-        featureBinding.contentLoadingView.hide()
+        featureBinding.contentLoadingGroup.visibleOrGone(false)
+        featureBinding.contentLoadingProgressBar.isIndeterminate = false
     }
 
     protected fun setLeftFeatureButton(icon: FeatureIcon) {

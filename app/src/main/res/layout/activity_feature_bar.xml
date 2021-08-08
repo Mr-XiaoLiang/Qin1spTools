@@ -1,111 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/windowBackground"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    tools:context=".activity.MainActivity">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/feature_bar_size"
-        android:background="@drawable/bg_action_bar">
-
-        <TextView
-            android:id="@+id/titleView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
-
-        <com.lollipop.qin1sptools.view.ContentLoadingProgressBar
-            android:id="@+id/contentLoadingView"
-            android:layout_width="@dimen/feature_bar_size"
-            android:layout_height="@dimen/feature_bar_size"
-            android:scaleType="centerInside"
-            android:padding="6dp"
-            app:tint="@color/white"/>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="1">
-
-        <FrameLayout
-            android:id="@+id/contentGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/contentBackground" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/optionMenuView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="bottom"
-            tools:listitem="@layout/item_text"
-            android:background="@color/optionMenuBackground"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="20dp"
-            android:paddingHorizontal="16dp"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/app_name"
-             android:background="@color/actionBarColor"
-            android:id="@+id/toastView"
-            android:visibility="gone"/>
-
-    </FrameLayout>
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/feature_bar_size"
-        android:background="@color/featureBarBackground"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp">
+        android:layout_height="match_parent"
+        android:background="@color/windowBackground"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        tools:context=".activity.MainActivity">
 
-        <ImageView
-            android:id="@+id/leftOptionBtn"
-            android:layout_width="@dimen/feature_bar_size"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="@dimen/feature_bar_size"
-            android:layout_gravity="center"
-            android:scaleType="centerInside" />
+            android:background="@drawable/bg_action_bar">
 
-        <Space
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            <TextView
+                android:id="@+id/titleView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/centerOptionBtn"
-            android:layout_width="@dimen/feature_bar_size"
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+
+            <FrameLayout
+                android:id="@+id/contentGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/contentBackground" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/optionMenuView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/optionMenuBackground"
+                android:visibility="gone"
+                tools:listitem="@layout/item_text" />
+
+            <TextView
+                android:id="@+id/toastView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/actionBarColor"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="20dp"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="@dimen/feature_bar_size"
-            android:layout_gravity="center"
-            android:scaleType="centerInside" />
+            android:background="@color/featureBarBackground"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
 
-        <Space
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            <ImageView
+                android:id="@+id/leftOptionBtn"
+                android:layout_width="@dimen/feature_bar_size"
+                android:layout_height="@dimen/feature_bar_size"
+                android:layout_gravity="center"
+                android:scaleType="centerInside" />
 
-        <ImageView
-            android:id="@+id/rightOptionBtn"
-            android:layout_width="@dimen/feature_bar_size"
-            android:layout_height="@dimen/feature_bar_size"
-            android:layout_gravity="center"
-            android:scaleType="centerInside" />
+            <Space
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/centerOptionBtn"
+                android:layout_width="@dimen/feature_bar_size"
+                android:layout_height="@dimen/feature_bar_size"
+                android:layout_gravity="center"
+                android:scaleType="centerInside" />
+
+            <Space
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/rightOptionBtn"
+                android:layout_width="@dimen/feature_bar_size"
+                android:layout_height="@dimen/feature_bar_size"
+                android:layout_gravity="center"
+                android:scaleType="centerInside" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8000"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/contentLoadingGroup">
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:id="@+id/contentLoadingProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:padding="6dp"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            app:tint="@color/white" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+</FrameLayout>

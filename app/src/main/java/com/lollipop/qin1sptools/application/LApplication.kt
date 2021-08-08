@@ -1,13 +1,13 @@
 package com.lollipop.qin1sptools.application
 
-import android.app.Application
 import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
 
 /**
  * @author lollipop
  * @date 2021/8/8 12:55
  */
-class LApplication : Application() {
+class LApplication : MultiDexApplication() {
 
     companion object {
         private val IMPL_ARRAY: Array<Class<out ApplicationImpl>> = arrayOf(

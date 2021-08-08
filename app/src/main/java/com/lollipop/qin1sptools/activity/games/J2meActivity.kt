@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.FileChooseActivity
@@ -118,7 +119,9 @@ class J2meActivity : GridMenuActivity() {
         if (FileChooseActivity.isResult(requestCode)) {
             val resultFile = FileChooseActivity.getResultFile(resultCode, data)
             if (resultFile != null) {
-                convertJar(resultFile)
+                onUI {
+                    convertJar(resultFile)
+                }
             }
             return
         }
@@ -130,6 +133,7 @@ class J2meActivity : GridMenuActivity() {
         setFeatureButtons(FeatureIcon.NONE, FeatureIcon.NONE, FeatureIcon.NONE)
         doAsync({
             showToast(R.string.convert_error)
+            endLoading()
         }) {
             val gameDir = converter.convert(Uri.fromFile(file))
             val app = AppUtils.getApp(gameDir)
