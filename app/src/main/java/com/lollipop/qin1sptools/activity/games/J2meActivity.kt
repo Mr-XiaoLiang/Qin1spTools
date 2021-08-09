@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.FileChooseActivity
