@@ -1,6 +1,5 @@
 package com.lollipop.qin1sptools.dialog
 
-import android.app.Activity
 import android.text.method.ScrollingMovementMethod
 import android.view.ViewGroup
 import com.lollipop.qin1sptools.R
