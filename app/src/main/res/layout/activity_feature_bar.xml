@@ -15,7 +15,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feature_bar_size"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/feature_bar_size"
             android:background="@drawable/bg_action_bar">
 
             <TextView
@@ -26,7 +27,12 @@
                 android:gravity="center"
                 android:text="@string/app_name"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:lines="1"
+                android:maxLines="1"
+                android:paddingHorizontal="20dp"
+                android:ellipsize="end"/>
 
         </FrameLayout>
 
@@ -112,7 +118,8 @@
         android:background="#8000"
         android:orientation="vertical"
         android:gravity="center"
-        android:id="@+id/contentLoadingGroup">
+        android:id="@+id/contentLoadingGroup"
+        android:visibility="gone">
         <ProgressBar
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:id="@+id/contentLoadingProgressBar"

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/titleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_action_bar"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:minHeight="@dimen/feature_bar_size"/>
+
+        <TextView
+            android:id="@+id/messageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/contentBackground"
+            android:paddingVertical="20dp"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:paddingHorizontal="20dp"
+            android:textSize="16sp"
+            android:scrollbars="vertical"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/feature_bar_size"
+            android:background="@color/featureBarBackground">
+
+            <TextView
+                android:id="@+id/leftButton"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:text="@string/app_name"/>
+
+            <TextView
+                android:id="@+id/rightButton"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:text="@string/app_name"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

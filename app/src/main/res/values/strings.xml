@@ -9,4 +9,6 @@
     <string name="screenshot_save_in">截图保存至：%1$s</string>
     <string name="screenshot_save_error">截图保存失败</string>
     <string name="loading">请稍等...</string>
+    <string name="alert">提示</string>
+    <string name="confirm">确定</string>
 </resources>
