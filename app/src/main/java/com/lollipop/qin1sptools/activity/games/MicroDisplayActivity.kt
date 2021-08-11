@@ -12,6 +12,7 @@ import android.view.WindowManager
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.databinding.ActivityMicroDisplayBinding
+import com.lollipop.qin1sptools.dialog.MessageDialog
 import com.lollipop.qin1sptools.event.EventRepeater
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventProviderHelper
@@ -38,8 +39,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             )
         }
 
-        private const val CLICK_DELAY = 300L
-
         private const val BACK_THRESHOLD = 5
 
     }
@@ -53,8 +52,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     private var appName = ""
 
     private var microLoader: MicroLoader? = null
-
-    private var lastPresBackTime = 0L
 
     private var backClickCount = 0
 
@@ -77,6 +74,11 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             ) {
                 repeater.onKeyUp(event)
             }
+        }
+        backClickCount++
+        if (backClickCount >= BACK_THRESHOLD) {
+            repeater.onKeyUp(event)
+            showBackDialog()
         }
     }
 
@@ -184,18 +186,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
         log("onDown ---- $event")
         if (event == KeyEvent.BACK) {
-            val now = System.currentTimeMillis()
-            if (now - lastPresBackTime < CLICK_DELAY) {
-                backClickCount ++
-                if (backClickCount >= BACK_THRESHOLD) {
-                    backClickCount = 0
-                    showBackDialog()
-                    return true
-                }
-            } else {
-                backClickCount = 0
-            }
-            lastPresBackTime = now
+            backClickCount = 0
         }
         if (event == KeyEvent.CALL) {
             takeScreenshot()
@@ -229,20 +220,37 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     private fun showBackDialog() {
-        // TODO
-        super.onBackPressed()
+        MessageDialog.create(this)
+            .setMessage(R.string.dialog_msg_exit)
+            .setLeftButton(R.string.exit) {
+                finish()
+            }
+            .setRightButton(R.string.stay) {
+                resume()
+                it.dismiss()
+            }
+            .show()
+        pause()
     }
 
     override fun onResume() {
         super.onResume()
-        isResumed = true
-        MidletThread.resumeApp()
+        resume()
     }
 
     override fun onPause() {
+        pause()
+        super.onPause()
+    }
+
+    private fun pause() {
         isResumed = false
         MidletThread.pauseApp()
-        super.onPause()
+    }
+
+    private fun resume() {
+        isResumed = true
+        MidletThread.resumeApp()
     }
 
     override fun getActivity(): Activity {

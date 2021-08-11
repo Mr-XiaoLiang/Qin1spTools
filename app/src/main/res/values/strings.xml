@@ -11,4 +11,7 @@
     <string name="loading">请稍等...</string>
     <string name="alert">提示</string>
     <string name="confirm">确定</string>
+    <string name="dialog_msg_exit">确定要强制退出吗？应用数据可能会丢失。</string>
+    <string name="exit">退出</string>
+    <string name="stay">留下</string>
 </resources>

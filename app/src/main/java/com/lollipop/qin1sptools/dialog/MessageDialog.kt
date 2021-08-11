@@ -113,6 +113,7 @@ class MessageDialog private constructor(private val option: Option) {
     fun dismiss() {
         option.keyEventProvider.removeKeyEventListener(onKeyEventListener)
         option.container.removeView(binding.root)
+        option.onDismissListener?.onDismiss()
     }
 
     private fun CharSequence.defaultValue(run: () -> CharSequence): CharSequence {
@@ -131,6 +132,7 @@ class MessageDialog private constructor(private val option: Option) {
         private var rightButtonName: CharSequence = ""
         private var title: CharSequence = ""
         private var message: CharSequence = ""
+        private var onDismissListener: OnDismissListener? = null
 
         fun setKeyEventProvider(provider: KeyEventProvider): Builder {
             this.keyEventProvider = provider
@@ -143,10 +145,18 @@ class MessageDialog private constructor(private val option: Option) {
             return this
         }
 
+        fun setLeftButton(resId: Int, listener: OnClickListener): Builder {
+            return setLeftButton(getString(resId), listener)
+        }
+
         fun setRightButton(name: CharSequence, listener: OnClickListener): Builder {
             rightButtonName = name
             onRightClick = listener
             return this
+        }
+
+        fun setRightButton(resId: Int, listener: OnClickListener): Builder {
+            return setRightButton(getString(resId), listener)
         }
 
         fun setTitle(value: CharSequence): Builder {
@@ -154,8 +164,25 @@ class MessageDialog private constructor(private val option: Option) {
             return this
         }
 
+        fun setTitle(resId: Int): Builder {
+            return setTitle(getString(resId))
+        }
+
         fun setMessage(value: CharSequence): Builder {
             this.message = value
+            return this
+        }
+
+        fun setMessage(resId: Int): Builder {
+            return setMessage(getString(resId))
+        }
+
+        private fun getString(resId: Int): String {
+            return container.context.getString(resId)
+        }
+
+        fun onDismiss(listener: OnDismissListener): Builder {
+            this.onDismissListener = listener
             return this
         }
 
@@ -170,7 +197,8 @@ class MessageDialog private constructor(private val option: Option) {
                     leftButtonName,
                     rightButtonName,
                     title,
-                    message
+                    message,
+                    onDismissListener
                 )
             ).show()
         }
@@ -179,6 +207,10 @@ class MessageDialog private constructor(private val option: Option) {
 
     fun interface OnClickListener {
         fun onClick(dialog: MessageDialog)
+    }
+
+    fun interface OnDismissListener {
+        fun onDismiss()
     }
 
     private class Option(
@@ -190,6 +222,7 @@ class MessageDialog private constructor(private val option: Option) {
         val rightButtonName: CharSequence,
         val title: CharSequence,
         val message: CharSequence,
+        val onDismissListener: OnDismissListener?
     ) {
         fun isEmptyCallback(): Boolean {
             return !isLeftButtonActive() && !isRightButtonActive()
