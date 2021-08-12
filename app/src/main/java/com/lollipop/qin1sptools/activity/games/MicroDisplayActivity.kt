@@ -55,6 +55,8 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     private var backClickCount = 0
 
+    private var exitDialog: MessageDialog? = null
+
     private val toastHelper by lazy {
         ViewToastHelper(binding.toastView) { view, value ->
             view.text = value
@@ -185,11 +187,17 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
         log("onDown ---- $event")
-        if (event == KeyEvent.BACK) {
-            backClickCount = 0
-        }
         if (event == KeyEvent.CALL) {
             takeScreenshot()
+        }
+        if (event == KeyEvent.BACK) {
+            if (repeatCount == 0) {
+                backClickCount = 0
+            } else if (repeatCount >= BACK_THRESHOLD) {
+                showBackDialog()
+                onKeyUp(event, repeatCount)
+                return true
+            }
         }
         val keyCode = KeyEventProviderHelper.keyToGameCode(event)
         if (repeatCount == 0) {
@@ -220,7 +228,10 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     private fun showBackDialog() {
-        MessageDialog.create(this)
+        if (exitDialog != null) {
+            return
+        }
+        exitDialog = MessageDialog.create(this)
             .setMessage(R.string.dialog_msg_exit)
             .setLeftButton(R.string.exit) {
                 finish()
@@ -228,6 +239,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             .setRightButton(R.string.stay) {
                 resume()
                 it.dismiss()
+                exitDialog = null
             }
             .show()
         pause()

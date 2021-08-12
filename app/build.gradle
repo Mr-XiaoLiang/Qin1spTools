@@ -8,9 +8,9 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.lollipop.qin1sptools"
+//        applicationId "com.lollipop.qin1sptools"
         //  白名单只有微信，所以包名设置为微信
-//        applicationId "com.tencent.mm"
+        applicationId "com.tencent.mm"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1

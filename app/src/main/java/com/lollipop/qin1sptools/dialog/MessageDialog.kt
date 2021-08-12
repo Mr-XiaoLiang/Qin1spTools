@@ -10,6 +10,7 @@ import com.lollipop.qin1sptools.event.KeyEventListener
 import com.lollipop.qin1sptools.event.KeyEventProvider
 import com.lollipop.qin1sptools.utils.visibleOrGone
 import com.lollipop.qin1sptools.utils.withThis
+import java.lang.RuntimeException
 
 /**
  * @author lollipop
@@ -30,8 +31,11 @@ class MessageDialog private constructor(private val option: Option) {
     private var lastDownEvent: KeyEvent = KeyEvent.UNKNOWN
 
     private val onKeyEventListener = object : KeyEventListener {
-        override fun onKeyDown(event: KeyEvent): Boolean {
-            lastDownEvent = event
+
+        override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
+            if (repeatCount == 0) {
+                lastDownEvent = event
+            }
             return true
         }
 
@@ -89,10 +93,10 @@ class MessageDialog private constructor(private val option: Option) {
             KeyEvent.CENTER -> if (enterToDismiss) {
                 dismiss()
             }
-            KeyEvent.LEFT -> if (option.isLeftButtonActive()) {
+            KeyEvent.OPTION -> if (option.isLeftButtonActive()) {
                 option.onLeftClick?.onClick(this)
             }
-            KeyEvent.RIGHT -> if (option.isRightButtonActive()) {
+            KeyEvent.BACK -> if (option.isRightButtonActive()) {
                 option.onRightClick?.onClick(this)
             }
             KeyEvent.UP -> {
@@ -186,9 +190,9 @@ class MessageDialog private constructor(private val option: Option) {
             return this
         }
 
-        fun show() {
-            val provider = keyEventProvider ?: return
-            MessageDialog(
+        fun show(): MessageDialog {
+            val provider = keyEventProvider ?: throw RuntimeException("KeyEventProvider is null")
+            return MessageDialog(
                 Option(
                     container,
                     provider,
@@ -200,7 +204,9 @@ class MessageDialog private constructor(private val option: Option) {
                     message,
                     onDismissListener
                 )
-            ).show()
+            ).apply {
+                show()
+            }
         }
 
     }
