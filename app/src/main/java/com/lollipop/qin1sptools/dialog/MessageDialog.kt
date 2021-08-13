@@ -82,6 +82,12 @@ class MessageDialog private constructor(private val option: Option) {
                 text = option.rightButtonName
             }
         }
+        binding.leftButton.setOnClickListener {
+            option.onLeftClick?.onClick(this)
+        }
+        binding.rightButton.setOnClickListener {
+            option.onRightClick?.onClick(this)
+        }
     }
 
     private fun bindKeyEvent() {

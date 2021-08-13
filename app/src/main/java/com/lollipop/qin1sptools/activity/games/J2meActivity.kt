@@ -11,6 +11,7 @@ import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.utils.FeatureIcon
 import com.lollipop.qin1sptools.utils.doAsync
 import com.lollipop.qin1sptools.utils.onUI
+import com.lollipop.qin1sptools.utils.requestStoragePermissions
 import ru.playsoftware.j2meloader.applist.AppItem
 import ru.playsoftware.j2meloader.appsdb.AppRepository
 import ru.playsoftware.j2meloader.config.Config
@@ -43,6 +44,15 @@ class J2meActivity : GridMenuActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initData()
+
+        requestStoragePermissions()
+
+        val thisIntent = intent
+        val uri = thisIntent.data
+        if (thisIntent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0
+            && savedInstanceState == null && uri != null) {
+            decodeByIntent(uri)
+        }
     }
 
     private fun initData() {
@@ -56,6 +66,17 @@ class J2meActivity : GridMenuActivity() {
                 notifyDataSetChanged()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.data?.let { uri ->
+            decodeByIntent(uri)
+        }
+    }
+
+    private fun decodeByIntent(uri: Uri) {
+        convertJar(uri)
     }
 
     private fun updateGameList() {
@@ -127,14 +148,14 @@ class J2meActivity : GridMenuActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun convertJar(file: File) {
+    private fun convertJar(uri: Uri) {
         startLoading()
         setFeatureButtons(FeatureIcon.NONE, FeatureIcon.NONE, FeatureIcon.NONE)
         doAsync({
             showToast(R.string.convert_error)
             endLoading()
         }) {
-            val gameDir = converter.convert(Uri.fromFile(file))
+            val gameDir = converter.convert(uri)
             val app = AppUtils.getApp(gameDir)
             appRepository.insert(app)
             updateGameList()
@@ -144,6 +165,10 @@ class J2meActivity : GridMenuActivity() {
                 setFeatureButtons()
             }
         }
+    }
+
+    private fun convertJar(file: File) {
+        convertJar(Uri.fromFile(file))
     }
 
 }
