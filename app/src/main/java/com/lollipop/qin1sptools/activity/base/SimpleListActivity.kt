@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.qin1sptools.databinding.ActivitySimpleListBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.list.SimpleTextAdapter
+import com.lollipop.qin1sptools.utils.SimpleListHelper
 import com.lollipop.qin1sptools.utils.lazyBind
-import com.lollipop.qin1sptools.utils.range
 import com.lollipop.qin1sptools.utils.visibleOrGone
 
 /**
@@ -21,8 +21,16 @@ open class SimpleListActivity : FeatureBarActivity() {
 
     private val simpleListData = ArrayList<String>()
 
-    protected var selectedIndex = 0
-        private set
+    protected val selectedIndex: Int
+        get() {
+            return simpleListHelper.selectedPosition
+        }
+
+    private val simpleListHelper = SimpleListHelper(
+        {listBinding.recyclerView},
+        { simpleListData.size },
+        ::onSelectedIndexChanged
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +39,7 @@ open class SimpleListActivity : FeatureBarActivity() {
     }
 
     private fun initView() {
-        listBinding.recyclerView.itemAnimator?.let { animator ->
-            animator.changeDuration = 150
-            animator.addDuration = 150
-            animator.moveDuration = 150
-            animator.removeDuration = 150
-        }
+        simpleListHelper.resetAnimation()
         listBinding.recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listBinding.recyclerView.adapter = ListAdapter(simpleListData, ::getSelectedPosition)
@@ -47,11 +50,7 @@ open class SimpleListActivity : FeatureBarActivity() {
         simpleListData.clear()
         simpleListData.addAll(data)
         listBinding.recyclerView.adapter?.notifyDataSetChanged()
-        selectedIndex = if (simpleListData.isEmpty()) {
-            -1
-        } else {
-            0
-        }
+        simpleListHelper.resetSelected()
         listBinding.emptyView.visibleOrGone(simpleListData.isEmpty())
         onSelectedIndexChanged()
     }
@@ -82,39 +81,19 @@ open class SimpleListActivity : FeatureBarActivity() {
     }
 
     protected fun selectedTo(position: Int) {
-        if (simpleListData.isEmpty()) {
-            selectedIndex - 1
-            return
-        }
-        selectedIndex = position.range(0, simpleListData.size - 1)
-        listBinding.recyclerView.scrollToPosition(selectedIndex)
+        simpleListHelper.selectedTo(position)
     }
 
     protected fun selectNext(): Boolean {
-        if (selectedIndex < simpleListData.size - 1) {
-            val lastIndex = selectedIndex
-            selectedIndex++
-            listBinding.recyclerView.adapter?.notifyItemRangeChanged(lastIndex, 2)
-            listBinding.recyclerView.scrollToPosition(selectedIndex)
-            onSelectedIndexChanged()
-            return true
-        }
-        return false
+        return simpleListHelper.selectNext()
     }
 
     protected fun selectLast(): Boolean {
-        if (selectedIndex > 0) {
-            selectedIndex--
-            listBinding.recyclerView.adapter?.notifyItemRangeChanged(selectedIndex, 2)
-            listBinding.recyclerView.scrollToPosition(selectedIndex)
-            onSelectedIndexChanged()
-            return true
-        }
-        return false
+        return simpleListHelper.selectLast()
     }
 
     private fun getSelectedPosition(): Int {
-        return selectedIndex
+        return simpleListHelper.selectedPosition
     }
 
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {

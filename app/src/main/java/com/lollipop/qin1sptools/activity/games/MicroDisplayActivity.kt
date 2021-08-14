@@ -72,6 +72,11 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+            val title = currentDisplay.title?:""
+            if (title.isNotEmpty()) {
+                toastHelper.show(title)
+            }
+            val commands = currentDisplay.commands
         }
     }
 
@@ -206,17 +211,18 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         if (exitDialog != null) {
             return
         }
-        exitDialog = MessageDialog.create(this)
-            .setMessage(R.string.dialog_msg_exit)
-            .setLeftButton(R.string.exit) {
+        exitDialog = MessageDialog.build(this) {
+            setMessage(R.string.dialog_msg_exit)
+            setLeftButton(R.string.exit) {
                 finish()
             }
-            .setRightButton(R.string.stay) {
+            setRightButton(R.string.stay) {
                 resume()
                 it.dismiss()
                 exitDialog = null
             }
-            .show()
+        }
+        exitDialog?.show()
         pause()
     }
 
