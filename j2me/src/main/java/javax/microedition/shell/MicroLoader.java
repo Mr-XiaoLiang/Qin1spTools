@@ -127,10 +127,9 @@ public class MicroLoader {
         DexClassLoader loader = new AppClassLoader(
                 dexSource.getAbsolutePath(),
                 dexOptDir.getAbsolutePath(),
-                MicroLoader.class.getClassLoader(),
+                context.getClassLoader(),
                 appDir
         );
-        // TODO class loader 可能存在兼容问题
         Log.i(TAG, "loadMIDletList main: " + mainClass + " from dex:" + dexSource.getPath());
         Log.i(TAG, "MIDlet-Name: " + appDirName);
         // noinspection unchecked
