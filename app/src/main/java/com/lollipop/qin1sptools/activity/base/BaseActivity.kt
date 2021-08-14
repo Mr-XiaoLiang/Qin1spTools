@@ -2,7 +2,6 @@ package com.lollipop.qin1sptools.activity.base
 
 import android.view.KeyEvent
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.lollipop.qin1sptools.debug.DebugVirtualKeyboard
@@ -22,12 +21,18 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
 
     private val debugVirtualKeyboard: DebugVirtualKeyboard by lazy {
         DebugVirtualKeyboard(window.decorView as ViewGroup, object : KeyEventListener{
-            override fun onKeyDown(event: com.lollipop.qin1sptools.event.KeyEvent): Boolean {
-                return keyEventProviderHelper.onKeyDown(event, 0)
+            override fun onKeyDown(
+                event: com.lollipop.qin1sptools.event.KeyEvent,
+                repeatCount: Int
+            ): Boolean {
+                return keyEventProviderHelper.onKeyDown(event, repeatCount)
             }
 
-            override fun onKeyUp(event: com.lollipop.qin1sptools.event.KeyEvent): Boolean {
-                return keyEventProviderHelper.onKeyUp(event, 0)
+            override fun onKeyUp(
+                event: com.lollipop.qin1sptools.event.KeyEvent,
+                repeatCount: Int
+            ): Boolean {
+                return keyEventProviderHelper.onKeyUp(event, repeatCount)
             }
 
         })

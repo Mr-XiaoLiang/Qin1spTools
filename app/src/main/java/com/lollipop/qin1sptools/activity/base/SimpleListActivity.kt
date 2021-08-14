@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.qin1sptools.databinding.ActivitySimpleListBinding
-import com.lollipop.qin1sptools.event.EventRepeater
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.list.SimpleTextAdapter
 import com.lollipop.qin1sptools.utils.lazyBind
@@ -24,18 +23,6 @@ open class SimpleListActivity : FeatureBarActivity() {
 
     protected var selectedIndex = 0
         private set
-
-    private val eventRepeater = EventRepeater { _, event ->
-        when (event) {
-            KeyEvent.UP -> {
-                selectLast()
-            }
-            KeyEvent.DOWN -> {
-                selectNext()
-            }
-            else -> { }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,12 +117,7 @@ open class SimpleListActivity : FeatureBarActivity() {
         return selectedIndex
     }
 
-    override fun onKeyUp(event: KeyEvent): Boolean {
-        eventRepeater.onKeyUp(event)
-        return super.onKeyUp(event)
-    }
-
-    override fun onKeyDown(event: KeyEvent): Boolean {
+    override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
         val result = when (event) {
             KeyEvent.UP -> {
                 selectLast()
@@ -148,10 +130,9 @@ open class SimpleListActivity : FeatureBarActivity() {
             }
         }
         if (result) {
-            eventRepeater.onKeyDown(event)
             return true
         }
-        return super.onKeyDown(event)
+        return super.onKeyDown(event, repeatCount)
     }
 
     private class ListAdapter(

@@ -99,7 +99,7 @@ open class GridMenuActivity : FeatureBarActivity() {
         pageView.notifyChildIndexChanged()
     }
 
-    override fun onKeyUp(event: KeyEvent): Boolean {
+    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
         when (event) {
             KeyEvent.CENTER, KeyEvent.CALL -> {
                 val position = if (selectedItemIndex == DEFAULT_ITEM_POSITION) {
@@ -152,7 +152,7 @@ open class GridMenuActivity : FeatureBarActivity() {
                 onStarClick()
             }
             else -> {
-                return super.onKeyUp(event)
+                return super.onKeyUp(event, repeatCount)
             }
         }
         return true

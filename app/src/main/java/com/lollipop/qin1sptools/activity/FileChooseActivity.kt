@@ -191,7 +191,7 @@ class FileChooseActivity : SimpleListActivity() {
         setData(currentFiles)
     }
 
-    override fun onKeyUp(event: KeyEvent): Boolean {
+    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
         if (isLoading && event == KeyEvent.BACK) {
             back()
             return true
@@ -208,7 +208,7 @@ class FileChooseActivity : SimpleListActivity() {
 
             }
         }
-        return super.onKeyUp(event)
+        return super.onKeyUp(event, repeatCount)
     }
 
     override fun onCenterFeatureButtonClick(): Boolean {

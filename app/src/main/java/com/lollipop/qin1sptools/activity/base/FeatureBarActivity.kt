@@ -147,7 +147,7 @@ open class FeatureBarActivity : BaseActivity() {
         return FeatureIcon.NONE
     }
 
-    override fun onKeyUp(event: KeyEvent): Boolean {
+    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
         when (event) {
             KeyEvent.BACK -> {
                 if (tryCloseOptionMenu()) {
@@ -177,7 +177,7 @@ open class FeatureBarActivity : BaseActivity() {
 
             }
         }
-        if (super.onKeyUp(event)) {
+        if (super.onKeyUp(event, repeatCount)) {
             return true
         }
         when (event) {
@@ -337,11 +337,11 @@ open class FeatureBarActivity : BaseActivity() {
 
         var isLoading = false
 
-        override fun onKeyDown(event: KeyEvent): Boolean {
+        override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
             return isLoading
         }
 
-        override fun onKeyUp(event: KeyEvent): Boolean {
+        override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
             return isLoading
         }
     }

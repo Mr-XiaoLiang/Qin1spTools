@@ -13,7 +13,6 @@ import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.databinding.ActivityMicroDisplayBinding
 import com.lollipop.qin1sptools.dialog.MessageDialog
-import com.lollipop.qin1sptools.event.EventRepeater
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventProviderHelper
 import com.lollipop.qin1sptools.utils.*
@@ -39,7 +38,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             )
         }
 
-        private const val BACK_THRESHOLD = 5
+        private const val LONG_PRESS_THRESHOLD = 5
 
     }
 
@@ -60,27 +59,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     private val toastHelper by lazy {
         ViewToastHelper(binding.toastView) { view, value ->
             view.text = value
-        }
-    }
-
-    private val eventRepeater = EventRepeater { repeater, event ->
-        log("onRepeat ---- $event")
-        val canvas = current
-        if (canvas == null) {
-            repeater.onKeyUp(event)
-        } else {
-            if (!KeyEventPostHelper.postKeyRepeated(
-                    canvas,
-                    KeyEventProviderHelper.keyToGameCode(event)
-                )
-            ) {
-                repeater.onKeyUp(event)
-            }
-        }
-        backClickCount++
-        if (backClickCount >= BACK_THRESHOLD) {
-            repeater.onKeyUp(event)
-            showBackDialog()
         }
     }
 
@@ -186,14 +164,14 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
-        log("onDown ---- $event")
+        log("onDown ---- $event: $repeatCount")
         if (event == KeyEvent.CALL) {
             takeScreenshot()
         }
         if (event == KeyEvent.BACK) {
             if (repeatCount == 0) {
                 backClickCount = 0
-            } else if (repeatCount >= BACK_THRESHOLD) {
+            } else if (repeatCount >= LONG_PRESS_THRESHOLD) {
                 showBackDialog()
                 onKeyUp(event, repeatCount)
                 return true
@@ -202,12 +180,10 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         val keyCode = KeyEventProviderHelper.keyToGameCode(event)
         if (repeatCount == 0) {
             if (KeyEventPostHelper.postKeyPressed(current, keyCode)) {
-                eventRepeater.onKeyDown(event)
                 return true
             }
         } else {
             if (KeyEventPostHelper.postKeyRepeated(current, keyCode)) {
-                eventRepeater.onKeyDown(event)
                 return true
             }
         }
@@ -215,8 +191,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
-        log("onUp ---- $event")
-        eventRepeater.onKeyUp(event)
+        log("onUp ---- $event: $repeatCount")
         if (KeyEventPostHelper.postKeyReleased(
                 current,
                 KeyEventProviderHelper.keyToGameCode(event)
@@ -289,11 +264,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     override fun getOverlayView(): OverlayView {
         return binding.microOverlayView
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        eventRepeater.destroy()
     }
 
     private fun takeScreenshot() {

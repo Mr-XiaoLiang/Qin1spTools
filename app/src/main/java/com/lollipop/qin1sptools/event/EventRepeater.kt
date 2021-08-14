@@ -27,7 +27,7 @@ class EventRepeater(private val callback: Callback) {
     }
 
     fun interface Callback {
-        fun onRepeat(repeater: EventRepeater, event: KeyEvent)
+        fun onRepeat(repeater: EventRepeater, event: KeyEvent, repeatCount: Int)
     }
 
     fun destroy() {
@@ -48,7 +48,7 @@ class EventRepeater(private val callback: Callback) {
         private var repeatCount = 0
 
         override fun run() {
-            callback.onRepeat(repeater, keyEvent)
+            callback.onRepeat(repeater, keyEvent, repeatCount - 1)
             next()
         }
 
@@ -66,13 +66,12 @@ class EventRepeater(private val callback: Callback) {
             if (repeatCount < 0) {
                 repeatCount = 0
             }
-            val delay: Long
-            if (repeatCount >= REPEAT_INTERVALS.size) {
-                delay = MORE_REPEAT_INTERVAL
+            val delay: Long = if (repeatCount >= REPEAT_INTERVALS.size) {
+                MORE_REPEAT_INTERVAL
             } else {
-                delay = REPEAT_INTERVALS[repeatCount]
-                repeatCount++
+                REPEAT_INTERVALS[repeatCount]
             }
+            repeatCount++
             CommonUtil.delay(delay, this)
         }
 

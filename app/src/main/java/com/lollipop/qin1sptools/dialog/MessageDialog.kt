@@ -39,7 +39,7 @@ class MessageDialog private constructor(private val option: Option) {
             return true
         }
 
-        override fun onKeyUp(event: KeyEvent): Boolean {
+        override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
             if (event != lastDownEvent) {
                 return true
             }

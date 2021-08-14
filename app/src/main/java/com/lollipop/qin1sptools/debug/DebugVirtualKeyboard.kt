@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewManager
 import com.lollipop.qin1sptools.BuildConfig
 import com.lollipop.qin1sptools.databinding.DebugVirtualKeyboardBinding
+import com.lollipop.qin1sptools.event.EventRepeater
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventListener
 import com.lollipop.qin1sptools.utils.lazyBind
@@ -29,6 +30,24 @@ class DebugVirtualKeyboard(
     }
 
     private val keyboardBinding: DebugVirtualKeyboardBinding by rootGroup.lazyBind(true)
+
+    private val selfKeyEventListener = object : KeyEventListener {
+        override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
+            eventRepeater.onKeyDown(event)
+            keyEventListener.onKeyDown(event, 0)
+            return true
+        }
+
+        override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
+            eventRepeater.onKeyUp(event)
+            keyEventListener.onKeyUp(event, 0)
+            return true
+        }
+    }
+
+    private val eventRepeater = EventRepeater { _, event, repeatCount ->
+        keyEventListener.onKeyDown(event, repeatCount)
+    }
 
     fun show() {
         if (keyboardBinding.root.parent == rootGroup) {
@@ -67,6 +86,7 @@ class DebugVirtualKeyboard(
         keyboardBinding.closeBtn.setOnClickListener {
             if (keyboardBinding.keyboardContentView.visibility == View.VISIBLE) {
                 keyboardBinding.keyboardContentView.visibility = View.INVISIBLE
+                eventRepeater.destroy()
             } else {
                 keyboardBinding.keyboardContentView.visibility = View.VISIBLE
             }
@@ -74,7 +94,7 @@ class DebugVirtualKeyboard(
     }
 
     private fun View.bindClickEvent(event: KeyEvent) {
-        setOnTouchListener(TouchWrapper(keyEventListener, event))
+        setOnTouchListener(TouchWrapper(selfKeyEventListener, event))
     }
 
     private class TouchWrapper(
@@ -93,7 +113,7 @@ class DebugVirtualKeyboard(
                 MotionEvent.ACTION_DOWN -> {
                     actionId = event.getPointerId(0)
                     isTouched = true
-                    keyEventListener.onKeyDown(keyEvent)
+                    keyEventListener.onKeyDown(keyEvent, 0)
                 }
                 MotionEvent.ACTION_POINTER_UP -> {
                     if (!isTouched) {
@@ -120,7 +140,7 @@ class DebugVirtualKeyboard(
             if (!isTouched) {
                 return
             }
-            keyEventListener.onKeyUp(keyEvent)
+            keyEventListener.onKeyUp(keyEvent, 0)
             isTouched = false
         }
 
@@ -131,19 +151,19 @@ class DebugVirtualKeyboard(
             val index = event.findPointerIndex(actionId)
             if (index < 0) {
                 isTouched = false
-                keyEventListener.onKeyUp(keyEvent)
+                keyEventListener.onKeyUp(keyEvent, 0)
                 return
             }
             val x = event.getX(index)
             val y = event.getY(index)
             if (x < 0 || x > view.width) {
                 isTouched = false
-                keyEventListener.onKeyUp(keyEvent)
+                keyEventListener.onKeyUp(keyEvent, 0)
                 return
             }
             if (y < 0 || y > view.height) {
                 isTouched = false
-                keyEventListener.onKeyUp(keyEvent)
+                keyEventListener.onKeyUp(keyEvent, 0)
                 return
             }
         }
