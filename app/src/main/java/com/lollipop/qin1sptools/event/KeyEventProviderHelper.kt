@@ -5,6 +5,7 @@ package com.lollipop.qin1sptools.event
  * @date 2021/7/17 17:10
  */
 class KeyEventProviderHelper(
+    private val repeatGroup: KeyEventRepeatGroup? = null,
     private val selfListener: KeyEventListener? = null
 ) : KeyEventProvider, KeyEventListener {
 
@@ -118,6 +119,9 @@ class KeyEventProviderHelper(
         }
         val key = findKeyByCode(keyCode)
         val repeatCount = event?.repeatCount ?: 0
+        if (repeatGroup?.onKeyDown(key, repeatCount) == true) {
+            return true
+        }
         return onKeyDown(key, repeatCount) || selfListener?.onKeyDown(key, repeatCount) ?: false
     }
 
@@ -141,6 +145,7 @@ class KeyEventProviderHelper(
 
     fun clear() {
         listenerList.clear()
+        repeatGroup?.clear()
     }
 
 }
