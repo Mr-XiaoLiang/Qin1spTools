@@ -23,6 +23,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -181,6 +182,8 @@ class TextFieldImpl {
 			setConstraints(constraints);
 			setString(text);
 
+			textview.setBackground(null);
+
 			textview.addTextChangedListener(new TextWatcher() {
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -205,6 +208,17 @@ class TextFieldImpl {
 						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 				textview.setGravity(Gravity.TOP);
 			}
+			textview.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+				@Override
+				public void onViewAttachedToWindow(View v) {
+					v.post(v::requestFocus);
+				}
+
+				@Override
+				public void onViewDetachedFromWindow(View v) {
+
+				}
+			});
 		}
 		return textview;
 	}
