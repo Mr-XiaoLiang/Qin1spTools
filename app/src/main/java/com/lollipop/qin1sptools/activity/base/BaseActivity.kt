@@ -5,22 +5,25 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.lollipop.qin1sptools.debug.DebugVirtualKeyboard
-import com.lollipop.qin1sptools.event.KeyEventListener
-import com.lollipop.qin1sptools.event.KeyEventProvider
-import com.lollipop.qin1sptools.event.KeyEventProviderHelper
+import com.lollipop.qin1sptools.event.*
 
 /**
  * @author lollipop
  * @date 2021/7/17 17:06
  */
-open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListener {
+open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListener,
+    KeyEventRepeatProvider {
+
+    private val keyEventRepeatGroup by lazy {
+        KeyEventRepeatGroup()
+    }
 
     private val keyEventProviderHelper by lazy {
-        KeyEventProviderHelper(this)
+        KeyEventProviderHelper(repeatGroup = keyEventRepeatGroup, selfListener = this)
     }
 
     private val debugVirtualKeyboard: DebugVirtualKeyboard by lazy {
-        DebugVirtualKeyboard(window.decorView as ViewGroup, object : KeyEventListener{
+        DebugVirtualKeyboard(window.decorView as ViewGroup, object : KeyEventListener {
             override fun onKeyDown(
                 event: com.lollipop.qin1sptools.event.KeyEvent,
                 repeatCount: Int
@@ -70,6 +73,26 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
 
     override fun removeKeyEventListener(listener: KeyEventListener) {
         keyEventProviderHelper.removeKeyEventListener(listener)
+    }
+
+    override fun addKeyEventRepeatListener(
+        listener: KeyEventRepeatListener,
+        vararg keyEvents: com.lollipop.qin1sptools.event.KeyEvent
+    ) {
+        keyEventRepeatGroup.addKeyEventRepeatListener(listener, *keyEvents)
+    }
+
+    override fun removeKeyEventRepeatListener(
+        listener: KeyEventRepeatListener,
+        vararg keyEvents: com.lollipop.qin1sptools.event.KeyEvent
+    ) {
+        keyEventRepeatGroup.removeKeyEventRepeatListener(listener, *keyEvents)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        keyEventProviderHelper.clear()
+        keyEventRepeatGroup.clear()
     }
 
 }
