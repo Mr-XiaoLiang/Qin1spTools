@@ -39,6 +39,11 @@ class OptionDialog private constructor(private val option: Option) : BaseDialog(
         ::onSelectedPositionChanged
     )
 
+    val selectedPosition: Int
+        get() {
+            return simpleListHelper.selectedPosition
+        }
+
     override fun onBindContent(): View {
         binding.optionListView.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)

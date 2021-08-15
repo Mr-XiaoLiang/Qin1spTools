@@ -157,6 +157,7 @@ abstract class BaseDialog constructor(private val option: Option) {
             private set
         var title: CharSequence = ""
         var onDismissListener: OnDismissListener? = null
+            private set
 
         fun setLeftButton(name: CharSequence, listener: OnClickListener) {
             leftButtonName = name
@@ -194,6 +195,10 @@ abstract class BaseDialog constructor(private val option: Option) {
 
         fun isRightButtonActive(): Boolean {
             return rightButtonName.isNotEmpty() && onRightClick != null
+        }
+
+        fun onDismiss(listener: OnDismissListener) {
+            this.onDismissListener = listener
         }
     }
 
