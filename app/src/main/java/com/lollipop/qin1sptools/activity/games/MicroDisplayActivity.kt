@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -13,11 +14,13 @@ import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.databinding.ActivityMicroDisplayBinding
 import com.lollipop.qin1sptools.dialog.MessageDialog
+import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventProviderHelper
 import com.lollipop.qin1sptools.utils.*
 import ru.playsoftware.j2meloader.util.Constants
 import javax.microedition.lcdui.Canvas
+import javax.microedition.lcdui.Command
 import javax.microedition.lcdui.Displayable
 import javax.microedition.lcdui.event.KeyEventPostHelper
 import javax.microedition.lcdui.overlay.OverlayView
@@ -25,6 +28,7 @@ import javax.microedition.shell.MicroLoader
 import javax.microedition.shell.MidletThread
 import javax.microedition.util.ContextHolder
 import javax.microedition.util.DisplayHost
+import kotlin.math.min
 
 class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
@@ -38,8 +42,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             )
         }
 
-        private const val LONG_PRESS_THRESHOLD = 5
-
     }
 
     private val binding: ActivityMicroDisplayBinding by lazyBind()
@@ -52,9 +54,11 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     private var microLoader: MicroLoader? = null
 
-    private var backClickCount = 0
-
     private var exitDialog: MessageDialog? = null
+
+    private var commentDialog: OptionDialog? = null
+
+    private var commendList = ArrayList<Command>()
 
     private val toastHelper by lazy {
         ViewToastHelper(binding.toastView) { view, value ->
@@ -72,11 +76,18 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
-            val title = currentDisplay.title?:""
+            commendList.clear()
+            currentDisplay.commands?.forEach { command ->
+                command?.let {
+                    commendList.add(it)
+                }
+            }
+            val title = currentDisplay.title ?: ""
             if (title.isNotEmpty()) {
                 toastHelper.show(title)
             }
-            val commands = currentDisplay.commands
+            commendList.clear()
+            commendList.addAll(currentDisplay.commands)
         }
     }
 
@@ -85,6 +96,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         setContentView(binding.root)
         hideSystemUI()
         initView()
+        initEventListener()
     }
 
     private fun hideSystemUI() {
@@ -95,6 +107,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
             View.SYSTEM_UI_FLAG_FULLSCREEN
         )
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     private fun plusFlags(vararg flags: Int): Int {
@@ -131,6 +144,19 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         }
     }
 
+    private fun initEventListener() {
+        addKeyEventRepeatListener(KeyEvent.BACK) {
+            showBackDialog()
+            onKeyUp(it, 0)
+            true
+        }
+        addKeyEventRepeatListener(KeyEvent.OPTION) {
+            showCommentDialog()
+            onKeyUp(it, 0)
+            true
+        }
+    }
+
     @Throws(Exception::class)
     private fun loadMIDlet() {
         val midletList =
@@ -146,13 +172,39 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 MidletThread.create(microLoader, midletClassArray[0])
             }
             else -> {
-                showMidletDialog(midletNameArray, midletClassArray)
+                showMidletDialog(midletNameArray, midletClassArray) {
+                    MidletThread.create(microLoader, midletClassArray[0])
+                }
             }
         }
     }
 
-    private fun showMidletDialog(nameArray: Array<String>, classArray: Array<String>) {
-        // TODO("程序选择器")
+    private fun showMidletDialog(
+        nameArray: Array<String>,
+        classArray: Array<String>,
+        onSelected: (String) -> Unit
+    ) {
+        OptionDialog.build(this) {
+            setTitle(R.string.menu)
+            dataList.clear()
+            for (index in 0 until min(nameArray.size, classArray.size)) {
+                dataList.add(OptionDialog.Item(nameArray[index], index))
+            }
+            setLeftButton(R.string.ok) {
+                if (it is OptionDialog) {
+                    val selectedPosition = it.selectedPosition
+                    if (selectedPosition in classArray.indices) {
+                        onSelected(classArray[selectedPosition])
+                        it.dismiss()
+                        return@setLeftButton
+                    }
+                }
+                finish()
+            }
+            setRightButton(R.string.exit) {
+                finish()
+            }
+        }.show()
     }
 
     private fun onError() {
@@ -172,15 +224,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         log("onDown ---- $event: $repeatCount")
         if (event == KeyEvent.CALL) {
             takeScreenshot()
-        }
-        if (event == KeyEvent.BACK) {
-            if (repeatCount == 0) {
-                backClickCount = 0
-            } else if (repeatCount >= LONG_PRESS_THRESHOLD) {
-                showBackDialog()
-                onKeyUp(event, repeatCount)
-                return true
-            }
         }
         val keyCode = KeyEventProviderHelper.keyToGameCode(event)
         if (repeatCount == 0) {
@@ -223,6 +266,35 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             }
         }
         exitDialog?.show()
+        pause()
+    }
+
+    private fun showCommentDialog() {
+        val localCommand = ArrayList<Command>()
+        localCommand.addAll(commendList)
+        commentDialog = OptionDialog.build(this) {
+            setTitle(R.string.menu)
+            dataList.clear()
+            localCommand.forEach {
+                dataList.add(OptionDialog.Item(it.label ?: "", it.commandType, it))
+            }
+            setLeftButton(R.string.ok) {
+                if (it is OptionDialog) {
+                    val selectedPosition = it.selectedPosition
+                    val command = localCommand[selectedPosition]
+                    current?.fireCommandAction(command, current)
+                }
+                it.dismiss()
+            }
+            setRightButton(R.string.cancel) {
+                it.dismiss()
+            }
+            onDismiss {
+                resume()
+                commentDialog = null
+            }
+        }
+        commentDialog?.show()
         pause()
     }
 
@@ -286,6 +358,16 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 }
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        hideSystemUI()
+    }
+
+    override fun onBackPressed() {
+        onKeyDown(KeyEvent.BACK, 0)
+        onKeyUp(KeyEvent.BACK, 0)
     }
 
     private enum class Orientation(val value: Int) {
