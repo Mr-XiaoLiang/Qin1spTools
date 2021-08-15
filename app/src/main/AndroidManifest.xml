@@ -18,7 +18,7 @@
         <activity
             android:name=".activity.games.MicroDisplayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
-            />
+            android:process=":midlet"/>
         <activity
             android:icon="@mipmap/ic_launcher_java"
             android:name=".activity.games.J2meActivity"
