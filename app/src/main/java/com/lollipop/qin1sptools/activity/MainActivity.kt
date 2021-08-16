@@ -3,7 +3,10 @@ package com.lollipop.qin1sptools.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
+import com.lollipop.qin1sptools.dialog.OptionDialog
+import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.utils.FeatureIcon
 
 class MainActivity : GridMenuActivity() {
@@ -25,6 +28,29 @@ class MainActivity : GridMenuActivity() {
 
     override fun onGridItemClick(item: GridItem, index: Int) {
 
+    }
+
+    override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
+        if (event == KeyEvent.OPTION) {
+            OptionDialog.build(this) {
+                setTitle(R.string.menu)
+                dataList.clear()
+                for (index in 0 until 5) {
+                    dataList.add(OptionDialog.Item("Item $index", index))
+                }
+                setLeftButton(R.string.ok) {
+                    if (it is OptionDialog) {
+                        showToast("selected: ${it.selectedPosition}")
+                    }
+                    it.dismiss()
+                }
+                setRightButton(R.string.exit) {
+                    it.dismiss()
+                }
+            }.show()
+            return true
+        }
+        return super.onKeyDown(event, repeatCount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -47,15 +47,6 @@
                 android:layout_height="match_parent"
                 android:background="@color/contentBackground" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/optionMenuView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@color/optionMenuBackground"
-                android:visibility="gone"
-                tools:listitem="@layout/item_text" />
-
             <TextView
                 android:id="@+id/toastView"
                 android:layout_width="match_parent"
