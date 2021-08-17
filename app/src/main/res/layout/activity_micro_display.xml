@@ -5,10 +5,49 @@
     android:layout_height="match_parent"
     android:background="@color/contentBackground">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/displayableContainer"/>
+        android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:id="@+id/displayableContainer"/>
+
+        <LinearLayout
+            android:id="@+id/featureBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feature_bar_size"
+            android:background="@color/featureBarBackground"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
+
+            <TextView
+                android:id="@+id/leftOptionBtn"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/centerOptionBtn"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/rightOptionBtn"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="end"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <FrameLayout
         android:layout_width="match_parent"

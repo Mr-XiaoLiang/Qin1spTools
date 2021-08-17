@@ -42,6 +42,39 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             )
         }
 
+        private val LEFT_COMMAND_SEQUENCE = intArrayOf(
+            Command.OK,
+            Command.ITEM,
+            Command.SCREEN,
+            Command.STOP,
+            Command.HELP,
+            Command.EXIT,
+            Command.CANCEL,
+            Command.BACK,
+        )
+
+        private val CENTER_COMMAND_SEQUENCE = intArrayOf(
+            Command.HELP,
+            Command.ITEM,
+            Command.SCREEN,
+            Command.OK,
+            Command.CANCEL,
+            Command.EXIT,
+            Command.STOP,
+            Command.BACK,
+        )
+
+        private val RIGHT_COMMAND_SEQUENCE = intArrayOf(
+            Command.BACK,
+            Command.CANCEL,
+            Command.HELP,
+            Command.EXIT,
+            Command.STOP,
+            Command.SCREEN,
+            Command.ITEM,
+            Command.OK,
+        )
+
     }
 
     private val binding: ActivityMicroDisplayBinding by lazyBind()
@@ -58,7 +91,9 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     private var commentDialog: OptionDialog? = null
 
-    private var commendList = ArrayList<Command>()
+    private var leftOptionCommands = ArrayList<Command>()
+    private var centerOptionCommand: Command? = null
+    private var rightOptionCommand: Command? = null
 
     private val toastHelper by lazy {
         ViewToastHelper(binding.toastView) { view, value ->
@@ -76,18 +111,11 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
-            commendList.clear()
-            currentDisplay.commands?.forEach { command ->
-                command?.let {
-                    commendList.add(it)
-                }
-            }
+            updateFeatureBar(currentDisplay.commands)
             val title = currentDisplay.title ?: ""
             if (title.isNotEmpty()) {
                 toastHelper.show(title)
             }
-            commendList.clear()
-            commendList.addAll(currentDisplay.commands)
         }
     }
 
@@ -97,6 +125,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         hideSystemUI()
         initView()
         initEventListener()
+        updateFeatureBar(null)
     }
 
     private fun hideSystemUI() {
@@ -108,6 +137,92 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             View.SYSTEM_UI_FLAG_FULLSCREEN
         )
         window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+    }
+
+    private fun updateFeatureBar(commands: Array<Command>?) {
+        leftOptionCommands.clear()
+        centerOptionCommand = null
+        rightOptionCommand = null
+        if (commands == null || commands.isEmpty()) {
+            binding.featureBar.visibleOrGone(false)
+            return
+        }
+
+        val overflowCommand = commands.size > 3
+
+        commands.forEach { command ->
+            val commandType = command.commandType
+            val rightIndex = findIndex(commandType, RIGHT_COMMAND_SEQUENCE, rightOptionCommand)
+            val centerIndex = findIndex(commandType, CENTER_COMMAND_SEQUENCE, centerOptionCommand)
+            val leftIndex = findIndex(commandType, LEFT_COMMAND_SEQUENCE, null)
+
+            if (overflowCommand) {
+                if (rightIndex >= 0 && centerIndex >= 0) {
+                    if (rightIndex > centerIndex) {
+                        rightOptionCommand = command
+                    } else {
+                        centerOptionCommand = command
+                    }
+                } else if (rightIndex >= 0) {
+                    rightOptionCommand = command
+                } else if (centerIndex >= 0) {
+                    centerOptionCommand = command
+                } else {
+                    leftOptionCommands.add(command)
+                }
+            } else {
+                when (maxIndex(leftIndex, centerIndex, rightIndex)) {
+                    0 -> {
+                        leftOptionCommands.add(command)
+                    }
+                    1 -> {
+                        centerOptionCommand = command
+                    }
+                    2 -> {
+                        rightOptionCommand = command
+                    }
+                }
+            }
+        }
+
+        updateCommandName()
+    }
+
+    private fun updateCommandName() {
+        binding.featureBar.visibleOrGone(true)
+        when {
+            leftOptionCommands.isEmpty() -> {
+                binding.leftOptionBtn.text = ""
+            }
+            leftOptionCommands.size == 1 -> {
+                binding.leftOptionBtn.text = leftOptionCommands[0].label
+            }
+            else -> {
+                binding.leftOptionBtn.setText(R.string.menu)
+            }
+        }
+        binding.centerOptionBtn.text = centerOptionCommand?.label ?: ""
+        binding.rightOptionBtn.text = rightOptionCommand?.label ?: ""
+    }
+
+    private fun maxIndex(vararg values: Int): Int {
+        var maxValue = Int.MIN_VALUE
+        var maxIndex = -1
+        for (index in values.indices) {
+            val value = values[index]
+            if (value > maxValue) {
+                maxValue = value
+                maxIndex = index
+            }
+        }
+        return maxIndex
+    }
+
+    private fun findIndex(type: Int, sequence: IntArray, value: Command?): Int {
+        if (value != null) {
+            return -1
+        }
+        return sequence.indexOf(type)
     }
 
     private fun plusFlags(vararg flags: Int): Int {
@@ -147,11 +262,6 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     private fun initEventListener() {
         addKeyEventRepeatListener(KeyEvent.BACK) {
             showBackDialog()
-            onKeyUp(it, 0)
-            true
-        }
-        addKeyEventRepeatListener(KeyEvent.OPTION) {
-            showCommentDialog()
             onKeyUp(it, 0)
             true
         }
@@ -269,9 +379,9 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         pause()
     }
 
-    private fun showCommentDialog() {
+    private fun showCommentDialog(commandList: List<Command>) {
         val localCommand = ArrayList<Command>()
-        localCommand.addAll(commendList)
+        localCommand.addAll(commandList)
         commentDialog = OptionDialog.build(this) {
             setTitle(R.string.menu)
             dataList.clear()
