@@ -3,6 +3,8 @@ package com.lollipop.qin1sptools.utils
 import android.view.View
 import android.widget.TextView
 import com.lollipop.qin1sptools.R
+import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.event.KeyEventListener
 import javax.microedition.lcdui.Command
 
 /**
@@ -14,7 +16,9 @@ class CommandOptionBarDelegate(
     private val leftButton: () -> TextView?,
     private val centerButton: () -> TextView?,
     private val rightButton: () -> TextView?,
-) {
+    private val fireCommand: (Command) -> Unit,
+    private val showCommandMenu: (List<Command>) -> Unit
+): KeyEventListener {
 
     companion object {
         private val LEFT_COMMAND_SEQUENCE = intArrayOf(
@@ -49,11 +53,19 @@ class CommandOptionBarDelegate(
             Command.ITEM,
             Command.OK,
         )
+
+        private val MONITOR_EVENT = arrayOf(
+            KeyEvent.OPTION,
+            KeyEvent.CENTER,
+            KeyEvent.BACK,
+        )
     }
 
     private var leftOptionCommands = ArrayList<Command>()
     private var centerOptionCommand: Command? = null
     private var rightOptionCommand: Command? = null
+
+    private var lastDownKey: KeyEvent? = null
 
     fun updateFeatureBar(commands: Array<Command>?) {
         leftOptionCommands.clear()
@@ -102,6 +114,65 @@ class CommandOptionBarDelegate(
         }
 
         updateCommandName()
+    }
+
+    override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
+        lastDownKey = null
+        if (repeatCount > 0) {
+            return false
+        }
+        if (event !in MONITOR_EVENT) {
+            return false
+        }
+        val keep =  when (event) {
+            KeyEvent.OPTION -> {
+                leftOptionCommands.isNotEmpty()
+            }
+            KeyEvent.CENTER -> {
+                centerOptionCommand != null
+            }
+            KeyEvent.BACK -> {
+                rightOptionCommand != null
+            }
+            else -> {
+                false
+            }
+        }
+        if (keep) {
+            lastDownKey = event
+        }
+        return false
+    }
+
+    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
+        val downKey = lastDownKey
+        lastDownKey = null
+        if (downKey != event) {
+            return false
+        }
+        when (event) {
+            KeyEvent.OPTION -> {
+                if (leftOptionCommands.size == 1) {
+                    fireCommand(leftOptionCommands[0])
+                    return true
+                } else if (leftOptionCommands.size > 1) {
+                    showCommandMenu(leftOptionCommands)
+                    return true
+                }
+            }
+            KeyEvent.CENTER -> centerOptionCommand?.let {
+                fireCommand(it)
+                return true
+            }
+            KeyEvent.BACK -> rightOptionCommand?.let {
+                fireCommand(it)
+                return true
+            }
+            else -> {
+
+            }
+        }
+        return false
     }
 
     private fun updateCommandName() {

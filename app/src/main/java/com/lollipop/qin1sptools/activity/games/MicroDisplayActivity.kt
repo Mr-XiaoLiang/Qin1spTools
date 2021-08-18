@@ -70,6 +70,8 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             leftButton = { binding.leftOptionBtn },
             centerButton = { binding.centerOptionBtn },
             rightButton = { binding.rightOptionBtn },
+            fireCommand = ::fireCommand,
+            showCommandMenu = ::showCommentDialog
         )
     }
 
@@ -89,6 +91,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 toastHelper.show(title)
             }
         }
+        hideSystemUI()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,18 +100,18 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         hideSystemUI()
         initView()
         initEventListener()
+        addKeyEventListener(commandOptionBarDelegate)
         commandOptionBarDelegate.updateFeatureBar(null)
     }
 
     private fun hideSystemUI() {
         window.decorView.systemUiVisibility = plusFlags(
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION,
-            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY,
+            View.SYSTEM_UI_FLAG_IMMERSIVE,
             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION,
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
             View.SYSTEM_UI_FLAG_FULLSCREEN
         )
-        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     private fun plusFlags(vararg flags: Int): Int {
@@ -278,7 +281,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
                 if (it is OptionDialog) {
                     val selectedPosition = it.selectedPosition
                     val command = localCommand[selectedPosition]
-                    current?.fireCommandAction(command, current)
+                    fireCommand(command)
                 }
                 it.dismiss()
             }
@@ -292,6 +295,10 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         }
         commentDialog?.show()
         pause()
+    }
+
+    private fun fireCommand(command: Command) {
+        current?.fireCommandAction(command, current)
     }
 
     override fun onResume() {
