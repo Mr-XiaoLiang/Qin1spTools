@@ -18,6 +18,7 @@
 package javax.microedition.lcdui;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -29,203 +30,229 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import javax.microedition.lcdui.event.SimpleEvent;
+import javax.microedition.util.WindowInsetsHelper;
 
 class TextFieldImpl {
-	private EditText textview;
+    private EditText textview;
 
-	private String text;
-	private int maxSize;
-	private int constraints;
+    private String text;
+    private int maxSize;
+    private int constraints;
 
-	private SimpleEvent msgSetText = new SimpleEvent() {
-		@Override
-		public void process() {
-			textview.setText(text);
-		}
-	};
+    private int windowTopInsets = 0;
 
-	void setString(String text) {
-		if (text != null && text.length() > maxSize) {
-			throw new IllegalArgumentException("text length exceeds max size");
-		}
+    private final SimpleEvent msgSetText = new SimpleEvent() {
+        @Override
+        public void process() {
+            textview.setText(text);
+        }
+    };
 
-		if (text != null) {
-			this.text = text;
-		} else {
-			this.text = "";
-		}
+    void setString(String text) {
+        if (text != null && text.length() > maxSize) {
+            throw new IllegalArgumentException("text length exceeds max size");
+        }
 
-		if (textview != null) {
-			ViewHandler.postEvent(msgSetText);
-		}
-	}
+        if (text != null) {
+            this.text = text;
+        } else {
+            this.text = "";
+        }
 
-	void insert(String src, int pos) {
-		String tmp = new StringBuilder(text).insert(pos, src).toString();
-		setString(tmp);
-	}
+        if (textview != null) {
+            ViewHandler.postEvent(msgSetText);
+        }
+    }
 
-	String getString() {
-		return text;
-	}
+    void setWindowTopInsets(int value) {
+        this.windowTopInsets = value;
+    }
 
-	int size() {
-		return text.length();
-	}
+    void insert(String src, int pos) {
+        String tmp = new StringBuilder(text).insert(pos, src).toString();
+        setString(tmp);
+    }
 
-	int setMaxSize(int maxSize) {
-		if (maxSize <= 0) {
-			throw new IllegalArgumentException("max size must be > 0");
-		}
+    String getString() {
+        return text;
+    }
 
-		this.maxSize = maxSize;
+    int size() {
+        return text.length();
+    }
 
-		if (textview != null) {
-			textview.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxSize)});
-		}
+    int setMaxSize(int maxSize) {
+        if (maxSize <= 0) {
+            throw new IllegalArgumentException("max size must be > 0");
+        }
 
-		return maxSize;
-	}
+        this.maxSize = maxSize;
 
-	int getMaxSize() {
-		return maxSize;
-	}
+        if (textview != null) {
+            textview.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxSize)});
+        }
 
-	void setConstraints(int constraints) {
-		this.constraints = constraints;
+        return maxSize;
+    }
 
-		if (textview != null) {
-			int inputtype;
+    int getMaxSize() {
+        return maxSize;
+    }
 
-			switch (constraints & TextField.CONSTRAINT_MASK) {
-				default:
-				case TextField.ANY:
-					inputtype = InputType.TYPE_CLASS_TEXT;
-					break;
+    void setConstraints(int constraints) {
+        this.constraints = constraints;
 
-				case TextField.EMAILADDR:
-					inputtype = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-					break;
+        if (textview != null) {
+            int inputtype;
 
-				case TextField.NUMERIC:
-					inputtype = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED;
-					break;
+            switch (constraints & TextField.CONSTRAINT_MASK) {
+                default:
+                case TextField.ANY:
+                    inputtype = InputType.TYPE_CLASS_TEXT;
+                    break;
 
-				case TextField.PHONENUMBER:
-					inputtype = InputType.TYPE_CLASS_PHONE;
-					break;
+                case TextField.EMAILADDR:
+                    inputtype = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+                    break;
 
-				case TextField.URL:
-					inputtype = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
-					break;
+                case TextField.NUMERIC:
+                    inputtype = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED;
+                    break;
 
-				case TextField.DECIMAL:
-					inputtype = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED | InputType.TYPE_NUMBER_FLAG_DECIMAL;
-					break;
-			}
+                case TextField.PHONENUMBER:
+                    inputtype = InputType.TYPE_CLASS_PHONE;
+                    break;
 
-			if ((constraints & TextField.PASSWORD) != 0 ||
-					(constraints & TextField.SENSITIVE) != 0) {
-				inputtype = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
-			}
+                case TextField.URL:
+                    inputtype = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
+                    break;
 
-			if ((constraints & TextField.UNEDITABLE) != 0) {
-				inputtype = InputType.TYPE_NULL;
-			}
+                case TextField.DECIMAL:
+                    inputtype = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+                    break;
+            }
 
-			if ((constraints & TextField.NON_PREDICTIVE) != 0) {
-				inputtype |= InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
-			}
+            if ((constraints & TextField.PASSWORD) != 0 ||
+                    (constraints & TextField.SENSITIVE) != 0) {
+                inputtype = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+            }
 
-			if ((constraints & TextField.INITIAL_CAPS_WORD) != 0) {
-				inputtype |= InputType.TYPE_TEXT_FLAG_CAP_WORDS;
-			}
+            if ((constraints & TextField.UNEDITABLE) != 0) {
+                inputtype = InputType.TYPE_NULL;
+            }
 
-			if ((constraints & TextField.INITIAL_CAPS_SENTENCE) != 0) {
-				inputtype |= InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
-			}
+            if ((constraints & TextField.NON_PREDICTIVE) != 0) {
+                inputtype |= InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+            }
 
-			textview.setInputType(inputtype);
-			if ((constraints & TextField.CONSTRAINT_MASK) == TextField.ANY) {
-				textview.setSingleLine(false);
-			}
-		}
-	}
+            if ((constraints & TextField.INITIAL_CAPS_WORD) != 0) {
+                inputtype |= InputType.TYPE_TEXT_FLAG_CAP_WORDS;
+            }
 
-	int getConstraints() {
-		return constraints;
-	}
+            if ((constraints & TextField.INITIAL_CAPS_SENTENCE) != 0) {
+                inputtype |= InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
+            }
 
-	int getChars(char[] data) {
-		text.getChars(0, text.length(), data, 0);
-		return text.length();
-	}
+            textview.setInputType(inputtype);
+            if ((constraints & TextField.CONSTRAINT_MASK) == TextField.ANY) {
+                textview.setSingleLine(false);
+            }
+        }
+    }
 
-	int getCaretPosition() {
-		if (textview != null) {
-			return textview.getSelectionEnd();
-		} else {
-			return 0;
-		}
-	}
+    int getConstraints() {
+        return constraints;
+    }
 
-	void delete(int offset, int length) {
-		String tmp = new StringBuilder(text).delete(offset, offset + length).toString();
-		setString(tmp);
-	}
+    int getChars(char[] data) {
+        text.getChars(0, text.length(), data, 0);
+        return text.length();
+    }
 
-	EditText getView(Context context, Item item) {
-		if (textview == null) {
-			textview = new EditText(context);
+    int getCaretPosition() {
+        if (textview != null) {
+            return textview.getSelectionEnd();
+        } else {
+            return 0;
+        }
+    }
 
-			setMaxSize(maxSize);
-			setConstraints(constraints);
-			setString(text);
+    void delete(int offset, int length) {
+        String tmp = new StringBuilder(text).delete(offset, offset + length).toString();
+        setString(tmp);
+    }
 
-			textview.setBackground(null);
+    EditText getView(Context context, Item item) {
+        if (textview == null) {
+            textview = new EditText(context);
 
-			textview.setText(text);
+            setMaxSize(maxSize);
+            setConstraints(constraints);
+            textview.setBackground(null);
+            textview.setText(text);
 
-			textview.addTextChangedListener(new TextWatcher() {
-				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-				}
+            textview.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
 
-				@Override
-				public void onTextChanged(CharSequence s, int start, int before, int count) {
-				}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
 
-				@Override
-				public void afterTextChanged(Editable s) {
-					text = s.toString();
-				}
-			});
+                @Override
+                public void afterTextChanged(Editable s) {
+                    text = s.toString();
+                }
+            });
 
-			if (item != null) {
-				textview.setOnFocusChangeListener((v, hasFocus) -> {
-					if (!hasFocus) item.notifyStateChanged();
-				});
-			} else {
-				textview.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-				textview.setGravity(Gravity.TOP);
-			}
-			textview.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-				@Override
-				public void onViewAttachedToWindow(View v) {
-					v.post(v::requestFocus);
-				}
+            if (item != null) {
+                textview.setOnFocusChangeListener((v, hasFocus) -> {
+                    if (!hasFocus) {
+                        item.notifyStateChanged();
+                    }
+                });
+            } else {
+                textview.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                textview.setGravity(Gravity.TOP);
+            }
+            textview.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+                    v.post(() -> {
+                        v.requestFocus();
+                        addPaddingListener(v);
+                    });
+                }
 
-				@Override
-				public void onViewDetachedFromWindow(View v) {
+                @Override
+                public void onViewDetachedFromWindow(View v) {
 
-				}
-			});
-		}
-		return textview;
-	}
+                }
+            });
 
-	void clearScreenView() {
-		textview = null;
-	}
+        }
+        return textview;
+    }
+
+    private void addPaddingListener(View view) {
+        updatePadding(view);
+        view.addOnLayoutChangeListener(
+                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                    v.post(() -> updatePadding(v));
+                }
+        );
+    }
+
+    private void updatePadding(View v) {
+        Rect offset = WindowInsetsHelper.getOffset(
+                v, 0, windowTopInsets, 0, 0);
+        int topPadding = offset.top;
+        v.setPadding(0, Math.max(topPadding, 0), 0, 0);
+    }
+
+    void clearScreenView() {
+        textview = null;
+    }
 }

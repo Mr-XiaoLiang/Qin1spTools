@@ -33,11 +33,15 @@ import kotlin.math.min
 class MicroDisplayActivity : BaseActivity(), DisplayHost {
 
     companion object {
-        fun start(context: Context, name: String?, path: String) {
+
+        private const val PARAMS_STATUS_BAR_SIZE = "PARAMS_STATUS_BAR_SIZE"
+
+        fun start(context: Context, name: String?, path: String, statusBarSize: Int = -1) {
             context.startActivity(
                 Intent(context, MicroDisplayActivity::class.java).apply {
                     data = Uri.parse(path)
                     putExtra(Constants.KEY_MIDLET_NAME, name)
+                    putExtra(PARAMS_STATUS_BAR_SIZE, statusBarSize)
                 }
             )
         }
@@ -94,9 +98,18 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         hideSystemUI()
     }
 
+    private fun updateStatusBarSize() {
+        val size = intent?.getIntExtra(PARAMS_STATUS_BAR_SIZE, -1) ?: -1
+        if (size < 0) {
+            return
+        }
+        ContextHolder.setStatusBarSize(size)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        updateStatusBarSize()
         hideSystemUI()
         initView()
         initEventListener()
@@ -112,6 +125,8 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
             View.SYSTEM_UI_FLAG_FULLSCREEN
         )
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     private fun plusFlags(vararg flags: Int): Int {
@@ -123,6 +138,7 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     private fun initView() {
+        binding.osdContainer.setPadding(0, ContextHolder.getStatusBarSize(), 0, 0)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         ContextHolder.setCurrentHost(this)
         ContextHolder.setVibration(true)

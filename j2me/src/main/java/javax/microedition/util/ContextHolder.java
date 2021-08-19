@@ -53,6 +53,8 @@ public class ContextHolder {
     private static final ArrayList<ActivityResultListener> resultListeners = new ArrayList<>();
     private static boolean vibrationEnabled = false;
 
+    private static int statusBarSize = 0;
+
     public static Context getAppContext() {
         return appContext;
     }
@@ -212,5 +214,13 @@ public class ContextHolder {
 
     public static void setVibration(boolean vibrationEnabled) {
         ContextHolder.vibrationEnabled = vibrationEnabled;
+    }
+
+    public static int getStatusBarSize() {
+        return statusBarSize;
+    }
+
+    public static void setStatusBarSize(int statusBarSize) {
+        ContextHolder.statusBarSize = statusBarSize;
     }
 }

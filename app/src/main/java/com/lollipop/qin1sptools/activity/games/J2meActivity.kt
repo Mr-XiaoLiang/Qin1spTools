@@ -1,6 +1,7 @@
 package com.lollipop.qin1sptools.activity.games
 
 import android.content.Intent
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +19,8 @@ import ru.playsoftware.j2meloader.config.Config
 import ru.playsoftware.j2meloader.util.AppUtils
 import ru.playsoftware.j2meloader.util.JarConverter
 import java.io.File
+import javax.microedition.util.ContextHolder
+import javax.microedition.util.WindowInsetsHelper
 
 class J2meActivity : GridMenuActivity() {
 
@@ -50,7 +53,8 @@ class J2meActivity : GridMenuActivity() {
         val thisIntent = intent
         val uri = thisIntent.data
         if (thisIntent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0
-            && savedInstanceState == null && uri != null) {
+            && savedInstanceState == null && uri != null
+        ) {
             decodeByIntent(uri)
         }
     }
@@ -116,7 +120,19 @@ class J2meActivity : GridMenuActivity() {
     override fun onGridItemClick(item: GridItem, index: Int) {
         val id = item.id
         val gameInfo = gameList.find { it.id == id } ?: return
-        MicroDisplayActivity.start(this, gameInfo.title, gameInfo.pathExt)
+        updateWindowInsets()
+        MicroDisplayActivity.start(
+            this,
+            gameInfo.title,
+            gameInfo.pathExt,
+            ContextHolder.getStatusBarSize()
+        )
+    }
+
+    private fun updateWindowInsets() {
+        val rectangle = Rect()
+        window.decorView.getWindowVisibleDisplayFrame(rectangle)
+        ContextHolder.setStatusBarSize(rectangle.top)
     }
 
     override fun onGridItemInfoClick(item: GridItem?, index: Int) {

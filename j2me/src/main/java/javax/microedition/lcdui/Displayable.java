@@ -214,4 +214,8 @@ public abstract class Displayable {
 		}
 		return true;
 	}
+
+	protected int getStatusBarSize() {
+		return ContextHolder.getStatusBarSize();
+	}
 }

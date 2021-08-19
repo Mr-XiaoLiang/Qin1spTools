@@ -1,6 +1,7 @@
 package com.lollipop.qin1sptools.activity.base
 
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewManager
 import androidx.viewbinding.ViewBinding
@@ -27,6 +28,11 @@ open class FeatureBarActivity : BaseActivity() {
     private val featureBinding: ActivityFeatureBarBinding by lazyBind()
 
     private val loadingKeyFilter = LoadingKeyFilter()
+
+    protected val viewRoot: View
+        get() {
+            return featureBinding.viewRoot
+        }
 
     protected var isLoading: Boolean
         private set(value) {

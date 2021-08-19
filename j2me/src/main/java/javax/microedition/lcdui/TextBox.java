@@ -89,6 +89,7 @@ public class TextBox extends Screen {
 	@Override
 	public View getScreenView() {
 		Context context = getDisplayHost().getActivity();
+		textField.setWindowTopInsets(getStatusBarSize());
 		return textField.getView(context, null);
 	}
 
