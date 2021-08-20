@@ -250,6 +250,10 @@ open class GridMenuActivity : FeatureBarActivity() {
 
         private val binding: ItemGridMenuBinding by withThis(true)
 
+        init {
+            binding.shapeGroup.setRoundShapeDp(10)
+        }
+
         @SuppressLint("SetTextI18n")
         override fun setGridIndex(index: Int) {
             binding.positionView.text = "${index + 1}"

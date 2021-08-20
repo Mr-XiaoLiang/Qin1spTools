@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
-        <ImageView
+        <com.lollipop.qin1sptools.view.ShapeGroup
+            android:id="@+id/shapeGroup"
             android:cropToPadding="false"
             android:layout_width="0px"
             android:layout_height="0px"
@@ -18,27 +19,31 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintWidth_percent="0.8"
-            app:layout_constraintDimensionRatio="1:1"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher"
-            android:id="@+id/iconView"/>
+            app:layout_constraintDimensionRatio="1:1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/iconView"/>
 
-        <TextView
-            app:layout_constraintEnd_toEndOf="@id/iconView"
-            app:layout_constraintBottom_toBottomOf="@id/iconView"
-            android:cropToPadding="false"
-            android:id="@+id/positionView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:minHeight="16dp"
-            android:minWidth="16dp"
-            android:gravity="center"
-            android:background="@drawable/bg_position"
-            android:textColor="@color/positionColor"
-            android:text="1"/>
+            <TextView
+                android:layout_gravity="end|bottom"
+                android:cropToPadding="false"
+                android:id="@+id/positionView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:minHeight="16dp"
+                android:minWidth="16dp"
+                android:gravity="center"
+                android:background="@drawable/bg_position"
+                android:textColor="@color/positionColor"
+                android:text="1"/>
+        </com.lollipop.qin1sptools.view.ShapeGroup>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
