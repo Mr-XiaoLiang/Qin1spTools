@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/bg_action_bar.xml" value="0.26851851851851855" />
+        <entry key="app/src/main/res/drawable/bg_grid_position.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/drawable/bg_header_toast.xml" value="0.2518518518518518" />
+        <entry key="app/src/main/res/drawable/bg_position.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_bottom_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_top_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/activity_feature_bar.xml" value="0.26068003487358327" />
