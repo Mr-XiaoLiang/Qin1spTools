@@ -1,5 +1,7 @@
 package com.lollipop.qin1sptools.event
 
+import android.util.SparseBooleanArray
+import androidx.core.util.remove
 import java.lang.ref.WeakReference
 
 /**
@@ -11,7 +13,24 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
     private val listenerGroup =
         HashMap<KeyEvent, ArrayList<WeakReference<KeyEventRepeatListener>>>()
 
-    override fun addKeyEventRepeatListener(listener: KeyEventRepeatListener, vararg keyEvents: KeyEvent) {
+    private val consumedEventList = SparseBooleanArray()
+
+    private fun consumeEvent(event: KeyEvent) {
+        consumedEventList.put(event.ordinal, true)
+    }
+
+    private fun recycleEvent(event: KeyEvent) {
+        consumedEventList.remove(event.ordinal, true)
+    }
+
+    private fun isConsumed(event: KeyEvent): Boolean {
+        return consumedEventList.get(event.ordinal, false)
+    }
+
+    override fun addKeyEventRepeatListener(
+        listener: KeyEventRepeatListener,
+        vararg keyEvents: KeyEvent
+    ) {
         val keyArray = if (keyEvents.isEmpty()) {
             KeyEvent.values()
         } else {
@@ -24,7 +43,10 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
         }
     }
 
-    override fun removeKeyEventRepeatListener(listener: KeyEventRepeatListener, vararg keyEvents: KeyEvent) {
+    override fun removeKeyEventRepeatListener(
+        listener: KeyEventRepeatListener,
+        vararg keyEvents: KeyEvent
+    ) {
         val keyArray = if (keyEvents.isEmpty()) {
             KeyEvent.values()
         } else {
@@ -53,11 +75,19 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
                 removedList.add(reference)
             } else if (listener.repeatCount == repeatCount && listener.onKeyLongPress(keyEvent)) {
                 intercept = true
-                break
             }
         }
         listenerList.removeAll(removedList)
-        return intercept
+        if (intercept) {
+            consumeEvent(keyEvent)
+        }
+        return intercept || isConsumed(keyEvent)
+    }
+
+    fun onKeyUp(keyEvent: KeyEvent): Boolean {
+        val consumed = isConsumed(keyEvent)
+        recycleEvent(keyEvent)
+        return consumed
     }
 
     fun clear() {

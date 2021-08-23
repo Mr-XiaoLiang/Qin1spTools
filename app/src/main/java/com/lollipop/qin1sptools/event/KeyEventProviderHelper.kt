@@ -110,7 +110,7 @@ class KeyEventProviderHelper(
         }
         val key = findKeyByCode(keyCode)
         val repeatCount = event?.repeatCount ?: 0
-        return onKeyUp(key, repeatCount) || selfListener?.onKeyUp(key, repeatCount) ?: false
+        return onKeyUp(key, repeatCount)
     }
 
     fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean {
@@ -119,13 +119,13 @@ class KeyEventProviderHelper(
         }
         val key = findKeyByCode(keyCode)
         val repeatCount = event?.repeatCount ?: 0
-        if (repeatGroup?.onKeyDown(key, repeatCount) == true) {
-            return true
-        }
-        return onKeyDown(key, repeatCount) || selfListener?.onKeyDown(key, repeatCount) ?: false
+        return onKeyDown(key, repeatCount)
     }
 
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
+        if (repeatGroup?.onKeyDown(event, repeatCount) == true) {
+            return true
+        }
         listenerList.forEach {
             if (it.onKeyDown(event, repeatCount)) {
                 return true
@@ -135,6 +135,9 @@ class KeyEventProviderHelper(
     }
 
     override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
+        if (repeatGroup?.onKeyUp(event) == true) {
+            return true
+        }
         listenerList.forEach {
             if (it.onKeyUp(event, repeatCount)) {
                 return true
