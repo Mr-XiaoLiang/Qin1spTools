@@ -2,6 +2,7 @@ package com.lollipop.qin1sptools.event
 
 import android.util.SparseArray
 import com.lollipop.qin1sptools.utils.CommonUtil
+import com.lollipop.qin1sptools.utils.log
 
 /**
  * @author lollipop
@@ -48,6 +49,7 @@ class EventRepeater(private val callback: Callback) {
         private var repeatCount = 0
 
         override fun run() {
+            log(keyEvent, repeatCount - 1)
             callback.onRepeat(repeater, keyEvent, repeatCount - 1)
             next()
         }

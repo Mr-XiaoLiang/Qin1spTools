@@ -7,6 +7,7 @@ import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.databinding.DialogMessageBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventProvider
+import com.lollipop.qin1sptools.utils.lazyBind
 import com.lollipop.qin1sptools.utils.visibleOrGone
 import com.lollipop.qin1sptools.utils.withThis
 
@@ -27,7 +28,7 @@ class MessageDialog private constructor(private val option: Option) : BaseDialog
         }
     }
 
-    private val binding: DialogMessageBinding by option.container.withThis(true)
+    private val binding: DialogMessageBinding by option.container.lazyBind(true)
 
     override fun onBindContent(): View {
         binding.messageView.visibleOrGone(option.message.isNotEmpty()) {

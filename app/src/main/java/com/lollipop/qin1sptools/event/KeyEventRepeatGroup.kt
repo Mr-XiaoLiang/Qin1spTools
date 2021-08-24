@@ -2,7 +2,7 @@ package com.lollipop.qin1sptools.event
 
 import android.util.SparseBooleanArray
 import androidx.core.util.remove
-import java.lang.ref.WeakReference
+import com.lollipop.qin1sptools.utils.log
 
 /**
  * @author lollipop
@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference
 class KeyEventRepeatGroup : KeyEventRepeatProvider {
 
     private val listenerGroup =
-        HashMap<KeyEvent, ArrayList<WeakReference<KeyEventRepeatListener>>>()
+        HashMap<KeyEvent, ArrayList<KeyEventRepeatListener>>()
 
     private val consumedEventList = SparseBooleanArray()
 
@@ -38,7 +38,7 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
         }
         keyArray.forEach { keyEvent ->
             val arrayList = listenerGroup[keyEvent] ?: ArrayList()
-            arrayList.add(WeakReference(listener))
+            arrayList.add(listener)
             listenerGroup[keyEvent] = arrayList
         }
     }
@@ -57,8 +57,7 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
             val iterator = arrayList.iterator()
             while (iterator.hasNext()) {
                 val next = iterator.next()
-                val l = next.get()
-                if (l == null || l == listener) {
+                if (next == listener) {
                     iterator.remove()
                 }
             }
@@ -67,17 +66,14 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
 
     fun onKeyDown(keyEvent: KeyEvent, repeatCount: Int): Boolean {
         val listenerList = listenerGroup[keyEvent] ?: return false
-        val removedList = ArrayList<WeakReference<KeyEventRepeatListener>>()
+        log("onKeyDown", listenerList.size, keyEvent, repeatCount)
         var intercept = false
-        for (reference in listenerList) {
-            val listener = reference.get()
-            if (listener == null) {
-                removedList.add(reference)
-            } else if (listener.repeatCount == repeatCount && listener.onKeyLongPress(keyEvent)) {
+        for (listener in listenerList) {
+            if (listener.repeatCount == repeatCount && listener.onKeyLongPress(keyEvent)) {
+                log("onKeyDown -- intercept", listener)
                 intercept = true
             }
         }
-        listenerList.removeAll(removedList)
         if (intercept) {
             consumeEvent(keyEvent)
         }
@@ -96,7 +92,7 @@ class KeyEventRepeatGroup : KeyEventRepeatProvider {
 
 }
 
-fun interface KeyEventRepeatListener {
+interface KeyEventRepeatListener {
 
     companion object {
         const val LONG_PRESS_THRESHOLD = 5
@@ -109,6 +105,18 @@ fun interface KeyEventRepeatListener {
 
     fun onKeyLongPress(keyEvent: KeyEvent): Boolean
 
+}
+
+fun interface SimpleKeyEventRepeatListener {
+    fun onKeyLongPress(keyEvent: KeyEvent): Boolean
+}
+
+class SimpleKeyEventRepeatCallback(
+    private val impl: SimpleKeyEventRepeatListener
+) : KeyEventRepeatListener {
+    override fun onKeyLongPress(keyEvent: KeyEvent): Boolean {
+        return impl.onKeyLongPress(keyEvent)
+    }
 }
 
 interface KeyEventRepeatProvider {

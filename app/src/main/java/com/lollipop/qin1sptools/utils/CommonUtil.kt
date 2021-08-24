@@ -35,7 +35,7 @@ object CommonUtil {
     /**
      * 全局的打印日志的关键字
      */
-    var logTag = "WindowsLauncher"
+    var logTag = "Lollipop"
 
     /**
      * Log开关

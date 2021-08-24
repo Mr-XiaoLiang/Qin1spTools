@@ -17,6 +17,7 @@ import com.lollipop.qin1sptools.dialog.MessageDialog
 import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventProviderHelper
+import com.lollipop.qin1sptools.event.SimpleKeyEventRepeatCallback
 import com.lollipop.qin1sptools.utils.*
 import ru.playsoftware.j2meloader.util.Constants
 import javax.microedition.lcdui.Canvas
@@ -125,7 +126,10 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
             View.SYSTEM_UI_FLAG_FULLSCREEN
         )
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
         window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
@@ -165,11 +169,12 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     }
 
     private fun initEventListener() {
-        addKeyEventRepeatListener(KeyEvent.BACK) {
-            showBackDialog()
-            onKeyUp(it, 0)
-            true
-        }
+        addKeyEventRepeatListener(KeyEvent.BACK,
+            SimpleKeyEventRepeatCallback {
+                showBackDialog()
+                onKeyUp(it, 0)
+                true
+            })
     }
 
     @Throws(Exception::class)
