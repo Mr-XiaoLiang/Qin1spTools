@@ -8,11 +8,12 @@ import android.view.ViewManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.BaseActivity
 import com.lollipop.qin1sptools.event.KeyEventProvider
 import com.lollipop.qin1sptools.utils.dp2px
+import com.lollipop.qin1sptools.utils.getColor
 import javax.microedition.util.LinkedList
-import kotlin.math.acos
 
 /**
  * @author lollipop
@@ -42,6 +43,13 @@ class Guide private constructor(private val option: Option) {
         }
     }
 
+    private val checkButton: ImageView by lazy {
+        ImageView(option.activity).apply {
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            setImageResource(R.drawable.featurebar_ok)
+        }
+    }
+
     private val guideView: LinearLayout by lazy {
         LinearLayout(option.activity).apply {
             orientation = LinearLayout.VERTICAL
@@ -51,6 +59,15 @@ class Guide private constructor(private val option: Option) {
             addView(guideSketchView, createLayoutParams().apply {
                 setMargins(0, padding, 0, 0)
             })
+
+            val checkImageButtonSize =
+                context.resources.getDimensionPixelSize(R.dimen.feature_bar_size)
+            addView(checkButton,
+                LinearLayout.LayoutParams(checkImageButtonSize, checkImageButtonSize).apply {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
+            )
+            setBackgroundColor(getColor(R.color.dialogBackground))
         }
     }
 
@@ -58,6 +75,7 @@ class Guide private constructor(private val option: Option) {
         if (!initView()) {
             return
         }
+
         // TODO
     }
 
