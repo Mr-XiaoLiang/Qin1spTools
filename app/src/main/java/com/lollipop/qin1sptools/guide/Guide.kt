@@ -10,7 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.BaseActivity
+import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.event.KeyEventListener
 import com.lollipop.qin1sptools.event.KeyEventProvider
+import com.lollipop.qin1sptools.event.SimpleKeyEventListener
 import com.lollipop.qin1sptools.utils.dp2px
 import com.lollipop.qin1sptools.utils.getColor
 import javax.microedition.util.LinkedList
@@ -71,12 +74,30 @@ class Guide private constructor(private val option: Option) {
         }
     }
 
+    private val keyEventListener: KeyEventListener by lazy {
+        SimpleKeyEventListener {
+            onClick {
+                if (it == KeyEvent.CENTER) {
+                    nextStep()
+                }
+            }
+        }
+    }
+
     private fun show() {
+        if (option.stepList.isEmpty) {
+            dismiss()
+            return
+        }
         if (!initView()) {
             return
         }
+        initListener()
+        nextStep()
+    }
 
-        // TODO
+    private fun initListener() {
+        option.keyEventProvider.addKeyEventListener(keyEventListener)
     }
 
     private fun initView(): Boolean {
@@ -104,6 +125,11 @@ class Guide private constructor(private val option: Option) {
     }
 
     private fun nextStep() {
+        // TODO
+    }
+
+    private fun dismiss() {
+        option.keyEventProvider.removeKeyEventListener(keyEventListener)
         // TODO
     }
 
