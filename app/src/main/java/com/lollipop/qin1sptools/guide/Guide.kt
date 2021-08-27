@@ -125,12 +125,22 @@ class Guide private constructor(private val option: Option) {
     }
 
     private fun nextStep() {
-        // TODO
+        if (option.stepList.isEmpty) {
+            dismiss()
+            return
+        }
+        val step = option.stepList.removeFirst()
+        guideTextView.text = step.msg
+        guideSketchView.setImageResource(step.sketchId)
     }
 
     private fun dismiss() {
         option.keyEventProvider.removeKeyEventListener(keyEventListener)
-        // TODO
+        guideView.parent?.let {
+            if (it is ViewManager) {
+                it.removeView(guideView)
+            }
+        }
     }
 
     private fun createLayoutParams(): LinearLayout.LayoutParams {
@@ -153,6 +163,14 @@ class Guide private constructor(private val option: Option) {
     ) {
 
         private val stepList = LinkedList<Step>()
+
+//        fun next(msgId: Int, keyEvent: KeyEvent): Builder {
+//            return next(Step(activity.getString(msgId), sketchId))
+//        }
+
+        fun next(msgId: Int, sketchId: Int): Builder {
+            return next(Step(activity.getString(msgId), sketchId))
+        }
 
         fun next(step: Step): Builder {
             stepList.addLast(step)
