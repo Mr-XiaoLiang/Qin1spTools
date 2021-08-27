@@ -21,7 +21,7 @@ class SimpleKeyEventListener(initCallback: SimpleKeyEventListener.() -> Unit) : 
     private var lastEventRepeatCount = 0
 
     init {
-        initCallback()
+        this.initCallback()
     }
 
     fun onKeyDown(callback: (event: KeyEvent, repeatCount: Int) -> Boolean) {

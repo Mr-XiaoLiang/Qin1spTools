@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.FileChooseActivity
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
+import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.guide.Guide
 import com.lollipop.qin1sptools.utils.FeatureIcon
 import com.lollipop.qin1sptools.utils.doAsync
 import com.lollipop.qin1sptools.utils.onUI
@@ -184,6 +186,12 @@ class J2meActivity : GridMenuActivity() {
 
     private fun convertJar(file: File) {
         convertJar(Uri.fromFile(file))
+    }
+
+    override fun buildGuide(builder: Guide.Builder) {
+        builder.next(KeyEvent.OPTION, R.string.guide_add_jar)
+            .next(KeyEvent.KEY_5, R.string.guide_grid_num)
+        super.buildGuide(builder)
     }
 
 }

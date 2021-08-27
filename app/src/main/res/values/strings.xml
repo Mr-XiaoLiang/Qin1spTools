@@ -17,4 +17,14 @@
     <string name="menu">菜单</string>
     <string name="ok">选择</string>
     <string name="cancel">取消</string>
+    <string name="guide_show">点击可以再次查看引导</string>
+    <string name="guide_add_jar">点击按钮进入文件选择页面，可以添加Java应用</string>
+    <string name="guide_grid_num">点击数字键可以选中图标，再次点击被选中图标对应的数字将会打开应用</string>
+    <string name="guide_micro_back">已进入Java应用，按键将交给应用程序响应。但是您仍然可以通过长按返回键强制退出应用</string>
+    <string name="guide_micro_screenshot">可以在Java应用界面点击按钮来截屏</string>
+    <string name="guide_file_up">点击按钮可以向上选择</string>
+    <string name="guide_file_down">点击按钮可以向下选择</string>
+    <string name="guide_file_center">点击按钮可以打开文件夹或选择文件</string>
+    <string name="guide_file_option">点击按钮可以确认当前文件夹或者文件</string>
+    <string name="guide_file_back">点击按钮可以返回上一级或者退出文件浏览</string>
 </resources>

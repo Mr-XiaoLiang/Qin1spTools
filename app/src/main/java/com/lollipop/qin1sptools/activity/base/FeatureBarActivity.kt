@@ -5,13 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewManager
 import androidx.viewbinding.ViewBinding
+import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.ActivityFeatureBarBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventListener
-import com.lollipop.qin1sptools.utils.FeatureIcon
-import com.lollipop.qin1sptools.utils.ViewToastHelper
-import com.lollipop.qin1sptools.utils.lazyBind
-import com.lollipop.qin1sptools.utils.visibleOrGone
+import com.lollipop.qin1sptools.guide.Guide
+import com.lollipop.qin1sptools.utils.*
 
 /**
  * @author lollipop
@@ -147,6 +146,10 @@ open class FeatureBarActivity : BaseActivity() {
                 }
             }
 
+            KeyEvent.KEY_POUND -> {
+                showGuide()
+            }
+
             else -> {
             }
         }
@@ -172,6 +175,11 @@ open class FeatureBarActivity : BaseActivity() {
 
     protected fun showToast(value: String) {
         toastHelper.show(value)
+    }
+
+    override fun buildGuide(builder: Guide.Builder) {
+        builder.next(KeyEvent.KEY_POUND, R.string.guide_show)
+        super.buildGuide(builder)
     }
 
     private class LoadingKeyFilter: KeyEventListener {

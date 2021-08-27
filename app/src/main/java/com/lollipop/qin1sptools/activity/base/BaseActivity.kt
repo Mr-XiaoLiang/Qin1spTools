@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.lollipop.qin1sptools.debug.DebugVirtualKeyboard
 import com.lollipop.qin1sptools.event.*
+import com.lollipop.qin1sptools.guide.Guide
+import com.lollipop.qin1sptools.utils.get
+import com.lollipop.qin1sptools.utils.set
 
 /**
  * @author lollipop
@@ -13,6 +16,10 @@ import com.lollipop.qin1sptools.event.*
  */
 open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListener,
     KeyEventRepeatProvider {
+
+    companion object {
+        private const val SHOW_GUIDE = "SHOW_GUIDE"
+    }
 
     private val keyEventRepeatGroup by lazy {
         KeyEventRepeatGroup()
@@ -49,6 +56,13 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
         super.onStart()
         if (DebugVirtualKeyboard.AUTO_SHOW_VIRTUAL_KEYBOARD) {
             debugVirtualKeyboard.show()
+        }
+        val name = this::class.java.simpleName
+        val showGuideKey = name + SHOW_GUIDE
+        val isShownGuide = get(showGuideKey, false)
+        if (!isShownGuide) {
+            set(showGuideKey, true)
+            showGuide()
         }
     }
 
@@ -93,6 +107,16 @@ open class BaseActivity : AppCompatActivity(), KeyEventProvider, KeyEventListene
         super.onDestroy()
         keyEventProviderHelper.clear()
         keyEventRepeatGroup.clear()
+    }
+
+    protected open fun buildGuide(builder: Guide.Builder) {
+        // 默认没有实现，那么就不会显示
+    }
+
+    protected fun showGuide() {
+        val guide = Guide.create(this)
+        buildGuide(guide)
+        guide.show()
     }
 
 }

@@ -18,6 +18,7 @@ import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEventProviderHelper
 import com.lollipop.qin1sptools.event.SimpleKeyEventRepeatCallback
+import com.lollipop.qin1sptools.guide.Guide
 import com.lollipop.qin1sptools.utils.*
 import ru.playsoftware.j2meloader.util.Constants
 import javax.microedition.lcdui.Canvas
@@ -392,6 +393,12 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
     override fun onBackPressed() {
         onKeyDown(KeyEvent.BACK, 0)
         onKeyUp(KeyEvent.BACK, 0)
+    }
+
+    override fun buildGuide(builder: Guide.Builder) {
+        builder.clean()
+            .next(KeyEvent.BACK, R.string.guide_micro_back)
+            .next(KeyEvent.CALL, R.string.guide_micro_screenshot)
     }
 
     private enum class Orientation(val value: Int) {

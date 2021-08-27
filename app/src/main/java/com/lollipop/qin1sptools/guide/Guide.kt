@@ -164,16 +164,47 @@ class Guide private constructor(private val option: Option) {
 
         private val stepList = LinkedList<Step>()
 
-//        fun next(msgId: Int, keyEvent: KeyEvent): Builder {
-//            return next(Step(activity.getString(msgId), sketchId))
-//        }
+        fun next(keyEvent: KeyEvent, msgId: Int): Builder {
+            return next(Step(activity.getString(msgId), getSketchByEvent(keyEvent)))
+        }
 
-        fun next(msgId: Int, sketchId: Int): Builder {
+        private fun getSketchByEvent(keyEvent: KeyEvent): Int {
+            return when (keyEvent) {
+                KeyEvent.UNKNOWN -> 0
+                KeyEvent.UP -> R.drawable.guide_key_up
+                KeyEvent.DOWN -> R.drawable.guide_key_down
+                KeyEvent.LEFT -> R.drawable.guide_key_left
+                KeyEvent.RIGHT -> R.drawable.guide_key_right
+                KeyEvent.CENTER -> R.drawable.guide_key_center
+                KeyEvent.OPTION -> R.drawable.guide_key_option
+                KeyEvent.BACK -> R.drawable.guide_key_back
+                KeyEvent.CALL -> R.drawable.guide_key_call
+                KeyEvent.KEY_1 -> R.drawable.guide_key_1
+                KeyEvent.KEY_2 -> R.drawable.guide_key_2
+                KeyEvent.KEY_3 -> R.drawable.guide_key_3
+                KeyEvent.KEY_4 -> R.drawable.guide_key_4
+                KeyEvent.KEY_5 -> R.drawable.guide_key_5
+                KeyEvent.KEY_6 -> R.drawable.guide_key_6
+                KeyEvent.KEY_7 -> R.drawable.guide_key_7
+                KeyEvent.KEY_8 -> R.drawable.guide_key_8
+                KeyEvent.KEY_9 -> R.drawable.guide_key_9
+                KeyEvent.KEY_0 -> R.drawable.guide_key_0
+                KeyEvent.KEY_STAR -> R.drawable.guide_key_star
+                KeyEvent.KEY_POUND -> R.drawable.guide_key_pound
+            }
+        }
+
+        fun next(sketchId: Int, msgId: Int): Builder {
             return next(Step(activity.getString(msgId), sketchId))
         }
 
         fun next(step: Step): Builder {
             stepList.addLast(step)
+            return this
+        }
+
+        fun clean(): Builder {
+            stepList.clear()
             return this
         }
 

@@ -7,6 +7,7 @@ import android.os.Environment
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.SimpleListActivity
 import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.guide.Guide
 import com.lollipop.qin1sptools.utils.ActionIndexer
 import com.lollipop.qin1sptools.utils.FeatureIcon
 import com.lollipop.qin1sptools.utils.doAsync
@@ -283,6 +284,15 @@ class FileChooseActivity : SimpleListActivity() {
         setResultFile(this, file)
         finish()
         return
+    }
+
+    override fun buildGuide(builder: Guide.Builder) {
+        builder.next(KeyEvent.UP, R.string.guide_file_up)
+            .next(KeyEvent.DOWN, R.string.guide_file_down)
+            .next(KeyEvent.CENTER, R.string.guide_file_center)
+            .next(KeyEvent.OPTION, R.string.guide_file_option)
+            .next(KeyEvent.BACK, R.string.guide_file_back)
+        super.buildGuide(builder)
     }
 
     private class DirInfo(
