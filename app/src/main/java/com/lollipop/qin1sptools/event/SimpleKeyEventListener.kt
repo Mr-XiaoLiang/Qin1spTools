@@ -4,7 +4,10 @@ package com.lollipop.qin1sptools.event
  * @author lollipop
  * @date 2021/8/27 22:35
  */
-class SimpleKeyEventListener(initCallback: SimpleKeyEventListener.() -> Unit) : KeyEventListener {
+class SimpleKeyEventListener(
+    private val intercept: Boolean,
+    initCallback: SimpleKeyEventListener.() -> Unit
+) : KeyEventListener {
 
     companion object {
         private const val CLICK_REPEAT_COUNT_THRESHOLD = 2
@@ -44,7 +47,7 @@ class SimpleKeyEventListener(initCallback: SimpleKeyEventListener.() -> Unit) : 
         }
         lastDownEvent = event
         lastEventRepeatCount = repeatCount
-        return false
+        return intercept
     }
 
     override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
@@ -58,13 +61,13 @@ class SimpleKeyEventListener(initCallback: SimpleKeyEventListener.() -> Unit) : 
         lastEventRepeatCount = 0
 
         if (lastEvent == KeyEvent.UNKNOWN || event != lastEvent) {
-            return false
+            return intercept
         }
         if (count <= CLICK_REPEAT_COUNT_THRESHOLD) {
             onClick(event)
             return true
         }
-        return false
+        return intercept
     }
 
     private fun onClick(event: KeyEvent) {

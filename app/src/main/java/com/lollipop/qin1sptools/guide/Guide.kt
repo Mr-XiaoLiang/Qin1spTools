@@ -2,6 +2,7 @@ package com.lollipop.qin1sptools.guide
 
 import android.app.Activity
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewManager
@@ -37,6 +38,7 @@ class Guide private constructor(private val option: Option) {
         TextView(option.activity).apply {
             gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F)
         }
     }
 
@@ -75,7 +77,7 @@ class Guide private constructor(private val option: Option) {
     }
 
     private val keyEventListener: KeyEventListener by lazy {
-        SimpleKeyEventListener {
+        SimpleKeyEventListener(true) {
             onClick {
                 if (it == KeyEvent.CENTER) {
                     nextStep()
