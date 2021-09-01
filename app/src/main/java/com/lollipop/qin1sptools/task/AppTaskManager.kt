@@ -1,5 +1,6 @@
 package com.lollipop.qin1sptools.task
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,6 +22,11 @@ class AppTaskManager {
         private const val LOCK_KEY = "AppInfoLock"
 
         private var needReloadAppInfo = true
+
+        private val processWhiteList = arrayOf(
+            "system",
+            "com.Android.phone"
+        )
 
         /**
          * 获取包名对应的应用名称
@@ -58,7 +64,46 @@ class AppTaskManager {
     val runningTaskList = ArrayList<TaskInfo>()
 
     fun refresh(context: Context) {
+        loadAppInfo(context)
+        loadRunningProcess(context)
+    }
 
+    /**
+     * 加载进程信息
+     */
+    private fun loadRunningProcess(context: Context) {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE)
+        if (activityManager !is ActivityManager) {
+            runningTaskList.clear()
+            return
+        }
+        val tempList = ArrayList<TaskInfo>()
+        val runningAppProcesses = activityManager.runningAppProcesses
+        for (processInfo in runningAppProcesses) {
+            if (isInWhiteList(processInfo.processName)) {
+                continue
+            }
+            val pkgList = processInfo.pkgList
+            if (pkgList.isEmpty()) {
+                continue
+            }
+            val appInfo = findAppInfoByPackage(pkgList) ?: continue
+            tempList.add(TaskInfo(
+                appInfo,
+                processInfo.processName,
+                processInfo.pid,
+                processInfo.uid,
+                processInfo.pkgList
+            ))
+        }
+    }
+
+    private fun isInWhiteList(processName: String): Boolean {
+        return processName in processWhiteList
+    }
+
+    private fun findAppInfoByPackage(nameArray: Array<String>): AppInfo? {
+        return appInfoList.find { it.packageName in nameArray }
     }
 
     /**
