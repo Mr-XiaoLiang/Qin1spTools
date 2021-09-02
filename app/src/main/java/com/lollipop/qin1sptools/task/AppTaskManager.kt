@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 
+
 /**
  * @author lollipop
  * @date 2021/8/30 20:35
@@ -53,6 +54,16 @@ class AppTaskManager {
                     }
                 }
                 return null
+            }
+        }
+
+        fun getMemoryInfo(context: Context): ActivityManager.MemoryInfo {
+            return ActivityManager.MemoryInfo().apply {
+                context.getSystemService(Context.ACTIVITY_SERVICE)?.let {
+                    if (it is ActivityManager) {
+                        it.getMemoryInfo(this)
+                    }
+                }
             }
         }
     }
