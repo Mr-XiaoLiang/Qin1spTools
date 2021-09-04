@@ -21,6 +21,9 @@ class AppTaskManager {
          */
         private val appResolveInfo = ArrayList<AppResolveInfo>()
 
+        /**
+         * 同步锁，避免异步问题
+         */
         private const val LOCK_KEY = "AppInfoLock"
 
         private var needReloadAppInfo = true
