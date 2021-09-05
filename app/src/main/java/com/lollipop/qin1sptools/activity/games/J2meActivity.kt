@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.FileChooseActivity
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
+import com.lollipop.qin1sptools.dialog.MessageDialog
+import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.guide.Guide
 import com.lollipop.qin1sptools.utils.FeatureIcon
@@ -22,7 +24,6 @@ import ru.playsoftware.j2meloader.util.AppUtils
 import ru.playsoftware.j2meloader.util.JarConverter
 import java.io.File
 import javax.microedition.util.ContextHolder
-import javax.microedition.util.WindowInsetsHelper
 
 class J2meActivity : GridMenuActivity() {
 
@@ -45,6 +46,8 @@ class J2meActivity : GridMenuActivity() {
     private val converter by lazy {
         JarConverter(applicationInfo.dataDir)
     }
+
+    private var deleteDialog: MessageDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +132,37 @@ class J2meActivity : GridMenuActivity() {
             gameInfo.pathExt,
             ContextHolder.getStatusBarSize()
         )
+    }
+
+    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
+        if (event == KeyEvent.KEY_POUND) {
+            if (callDeleteApp()) {
+                return true
+            }
+        }
+        return super.onKeyUp(event, repeatCount)
+    }
+
+    private fun callDeleteApp(): Boolean {
+        if (deleteDialog != null) {
+            return true
+        }
+        val selectedItem = getSelectedItem() ?: return false
+        val gameInfo = gameList.find { it.id == selectedItem.id } ?: return false
+        deleteDialog = MessageDialog.build(this) {
+            message = getString(R.string.dialog_msg_delete_java_game, gameInfo.title)
+            setLeftButton(R.string.delete) {
+                AppUtils.deleteApp(gameInfo)
+                it.dismiss()
+                deleteDialog = null
+            }
+            setRightButton(R.string.cancel) {
+                it.dismiss()
+                deleteDialog = null
+            }
+        }
+        deleteDialog?.show()
+        return true
     }
 
     private fun updateWindowInsets() {

@@ -27,4 +27,6 @@
     <string name="guide_file_center">点击按钮可以打开文件夹或选择文件</string>
     <string name="guide_file_option">点击按钮可以确认当前文件夹或者文件</string>
     <string name="guide_file_back">点击按钮可以返回上一级或者退出文件浏览</string>
+    <string name="dialog_msg_delete_java_game">是否要删除这个应用:"%1$s"？</string>
+    <string name="delete">删除</string>
 </resources>

@@ -34,7 +34,7 @@ open class GridMenuActivity : FeatureBarActivity() {
 
     private val viewRecycler = ViewRecycler()
 
-    private var selectedItemIndex = DEFAULT_ITEM_POSITION
+    protected var selectedItemIndex = DEFAULT_ITEM_POSITION
         set(value) {
             field = value
             onSelectedItemChanged(value)
@@ -209,6 +209,19 @@ open class GridMenuActivity : FeatureBarActivity() {
         } else {
             onGridItemInfoClick(null, -1)
         }
+    }
+
+    protected fun getSelectedItem(): GridItem? {
+        val pageView = findCurrentGridPage() ?: return null
+        val position = selectedItemIndex
+        val itemIndex = getItemIndexByPosition(position)
+        if (itemIndex < 0) {
+            return null
+        }
+        if (pageView.selectedChild >= 0 && pageView.selectedChild == position - 1) {
+            return gridItemList[itemIndex]
+        }
+        return null
     }
 
     private fun getItemIndexByPosition(position: Int): Int {
