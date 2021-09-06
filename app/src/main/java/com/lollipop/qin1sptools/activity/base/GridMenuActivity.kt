@@ -34,7 +34,7 @@ open class GridMenuActivity : FeatureBarActivity() {
 
     private val viewRecycler = ViewRecycler()
 
-    protected var selectedItemIndex = DEFAULT_ITEM_POSITION
+    private var selectedItemIndex = DEFAULT_ITEM_POSITION
         set(value) {
             field = value
             onSelectedItemChanged(value)
@@ -99,6 +99,11 @@ open class GridMenuActivity : FeatureBarActivity() {
         pageView.notifyChildIndexChanged()
     }
 
+    protected fun resetCurrentSelected() {
+        selectedItemIndex = DEFAULT_ITEM_POSITION
+        binding.pagedLayout.currentPage()?.resetSelectedFlag()
+    }
+
     override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
         when (event) {
             KeyEvent.CENTER, KeyEvent.CALL -> {
@@ -111,14 +116,12 @@ open class GridMenuActivity : FeatureBarActivity() {
             }
             KeyEvent.LEFT, KeyEvent.UP -> {
                 // 翻页后重置选中序号
-                selectedItemIndex = DEFAULT_ITEM_POSITION
-                binding.pagedLayout.currentPage()?.resetSelectedFlag()
+                resetCurrentSelected()
                 binding.pagedLayout.lastPage()?.resetSelectedFlag()
             }
             KeyEvent.RIGHT, KeyEvent.DOWN -> {
                 // 翻页后重置选中序号
-                selectedItemIndex = DEFAULT_ITEM_POSITION
-                binding.pagedLayout.currentPage()?.resetSelectedFlag()
+                resetCurrentSelected()
                 binding.pagedLayout.nextPage()?.resetSelectedFlag()
             }
             KeyEvent.KEY_1 -> {

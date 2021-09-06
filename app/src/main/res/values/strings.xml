@@ -29,4 +29,5 @@
     <string name="guide_file_back">点击按钮可以返回上一级或者退出文件浏览</string>
     <string name="dialog_msg_delete_java_game">是否要删除这个应用:"%1$s"？</string>
     <string name="delete">删除</string>
+    <string name="guide_delete_java_app">点击按钮可以删除应用</string>
 </resources>

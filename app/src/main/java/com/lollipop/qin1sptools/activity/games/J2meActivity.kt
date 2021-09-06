@@ -10,7 +10,6 @@ import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.FileChooseActivity
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.dialog.MessageDialog
-import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.guide.Guide
 import com.lollipop.qin1sptools.utils.FeatureIcon
@@ -19,7 +18,6 @@ import com.lollipop.qin1sptools.utils.onUI
 import com.lollipop.qin1sptools.utils.requestStoragePermissions
 import ru.playsoftware.j2meloader.applist.AppItem
 import ru.playsoftware.j2meloader.appsdb.AppRepository
-import ru.playsoftware.j2meloader.config.Config
 import ru.playsoftware.j2meloader.util.AppUtils
 import ru.playsoftware.j2meloader.util.JarConverter
 import java.io.File
@@ -134,25 +132,11 @@ class J2meActivity : GridMenuActivity() {
         )
     }
 
-    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
-        if (event == KeyEvent.KEY_POUND) {
-            if (callDeleteApp()) {
-                return true
-            }
-        }
-        return super.onKeyUp(event, repeatCount)
-    }
-
-    private fun callDeleteApp(): Boolean {
-        if (deleteDialog != null) {
-            return true
-        }
-        val selectedItem = getSelectedItem() ?: return false
-        val gameInfo = gameList.find { it.id == selectedItem.id } ?: return false
+    private fun callDeleteApp(gameInfo: AppItem): Boolean {
         deleteDialog = MessageDialog.build(this) {
             message = getString(R.string.dialog_msg_delete_java_game, gameInfo.title)
             setLeftButton(R.string.delete) {
-                AppUtils.deleteApp(gameInfo)
+                deleteApp(gameInfo)
                 it.dismiss()
                 deleteDialog = null
             }
@@ -165,6 +149,20 @@ class J2meActivity : GridMenuActivity() {
         return true
     }
 
+    private fun deleteApp(gameInfo: AppItem) {
+        startLoading()
+        resetCurrentSelected()
+        doAsync(::onError) {
+            AppUtils.deleteApp(gameInfo)
+            appRepository.delete(gameInfo)
+            updateGameList()
+            onUI {
+                endLoading()
+                notifyDataSetChanged()
+            }
+        }
+    }
+
     private fun updateWindowInsets() {
         val rectangle = Rect()
         window.decorView.getWindowVisibleDisplayFrame(rectangle)
@@ -172,13 +170,10 @@ class J2meActivity : GridMenuActivity() {
     }
 
     override fun onGridItemInfoClick(item: GridItem?, index: Int) {
-        if (item == null) {
-            FileChooseActivity.start(this, rootDir = Config.getEmulatorDir())
-        } else {
-            val id = item.id
-            val gameInfo = gameList.find { it.id == id } ?: return
-            FileChooseActivity.start(this, rootDir = gameInfo.pathExt)
-        }
+        item ?: return
+        val id = item.id
+        val gameInfo = gameList.find { it.id == id } ?: return
+        callDeleteApp(gameInfo)
     }
 
     override fun onLeftFeatureButtonClick(): Boolean {
@@ -197,6 +192,11 @@ class J2meActivity : GridMenuActivity() {
             return
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onStop() {
+        resetCurrentSelected()
+        super.onStop()
     }
 
     private fun convertJar(uri: Uri) {
@@ -225,6 +225,7 @@ class J2meActivity : GridMenuActivity() {
     override fun buildGuide(builder: Guide.Builder) {
         builder.next(KeyEvent.OPTION, R.string.guide_add_jar)
             .next(KeyEvent.KEY_5, R.string.guide_grid_num)
+            .next(KeyEvent.KEY_STAR, R.string.guide_delete_java_app)
         super.buildGuide(builder)
     }
 

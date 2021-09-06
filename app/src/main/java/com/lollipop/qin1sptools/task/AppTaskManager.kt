@@ -61,6 +61,9 @@ class AppTaskManager {
             }
         }
 
+        /**
+         * 获取内存信息
+         */
         fun getMemoryInfo(context: Context): ActivityManager.MemoryInfo {
             return ActivityManager.MemoryInfo().apply {
                 context.getSystemService(Context.ACTIVITY_SERVICE)?.let {
