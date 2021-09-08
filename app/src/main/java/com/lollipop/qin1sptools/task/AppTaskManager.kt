@@ -73,6 +73,19 @@ class AppTaskManager {
                 }
             }
         }
+
+        /**
+         * 杀死进程
+         */
+        private fun killProcess(activityManager: ActivityManager, packageName: String): Boolean {
+            return try {
+                activityManager.killBackgroundProcesses(packageName)
+                true
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                false
+            }
+        }
     }
 
     private var onAppInfoChanged = true
@@ -84,6 +97,18 @@ class AppTaskManager {
     fun refresh(context: Context) {
         loadAppInfo(context)
         loadRunningProcess(context)
+    }
+
+    fun kill(context: Context, taskInfo: TaskInfo): Boolean {
+        return kill(context, taskInfo.appInfo)
+    }
+
+    fun kill(context: Context, appInfo: AppInfo): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE)
+        if (activityManager !is ActivityManager) {
+            return false
+        }
+        return killProcess(activityManager, appInfo.packageName)
     }
 
     /**
