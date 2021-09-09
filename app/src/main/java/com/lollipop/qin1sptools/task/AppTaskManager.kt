@@ -86,6 +86,14 @@ class AppTaskManager {
                 false
             }
         }
+
+        fun kill(context: Context, appInfo: AppInfo): Boolean {
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE)
+            if (activityManager !is ActivityManager) {
+                return false
+            }
+            return killProcess(activityManager, appInfo.packageName)
+        }
     }
 
     private var onAppInfoChanged = true
@@ -101,14 +109,6 @@ class AppTaskManager {
 
     fun kill(context: Context, taskInfo: TaskInfo): Boolean {
         return kill(context, taskInfo.appInfo)
-    }
-
-    fun kill(context: Context, appInfo: AppInfo): Boolean {
-        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE)
-        if (activityManager !is ActivityManager) {
-            return false
-        }
-        return killProcess(activityManager, appInfo.packageName)
     }
 
     /**
