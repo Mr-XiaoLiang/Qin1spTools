@@ -21,6 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Qin1spTools">
         <activity
+            android:name=".activity.DashboardActivity"
+            android:exported="true"
+            android:label="@string/dashboard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activity.games.MicroDisplayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
             android:process=":midlet" />
@@ -78,10 +87,11 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 
