@@ -11,7 +11,7 @@
         <attr name="loadingColor" format="color"/>
         <attr name="progressBarWidth" format="dimension"/>
     </declare-styleable>
-    <declare-styleable name="TileGroup_TileLayoutParams">
+    <declare-styleable name="TileGroup_Layout">
         <attr name="tileSpanX" format="integer"/>
         <attr name="tileSpanY" format="integer"/>
     </declare-styleable>
