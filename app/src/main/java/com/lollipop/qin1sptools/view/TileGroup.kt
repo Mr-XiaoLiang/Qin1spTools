@@ -1,7 +1,6 @@
 package com.lollipop.qin1sptools.view
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.ViewGroup
 import com.lollipop.qin1sptools.R
@@ -39,25 +38,72 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
         val heightSize = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         measureChild(widthSize, heightSize)
         setMeasuredDimension(
-            widthSize,
-            heightSize
+            widthSize - paddingLeft - paddingRight,
+            heightSize - paddingTop - paddingBottom
         )
     }
 
     private fun measureChild(widthSize: Int, heightSize: Int) {
         val stepX = (widthSize - spaceWidth) / spanXCount
         val stepY = (heightSize - spaceWidth) / spanYCount
-        val blockX = stepX - spaceWidth
-        val blockY = stepY - spaceWidth
         for (index in 0 until childCount) {
             getChildAt(index)?.let { child ->
-                TODO("Not yet implemented")
+                val layoutParams = child.layoutParams as TileLayoutParams
+                val spanX = getSpan(layoutParams.spanX, spanXCount)
+                val spanY = getSpan(layoutParams.spanY, spanYCount)
+                val childWidth = stepX * spanX - spaceWidth
+                val childHeight = stepY * spanY - spaceWidth
+                child.measure(
+                    MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY)
+                )
+            }
+        }
+    }
+
+    private fun getSpan(span: Int, spanMax: Int): Int {
+        return when {
+            span > spanMax -> {
+                spanMax
+            }
+            span < 1 -> {
+                spanMax
+            }
+            else -> {
+                span
             }
         }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        TODO("Not yet implemented")
+        val widthSize = width - paddingLeft - paddingRight
+        val heightSize = height - paddingTop - paddingBottom
+        val stepX = (widthSize - spaceWidth) / spanXCount
+        val stepY = (heightSize - spaceWidth) / spanYCount
+
+        var xIndex = 0
+        var yIndex = 0
+        val leftEdge = paddingLeft + spaceWidth
+        val topEdge = paddingTop + spaceWidth
+
+        for (index in 0 until childCount) {
+            getChildAt(index)?.let { child ->
+                val layoutParams = child.layoutParams as TileLayoutParams
+                val spanX = getSpan(layoutParams.spanX, spanXCount)
+                if (spanXCount - xIndex < spanX) {
+                    yIndex ++
+                    xIndex = 0
+                }
+                val spanY = getSpan(layoutParams.spanY, spanYCount)
+                val childWidth = stepX * spanX - spaceWidth
+                val childHeight = stepY * spanY - spaceWidth
+                val childLeft = xIndex * stepX + leftEdge
+                val childTop = yIndex * stepY + topEdge
+                child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight)
+                xIndex += spanX
+                yIndex += spanY
+            }
+        }
     }
 
     override fun checkLayoutParams(p: LayoutParams?): Boolean {
