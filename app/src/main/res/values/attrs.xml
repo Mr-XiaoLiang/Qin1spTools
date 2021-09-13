@@ -12,8 +12,10 @@
         <attr name="progressBarWidth" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="TileGroup_Layout">
-        <attr name="tileSpanX" format="integer"/>
+        <attr name="tileSpanX" format="integer" />
         <attr name="tileSpanY" format="integer"/>
+        <attr name="tileIndexX" format="integer"/>
+        <attr name="tileIndexY" format="integer"/>
     </declare-styleable>
     <declare-styleable name="TileGroup">
         <attr name="tileSpanXCount" format="integer"/>

@@ -81,8 +81,6 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
         val stepX = (widthSize - spaceWidth) / spanXCount
         val stepY = (heightSize - spaceWidth) / spanYCount
 
-        var xIndex = 0
-        var yIndex = 0
         val leftEdge = paddingLeft + spaceWidth
         val topEdge = paddingTop + spaceWidth
 
@@ -90,18 +88,12 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
             getChildAt(index)?.let { child ->
                 val layoutParams = child.layoutParams as TileLayoutParams
                 val spanX = getSpan(layoutParams.spanX, spanXCount)
-                if (spanXCount - xIndex < spanX) {
-                    yIndex ++
-                    xIndex = 0
-                }
                 val spanY = getSpan(layoutParams.spanY, spanYCount)
                 val childWidth = stepX * spanX - spaceWidth
                 val childHeight = stepY * spanY - spaceWidth
-                val childLeft = xIndex * stepX + leftEdge
-                val childTop = yIndex * stepY + topEdge
+                val childLeft = layoutParams.indexX * stepX + leftEdge
+                val childTop = layoutParams.indexY * stepY + topEdge
                 child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight)
-                xIndex += spanX
-                yIndex += spanY
             }
         }
     }
@@ -140,6 +132,8 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
                 val a = context.obtainStyledAttributes(attr, R.styleable.TileGroup_Layout)
                 spanX = a.getInt(R.styleable.TileGroup_Layout_tileSpanX, SPAN_FULL)
                 spanY = a.getInt(R.styleable.TileGroup_Layout_tileSpanX, SPAN_FULL)
+                this.indexX = a.getInt(R.styleable.TileGroup_Layout_tileIndexX, 0)
+                this.indexY = a.getInt(R.styleable.TileGroup_Layout_tileIndexY, 0)
                 a.recycle()
             }
         }
@@ -148,11 +142,16 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
             if (source is TileLayoutParams) {
                 this.spanX = source.spanX
                 this.spanY = source.spanY
+                this.indexX = source.indexX
+                this.indexY = source.indexY
             }
         }
 
         var spanX: Int = SPAN_FULL
         var spanY: Int = SPAN_FULL
+
+        var indexX: Int = 0
+        var indexY: Int = 0
 
     }
 
