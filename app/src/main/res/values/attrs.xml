@@ -22,4 +22,11 @@
         <attr name="tileSpanYCount" format="integer"/>
         <attr name="tileSpaceWidth" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="RoundTileView">
+        <attr name="tileCorner" format="dimension"/>
+        <attr name="tileCornerLeftTop" format="dimension"/>
+        <attr name="tileCornerRightTop" format="dimension"/>
+        <attr name="tileCornerRightBottom" format="dimension"/>
+        <attr name="tileCornerLeftBottom" format="dimension"/>
+    </declare-styleable>
 </resources>

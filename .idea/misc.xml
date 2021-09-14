@@ -9,7 +9,7 @@
         <entry key="app/src/main/res/drawable/bg_position.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_bottom_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_top_24.xml" value="0.24722222222222223" />
-        <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.24547101449275363" />
+        <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_feature_bar.xml" value="0.26068003487358327" />
         <entry key="app/src/main/res/layout/activity_micro_display.xml" value="0.21883173496076722" />
         <entry key="app/src/main/res/layout/dialog.xml" value="0.2013677811550152" />

@@ -8,31 +8,46 @@
     tools:context=".activity.DashboardActivity"
     app:tileSpaceWidth="10dp">
 
-    <TextView
+    <com.lollipop.qin1sptools.view.RoundTileView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tileSpanY="4"
         app:tileSpanX="2"
         app:tileIndexX="0"
         app:tileIndexY="0"
-        android:background="#F00"/>
+        style="@style/DashboardTile">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0f0"/>
+    </com.lollipop.qin1sptools.view.RoundTileView>
 
-    <TextView
+    <com.lollipop.qin1sptools.view.RoundTileView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tileSpanY="1"
         app:tileSpanX="3"
         app:tileIndexX="2"
         app:tileIndexY="0"
-        android:background="#F00"/>
+        style="@style/DashboardTile">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0f0"/>
+    </com.lollipop.qin1sptools.view.RoundTileView>
 
-    <TextView
+    <com.lollipop.qin1sptools.view.RoundTileView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tileSpanY="2"
         app:tileSpanX="3"
         app:tileIndexX="2"
         app:tileIndexY="1"
-        android:background="#F00"/>
+        style="@style/DashboardTile">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0f0"/>
+    </com.lollipop.qin1sptools.view.RoundTileView>
 
 </com.lollipop.qin1sptools.view.TileGroup>
