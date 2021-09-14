@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lollipop.qin1sptools.view.TileGroup
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DashboardActivity">
+    tools:context=".activity.DashboardActivity"
+    app:tileSpaceWidth="10dp">
 
-    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:tileSpanY="4"
+        app:tileSpanX="2"
+        app:tileIndexX="0"
+        app:tileIndexY="0"
+        android:background="#F00"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:tileSpanY="1"
+        app:tileSpanX="3"
+        app:tileIndexX="2"
+        app:tileIndexY="0"
+        android:background="#F00"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:tileSpanY="2"
+        app:tileSpanX="3"
+        app:tileIndexX="2"
+        app:tileIndexY="1"
+        android:background="#F00"/>
+
+</com.lollipop.qin1sptools.view.TileGroup>

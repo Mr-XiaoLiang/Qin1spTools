@@ -2,6 +2,7 @@ package com.lollipop.qin1sptools.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import com.lollipop.qin1sptools.R
 
@@ -11,6 +12,11 @@ import com.lollipop.qin1sptools.R
  */
 class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
     ViewGroup(context, attr, style) {
+
+    companion object {
+        private const val DEFAULT_SPAN_X_COUNT = 5
+        private const val DEFAULT_SPAN_Y_COUNT = 6
+    }
 
     constructor(context: Context, attr: AttributeSet?) : this(context, attr, 0)
     constructor(context: Context) : this(context, null)
@@ -33,19 +39,26 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
             requestLayout()
         }
 
+    init {
+        if (attr != null) {
+            val a = context.obtainStyledAttributes(attr, R.styleable.TileGroup)
+            spanXCount = a.getInt(R.styleable.TileGroup_tileSpanXCount, DEFAULT_SPAN_X_COUNT)
+            spanYCount = a.getInt(R.styleable.TileGroup_tileSpanYCount, DEFAULT_SPAN_Y_COUNT)
+            spaceWidth = a.getDimensionPixelSize(R.styleable.TileGroup_tileSpaceWidth, 0)
+            a.recycle()
+        }
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthSize = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
         val heightSize = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         measureChild(widthSize, heightSize)
-        setMeasuredDimension(
-            widthSize - paddingLeft - paddingRight,
-            heightSize - paddingTop - paddingBottom
-        )
+        setMeasuredDimension(widthSize, heightSize)
     }
 
     private fun measureChild(widthSize: Int, heightSize: Int) {
-        val stepX = (widthSize - spaceWidth) / spanXCount
-        val stepY = (heightSize - spaceWidth) / spanYCount
+        val stepX = getStepX(widthSize)
+        val stepY = getStepY(heightSize)
         for (index in 0 until childCount) {
             getChildAt(index)?.let { child ->
                 val layoutParams = child.layoutParams as TileLayoutParams
@@ -76,10 +89,8 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val widthSize = width - paddingLeft - paddingRight
-        val heightSize = height - paddingTop - paddingBottom
-        val stepX = (widthSize - spaceWidth) / spanXCount
-        val stepY = (heightSize - spaceWidth) / spanYCount
+        val stepX = getStepX(width)
+        val stepY = getStepY(height)
 
         val leftEdge = paddingLeft + spaceWidth
         val topEdge = paddingTop + spaceWidth
@@ -96,6 +107,14 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
                 child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight)
             }
         }
+    }
+
+    private fun getStepX(widthSize: Int): Int {
+        return (widthSize - paddingLeft - paddingRight - spaceWidth) / spanXCount
+    }
+
+    private fun getStepY(heightSize: Int): Int {
+        return (heightSize - paddingTop - paddingBottom - spaceWidth) / spanYCount
     }
 
     override fun checkLayoutParams(p: LayoutParams?): Boolean {
@@ -127,16 +146,23 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
             const val SPAN_FULL = -1
         }
 
+        var spanX: Int = SPAN_FULL
+        var spanY: Int = SPAN_FULL
+
+        var indexX: Int = 0
+        var indexY: Int = 0
+
         constructor(context: Context, attr: AttributeSet?) : super(context, attr) {
             if (attr != null) {
                 val a = context.obtainStyledAttributes(attr, R.styleable.TileGroup_Layout)
-                spanX = a.getInt(R.styleable.TileGroup_Layout_tileSpanX, SPAN_FULL)
-                spanY = a.getInt(R.styleable.TileGroup_Layout_tileSpanX, SPAN_FULL)
+                this.spanX = a.getInt(R.styleable.TileGroup_Layout_tileSpanX, SPAN_FULL)
+                this.spanY = a.getInt(R.styleable.TileGroup_Layout_tileSpanY, SPAN_FULL)
                 this.indexX = a.getInt(R.styleable.TileGroup_Layout_tileIndexX, 0)
                 this.indexY = a.getInt(R.styleable.TileGroup_Layout_tileIndexY, 0)
                 a.recycle()
             }
         }
+
         constructor(width: Int, height: Int) : super(width, height)
         constructor(source: LayoutParams) : super(source) {
             if (source is TileLayoutParams) {
@@ -146,12 +172,6 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
                 this.indexY = source.indexY
             }
         }
-
-        var spanX: Int = SPAN_FULL
-        var spanY: Int = SPAN_FULL
-
-        var indexX: Int = 0
-        var indexY: Int = 0
 
     }
 

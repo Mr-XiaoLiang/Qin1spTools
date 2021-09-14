@@ -1,12 +1,16 @@
 package com.lollipop.qin1sptools.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.lollipop.qin1sptools.R
+import com.lollipop.qin1sptools.activity.base.FeatureBarActivity
+import com.lollipop.qin1sptools.databinding.ActivityDashboardBinding
+import com.lollipop.qin1sptools.utils.lazyBind
 
-class DashboardActivity : AppCompatActivity() {
+class DashboardActivity : FeatureBarActivity() {
+
+    private val binding: ActivityDashboardBinding by lazyBind()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+        setContentView(binding)
     }
 }
