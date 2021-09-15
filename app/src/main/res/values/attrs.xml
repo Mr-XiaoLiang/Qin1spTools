@@ -28,5 +28,6 @@
         <attr name="tileCornerRightTop" format="dimension"/>
         <attr name="tileCornerRightBottom" format="dimension"/>
         <attr name="tileCornerLeftBottom" format="dimension"/>
+        <attr name="onlyClipChild" format="boolean"/>
     </declare-styleable>
 </resources>

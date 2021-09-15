@@ -15,8 +15,9 @@
 
     <style name="DashboardTile">
         <item name="android:padding">5dp</item>
-        <item name="tileCorner">16dp</item>
-        <item name="android:background">@color/white</item>
+        <item name="tileCorner">@dimen/dashboard_corner</item>
+        <item name="onlyClipChild">true</item>
+        <item name="android:background">@drawable/bg_dashboard_tile</item>
     </style>
 
 </resources>

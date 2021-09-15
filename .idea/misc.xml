@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/bg_action_bar.xml" value="0.26851851851851855" />
+        <entry key="app/src/main/res/drawable/bg_dashboard_tile.xml" value="0.34629629629629627" />
         <entry key="app/src/main/res/drawable/bg_grid_position.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/drawable/bg_header_toast.xml" value="0.2518518518518518" />
         <entry key="app/src/main/res/drawable/bg_position.xml" value="0.26851851851851855" />

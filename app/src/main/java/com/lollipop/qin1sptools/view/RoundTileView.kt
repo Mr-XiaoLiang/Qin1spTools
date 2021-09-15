@@ -1,18 +1,17 @@
 package com.lollipop.qin1sptools.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Path
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.lollipop.qin1sptools.R
+
 
 /**
  * @author lollipop
  * @date 2021/9/14 22:08
  */
-class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
+open class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
     FrameLayout(context, attr, style) {
 
     constructor(context: Context, attr: AttributeSet?) : this(context, attr, 0)
@@ -23,6 +22,12 @@ class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
     private val clipPath = Path()
 
     private val clipInnerPath = Path()
+
+    var onlyClipChild = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     init {
         if (attr != null) {
@@ -36,6 +41,7 @@ class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
                 a.getDimensionPixelSize(R.styleable.RoundTileView_tileCornerRightBottom, allSize)
             corner.leftBottom =
                 a.getDimensionPixelSize(R.styleable.RoundTileView_tileCornerLeftBottom, allSize)
+            onlyClipChild = a.getBoolean(R.styleable.RoundTileView_onlyClipChild, false)
             a.recycle()
         }
     }
@@ -59,23 +65,31 @@ class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
     }
 
     override fun draw(canvas: Canvas?) {
-        if (canvas == null || !corner.enable) {
+        if (onlyClipChild || canvas == null || !corner.enable) {
             super.draw(canvas)
             return
         }
         val saveCount = canvas.save()
         canvas.clipPath(clipPath)
+        canvas.drawFilter = PaintFlagsDrawFilter(
+            0,
+            Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG
+        )
         super.draw(canvas)
         canvas.restoreToCount(saveCount)
     }
 
     override fun dispatchDraw(canvas: Canvas?) {
-        if (canvas == null || !needInnerClip()) {
+        if (canvas == null || !corner.enable) {
             super.dispatchDraw(canvas)
             return
         }
         val saveCount = canvas.save()
         canvas.clipPath(clipInnerPath)
+        canvas.drawFilter = PaintFlagsDrawFilter(
+            0,
+            Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG
+        )
         super.dispatchDraw(canvas)
         canvas.restoreToCount(saveCount)
     }
@@ -103,6 +117,8 @@ class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
                 corner.getRadii(paddingLeft, paddingTop, paddingRight, paddingBottom),
                 Path.Direction.CW
             )
+        } else {
+            clipInnerPath.addPath(clipPath)
         }
     }
 
