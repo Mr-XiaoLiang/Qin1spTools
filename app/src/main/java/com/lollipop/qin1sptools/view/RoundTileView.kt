@@ -50,12 +50,21 @@ open class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
         setTileCorner(size, size, size, size)
     }
 
+    fun getCornerRadii(insetEnable: Boolean): FloatArray {
+        return if (insetEnable) {
+            corner.getRadii(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        } else {
+            corner.getRadii()
+        }
+    }
+
     fun setTileCorner(leftTop: Int, rightTop: Int, rightBottom: Int, leftBottom: Int) {
         corner.leftTop = leftTop
         corner.rightTop = rightTop
         corner.rightBottom = rightBottom
         corner.leftBottom = leftBottom
         checkPath()
+        onCornerChanged()
         invalidate()
     }
 
@@ -63,6 +72,8 @@ open class RoundTileView(context: Context, attr: AttributeSet?, style: Int) :
         super.onLayout(changed, left, top, right, bottom)
         checkPath()
     }
+
+    protected open fun onCornerChanged() {}
 
     override fun draw(canvas: Canvas?) {
         if (onlyClipChild || canvas == null || !corner.enable) {

@@ -8,46 +8,49 @@
     tools:context=".activity.DashboardActivity"
     app:tileSpaceWidth="10dp">
 
-    <com.lollipop.qin1sptools.view.RoundTileView
+    <com.lollipop.qin1sptools.view.DashboardCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tileSpanY="4"
         app:tileSpanX="2"
         app:tileIndexX="0"
         app:tileIndexY="0"
-        style="@style/DashboardTile">
+        style="@style/DashboardTile"
+        tools:markTextValue="@string/app_name">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#0f0"/>
-    </com.lollipop.qin1sptools.view.RoundTileView>
+    </com.lollipop.qin1sptools.view.DashboardCardView>
 
-    <com.lollipop.qin1sptools.view.RoundTileView
+    <com.lollipop.qin1sptools.view.DashboardCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tileSpanY="1"
         app:tileSpanX="3"
         app:tileIndexX="2"
         app:tileIndexY="0"
-        style="@style/DashboardTile">
+        style="@style/DashboardTile"
+        tools:markTextValue="@string/app_name">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#0f0"/>
-    </com.lollipop.qin1sptools.view.RoundTileView>
+    </com.lollipop.qin1sptools.view.DashboardCardView>
 
-    <com.lollipop.qin1sptools.view.RoundTileView
+    <com.lollipop.qin1sptools.view.DashboardCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tileSpanY="2"
         app:tileSpanX="3"
         app:tileIndexX="2"
         app:tileIndexY="1"
-        style="@style/DashboardTile">
+        style="@style/DashboardTile"
+        tools:markTextValue="@string/app_name">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#0f0"/>
-    </com.lollipop.qin1sptools.view.RoundTileView>
+    </com.lollipop.qin1sptools.view.DashboardCardView>
 
 </com.lollipop.qin1sptools.view.TileGroup>

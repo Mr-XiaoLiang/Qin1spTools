@@ -18,6 +18,13 @@
         <item name="tileCorner">@dimen/dashboard_corner</item>
         <item name="onlyClipChild">true</item>
         <item name="android:background">@drawable/bg_dashboard_tile</item>
+        <item name="markTextSize">12sp</item>
+        <item name="markBackgroundColor">@color/positionBackground</item>
+        <item name="markTextColor">@color/positionColor</item>
+        <item name="markPaddingLeft">8dp</item>
+        <item name="markPaddingRight">8dp</item>
+        <item name="markPaddingTop">5dp</item>
+        <item name="markPaddingBottom">5dp</item>
     </style>
 
 </resources>

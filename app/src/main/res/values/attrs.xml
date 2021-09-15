@@ -30,4 +30,15 @@
         <attr name="tileCornerLeftBottom" format="dimension"/>
         <attr name="onlyClipChild" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="DashboardCardView">
+        <attr name="markTextSize" format="dimension"/>
+        <attr name="markTextColor" format="color"/>
+        <attr name="markBackgroundColor" format="color"/>
+        <attr name="markTextValue" format="string"/>
+        <attr name="markPadding" format="dimension"/>
+        <attr name="markPaddingLeft" format="dimension"/>
+        <attr name="markPaddingTop" format="dimension"/>
+        <attr name="markPaddingRight" format="dimension"/>
+        <attr name="markPaddingBottom" format="dimension"/>
+    </declare-styleable>
 </resources>

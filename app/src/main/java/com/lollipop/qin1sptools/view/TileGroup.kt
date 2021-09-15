@@ -175,4 +175,8 @@ class TileGroup(context: Context, attr: AttributeSet?, style: Int) :
 
     }
 
+    interface TileMark {
+        var markValue: String
+    }
+
 }
