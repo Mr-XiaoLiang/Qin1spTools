@@ -71,7 +71,7 @@ class DashboardCardView(context: Context, attr: AttributeSet?, style: Int) :
             markBackgroundColor = a.getColor(
                 R.styleable.DashboardCardView_markBackgroundColor, Color.TRANSPARENT
             )
-            markColor = a.getDimensionPixelSize(
+            markColor = a.getColor(
                 R.styleable.DashboardCardView_markTextColor, Color.WHITE
             )
             markValue = a.getString(
@@ -126,17 +126,15 @@ class DashboardCardView(context: Context, attr: AttributeSet?, style: Int) :
         }
         val widthSize = width
         val heightSize = height
-        val maxWidth = widthSize - paddingLeft - paddingRight
-        val maxHeight = heightSize - paddingTop - paddingBottom
-        if (maxWidth < 1 || maxHeight < 1) {
+        if (widthSize < 1 || heightSize < 1) {
             return
         }
         val textWidth = markPaint.measureText(markValue) + markPadding.left + markPadding.right
         val textHeight = markPaint.textSize + markPadding.top + markPadding.bottom
-        val backgroundWidth = min(textWidth.toInt(), maxWidth)
-        val backgroundHeight = min(textHeight.toInt(), maxHeight)
-        val markRight = (widthSize - paddingRight).toFloat()
-        val markBottom = (heightSize - paddingBottom).toFloat()
+        val backgroundWidth = min(textWidth.toInt(), widthSize)
+        val backgroundHeight = min(textHeight.toInt(), heightSize)
+        val markRight = widthSize.toFloat()
+        val markBottom = heightSize.toFloat()
         markBounds.set(
             markRight - backgroundWidth,
             markBottom - backgroundHeight,
@@ -151,7 +149,7 @@ class DashboardCardView(context: Context, attr: AttributeSet?, style: Int) :
     }
 
     private fun getMarkRadii(): FloatArray {
-        val cornerRadii = getCornerRadii(true)
+        val cornerRadii = getCornerRadii(false)
         // 右上角
         cornerRadii[2] = 0F
         cornerRadii[3] = 0F

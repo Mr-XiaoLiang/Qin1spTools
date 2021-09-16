@@ -19,8 +19,8 @@
         <item name="onlyClipChild">true</item>
         <item name="android:background">@drawable/bg_dashboard_tile</item>
         <item name="markTextSize">12sp</item>
-        <item name="markBackgroundColor">@color/positionBackground</item>
-        <item name="markTextColor">@color/positionColor</item>
+        <item name="markBackgroundColor">@color/dashboardBackgroundColor</item>
+        <item name="markTextColor">@color/dashboardPositionColor</item>
         <item name="markPaddingLeft">8dp</item>
         <item name="markPaddingRight">8dp</item>
         <item name="markPaddingTop">5dp</item>

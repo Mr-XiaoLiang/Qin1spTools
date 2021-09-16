@@ -1,56 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.lollipop.qin1sptools.view.TileGroup
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lollipop.qin1sptools.view.TileGroup xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DashboardActivity"
-    app:tileSpaceWidth="10dp">
+    app:tileSpaceWidth="10dp"
+    tools:context=".activity.DashboardActivity">
 
     <com.lollipop.qin1sptools.view.DashboardCardView
+        style="@style/DashboardTile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:tileSpanY="4"
-        app:tileSpanX="2"
         app:tileIndexX="0"
         app:tileIndexY="0"
-        style="@style/DashboardTile"
+        app:tileSpanX="2"
+        app:tileSpanY="4"
         tools:markTextValue="@string/app_name">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#0f0"/>
+            android:background="#0f0" />
     </com.lollipop.qin1sptools.view.DashboardCardView>
 
     <com.lollipop.qin1sptools.view.DashboardCardView
+        style="@style/DashboardTile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:tileSpanY="1"
-        app:tileSpanX="3"
         app:tileIndexX="2"
         app:tileIndexY="0"
-        style="@style/DashboardTile"
+        app:tileSpanX="3"
+        app:tileSpanY="1"
         tools:markTextValue="@string/app_name">
-        <TextView
+
+        <fragment
+            android:id="@+id/memoryDashboardFragment"
+            android:name="com.lollipop.qin1sptools.fragment.dashboard.MemoryDashboardFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#0f0"/>
+            android:layout_height="match_parent" />
     </com.lollipop.qin1sptools.view.DashboardCardView>
 
     <com.lollipop.qin1sptools.view.DashboardCardView
+        style="@style/DashboardTile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:tileSpanY="2"
-        app:tileSpanX="3"
         app:tileIndexX="2"
         app:tileIndexY="1"
-        style="@style/DashboardTile"
+        app:tileSpanX="3"
+        app:tileSpanY="2"
         tools:markTextValue="@string/app_name">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#0f0"/>
+            android:background="#0f0" />
     </com.lollipop.qin1sptools.view.DashboardCardView>
 
 </com.lollipop.qin1sptools.view.TileGroup>
