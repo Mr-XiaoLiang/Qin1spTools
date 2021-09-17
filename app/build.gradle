@@ -13,8 +13,8 @@ android {
 //        applicationId "com.tencent.mm"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 01_00_03
-        versionName "1.00.03"
+        versionCode 01_00_04
+        versionName "1.00.04"
         ndk {
             abiFilters 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }

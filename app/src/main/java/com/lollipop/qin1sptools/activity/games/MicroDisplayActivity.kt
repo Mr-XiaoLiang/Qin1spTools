@@ -241,34 +241,40 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
         requestedOrientation = o.value
     }
 
+
+    override fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean {
+        // 重写方法，优先供给游戏
+        if (event != null) {
+            val gameKey = KeyEventProviderHelper.keyToGameCode(
+                KeyEventProviderHelper.findKeyByCode(keyCode)
+            )
+            val repeatCount = event.repeatCount
+            if (repeatCount == 0) {
+                KeyEventPostHelper.postKeyPressed(current, gameKey)
+            } else {
+                KeyEventPostHelper.postKeyRepeated(current, gameKey)
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: android.view.KeyEvent?): Boolean {
+        // 重写方法，优先供给游戏
+        if (event != null) {
+            val gameKey = KeyEventProviderHelper.keyToGameCode(
+                KeyEventProviderHelper.findKeyByCode(keyCode)
+            )
+            KeyEventPostHelper.postKeyReleased(current, gameKey)
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
     override fun onKeyDown(event: KeyEvent, repeatCount: Int): Boolean {
         log("onDown ---- $event: $repeatCount")
         if (event == KeyEvent.CALL) {
             takeScreenshot()
         }
-        val keyCode = KeyEventProviderHelper.keyToGameCode(event)
-        if (repeatCount == 0) {
-            if (KeyEventPostHelper.postKeyPressed(current, keyCode)) {
-                return true
-            }
-        } else {
-            if (KeyEventPostHelper.postKeyRepeated(current, keyCode)) {
-                return true
-            }
-        }
         return super.onKeyDown(event, repeatCount)
-    }
-
-    override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
-        log("onUp ---- $event: $repeatCount")
-        if (KeyEventPostHelper.postKeyReleased(
-                current,
-                KeyEventProviderHelper.keyToGameCode(event)
-            )
-        ) {
-            return true
-        }
-        return super.onKeyUp(event, repeatCount)
     }
 
     private fun showBackDialog() {
