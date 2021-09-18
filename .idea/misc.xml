@@ -8,6 +8,8 @@
         <entry key="app/src/main/res/drawable/bg_grid_position.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/drawable/bg_header_toast.xml" value="0.2518518518518518" />
         <entry key="app/src/main/res/drawable/bg_position.xml" value="0.26851851851851855" />
+        <entry key="app/src/main/res/drawable/bg_progress_bar.xml" value="0.33611111111111114" />
+        <entry key="app/src/main/res/drawable/bg_progress_bar_second.xml" value="0.33611111111111114" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_bottom_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_top_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.5" />

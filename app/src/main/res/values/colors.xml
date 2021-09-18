@@ -28,4 +28,7 @@
 
     <color name="dashboardPositionColor">#FF6E6C6E</color>
     <color name="dashboardBackgroundColor">#ffffffff</color>
+
+    <color name="progressBackground">#FF6E6C6E</color>
+    <color name="progressSecond">#4E8F42</color>
 </resources>
