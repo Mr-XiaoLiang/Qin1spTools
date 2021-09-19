@@ -21,6 +21,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.lollipop.qin1sptools.BuildConfig
 import java.io.*
+import java.text.DecimalFormat
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -158,6 +159,28 @@ object CommonUtil {
         fun delay(time: Long) {
             delay(time, this)
         }
+    }
+
+    private val UNIT_ARRAY = arrayOf("B", "KB", "MB", "GB", "TB")
+    private const val FILE_SIZE_RADIX = 1024L
+    private val fileSizeFormatter by lazy {
+        DecimalFormat("#0.00")
+    }
+
+    /**
+     * 格式化文件大小
+     */
+    fun formatFileSize(value: Long): String {
+        var unit = 0
+        var num = value.toFloat()
+        while (num > FILE_SIZE_RADIX) {
+            if (unit >= UNIT_ARRAY.size - 1) {
+                break
+            }
+            num /= FILE_SIZE_RADIX
+            unit++
+        }
+        return fileSizeFormatter.format(num) + UNIT_ARRAY[unit]
     }
 
 }
@@ -730,4 +753,3 @@ fun LifecycleOwner.isStarted() = lifecycle.currentState.isAtLeast(Lifecycle.Stat
  * 是否已经可见
  */
 fun LifecycleOwner.isResumed() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-

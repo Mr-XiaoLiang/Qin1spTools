@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.FragmentDashboardMemoryBinding
 import com.lollipop.qin1sptools.task.ApplicationManager
+import com.lollipop.qin1sptools.utils.CommonUtil
 import com.lollipop.qin1sptools.utils.lazyBind
 import java.text.DecimalFormat
 
@@ -19,15 +20,6 @@ import java.text.DecimalFormat
 class MemoryDashboardFragment : Fragment() {
 
     private val binding: FragmentDashboardMemoryBinding by lazyBind()
-
-    companion object {
-        private val UNIT_ARRAY = arrayOf("B", "KB", "MB", "GB", "TB")
-        private const val RADIX = 1024L
-    }
-
-    private val decimalFormat by lazy {
-        DecimalFormat("#0.00")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,16 +70,7 @@ class MemoryDashboardFragment : Fragment() {
     }
 
     private fun getMemName(value: Long): String {
-        var unit = 0
-        var num = value.toFloat()
-        while (num > RADIX) {
-            if (unit >= UNIT_ARRAY.size - 1) {
-                break
-            }
-            num /= RADIX
-            unit++
-        }
-        return decimalFormat.format(num) + UNIT_ARRAY[unit]
+        return CommonUtil.formatFileSize(value)
     }
 
 }
