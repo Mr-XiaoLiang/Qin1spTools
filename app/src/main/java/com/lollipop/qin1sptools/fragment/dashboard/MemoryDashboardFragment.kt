@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.FragmentDashboardMemoryBinding
-import com.lollipop.qin1sptools.task.AppTaskManager
+import com.lollipop.qin1sptools.task.ApplicationManager
 import com.lollipop.qin1sptools.utils.lazyBind
 import java.text.DecimalFormat
 
@@ -41,7 +41,7 @@ class MemoryDashboardFragment : Fragment() {
         super.onResume()
         val c = context
         if (c != null) {
-            val memoryInfo = AppTaskManager.getMemoryInfo(c)
+            val memoryInfo = ApplicationManager.getMemoryInfo(c)
             updateMemInfo(memoryInfo.totalMem, memoryInfo.availMem, memoryInfo.threshold)
         } else {
             updateMemInfo(-1, -1, 0)

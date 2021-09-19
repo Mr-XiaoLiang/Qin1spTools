@@ -13,7 +13,7 @@ import android.graphics.drawable.Drawable
  * @date 2021/8/30 20:35
  * 多任务管理类
  */
-class AppTaskManager {
+class ApplicationManager {
 
     companion object {
         /**
