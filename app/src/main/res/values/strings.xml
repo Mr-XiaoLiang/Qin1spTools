@@ -33,4 +33,6 @@
     <string name="dashboard">仪表盘</string>
     <string name="memory_error">读取内存失败</string>
     <string name="avail_memory">可用%1$s/%2$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

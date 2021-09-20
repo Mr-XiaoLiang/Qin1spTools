@@ -1,4 +1,4 @@
-package com.lollipop.qin1sptools.activity
+package com.lollipop.qin1sptools.activity.dashboard
 
 import android.os.Bundle
 import com.lollipop.qin1sptools.activity.base.FeatureBarActivity

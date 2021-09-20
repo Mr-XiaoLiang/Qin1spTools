@@ -5,19 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.FragmentDashboardMemoryBinding
 import com.lollipop.qin1sptools.task.ApplicationManager
 import com.lollipop.qin1sptools.utils.CommonUtil
 import com.lollipop.qin1sptools.utils.lazyBind
-import java.text.DecimalFormat
 
 /**
  * @author lollipop
  * @date 2021/9/16 21:39
  */
-class MemoryDashboardFragment : Fragment() {
+class MemoryDashboardFragment : BaseDashboardFragment() {
 
     private val binding: FragmentDashboardMemoryBinding by lazyBind()
 
@@ -29,8 +27,7 @@ class MemoryDashboardFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onRefresh() {
         val c = context
         if (c != null) {
             val memoryInfo = ApplicationManager.getMemoryInfo(c)

@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Qin1spTools">
         <activity
-            android:name=".activity.DashboardActivity"
+            android:name=".activity.dashboard.DashboardActivity"
             android:exported="true"
             android:label="@string/dashboard">
             <intent-filter>

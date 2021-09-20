@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
+import android.os.Environment
+import android.os.StatFs
 
 
 /**
@@ -94,6 +96,24 @@ class ApplicationManager {
             }
             return killProcess(activityManager, appInfo.packageName)
         }
+
+        /**
+         * 获取储存空间的信息
+         */
+        fun getStorageInfo(): StorageInfo {
+            val externalMounted = Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED)
+            val dataStatFs = StatFs(Environment.getDataDirectory().path)
+            val externalStatFs = StatFs(Environment.getExternalStorageDirectory().path)
+            return StorageInfo(
+                externalMounted,
+                dataStatFs.availableBytes,
+                dataStatFs.totalBytes,
+                externalStatFs.availableBytes,
+                externalStatFs.totalBytes
+            )
+        }
+
     }
 
     private var onAppInfoChanged = true
@@ -213,5 +233,13 @@ class ApplicationManager {
         }
 
     }
+
+    data class StorageInfo(
+        val externalMounted: Boolean,
+        val internalAvailable: Long,
+        val internalTotal: Long,
+        val externalAvailable: Long,
+        val externalTotal: Long
+    )
 
 }

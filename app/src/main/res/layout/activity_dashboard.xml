@@ -7,7 +7,7 @@
     app:tileSpaceWidth="10dp"
     app:tileSpanXCount="5"
     app:tileSpanYCount="6"
-    tools:context=".activity.DashboardActivity">
+    tools:context=".activity.dashboard.DashboardActivity">
 
     <com.lollipop.qin1sptools.view.DashboardCardView
         style="@style/DashboardTile"
@@ -32,13 +32,14 @@
         app:tileIndexX="0"
         app:tileIndexY="1"
         app:tileSpanX="2"
-        app:tileSpanY="4"
+        app:tileSpanY="5"
         tools:markTextValue="@string/app_name">
 
-        <TextView
+        <fragment
+            android:id="@+id/storageDashboardFragment"
+            android:name="com.lollipop.qin1sptools.fragment.dashboard.StorageDashboardFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#0f0" />
+            android:layout_height="match_parent"/>
     </com.lollipop.qin1sptools.view.DashboardCardView>
 
     <com.lollipop.qin1sptools.view.DashboardCardView

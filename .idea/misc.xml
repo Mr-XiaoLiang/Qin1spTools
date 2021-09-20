@@ -20,6 +20,7 @@
         <entry key="app/src/main/res/layout/dialog_message.xml" value="0.26506024096385544" />
         <entry key="app/src/main/res/layout/dialog_option.xml" value="0.2013677811550152" />
         <entry key="app/src/main/res/layout/fragment_dashboard_memory.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/fragment_dashboard_storage.xml" value="0.2013677811550152" />
         <entry key="app/src/main/res/layout/item_grid_menu.xml" value="0.2013677811550152" />
         <entry key="app/src/main/res/layout/item_text.xml" value="0.2013677811550152" />
         <entry key="j2me/src/main/res/drawable/bg_button_dark.xml" value="0.3111111111111111" />
