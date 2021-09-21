@@ -101,16 +101,39 @@ class ApplicationManager {
          * 获取储存空间的信息
          */
         fun getStorageInfo(): StorageInfo {
-            val externalMounted = Environment.getExternalStorageState()
+            var externalMounted = Environment.getExternalStorageState()
                 .equals(Environment.MEDIA_MOUNTED)
-            val dataStatFs = StatFs(Environment.getDataDirectory().path)
-            val externalStatFs = StatFs(Environment.getExternalStorageDirectory().path)
+            var externalAvailable = 0L
+            var externalTotal = 0L
+            var internalAvailable: Long
+            var internalTotal: Long
+            try {
+                val dataStatFs = StatFs(Environment.getDataDirectory().path)
+                internalAvailable = dataStatFs.availableBytes
+                internalTotal = dataStatFs.totalBytes
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                internalAvailable = 0L
+                internalTotal = 0L
+            }
+            if (externalMounted) {
+                try {
+                    val externalStatFs = StatFs(System.getenv("SECONDARY_STORAGE"))
+                    externalAvailable = externalStatFs.availableBytes
+                    externalTotal = externalStatFs.totalBytes
+                }catch (e: Throwable) {
+                    e.printStackTrace()
+                    externalAvailable = 0L
+                    externalTotal = 0L
+                    externalMounted = false
+                }
+            }
             return StorageInfo(
                 externalMounted,
-                dataStatFs.availableBytes,
-                dataStatFs.totalBytes,
-                externalStatFs.availableBytes,
-                externalStatFs.totalBytes
+                internalAvailable,
+                internalTotal,
+                externalAvailable,
+                externalTotal
             )
         }
 
