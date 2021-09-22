@@ -40,6 +40,18 @@ open class GridMenuActivity : FeatureBarActivity() {
             onSelectedItemChanged(value)
         }
 
+    private var pageIndex = 0
+
+    private val pageCount: Int
+        get() {
+            val size = gridItemList.size
+            var count = size / 9
+            if (size % 9 != 0) {
+                count ++
+            }
+            return count
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding)
@@ -47,36 +59,27 @@ open class GridMenuActivity : FeatureBarActivity() {
     }
 
     private fun initView() {
-        binding.indicatorView.bindToPagedLayout(binding.pagedLayout)
         notifyDataSetChanged()
     }
 
+    private fun onPageChanged() {
+        binding.indicatorView.onPageChanged(pageIndex, pageCount)
+    }
+
     protected fun notifyDataSetChanged() {
-        val pagedLayout = binding.pagedLayout
+        pageIndex = 0
+        updateGridPage()
+        onPageChanged()
+    }
+
+    private fun updateGridPage() {
         val itemSize = gridItemList.size
-        val pageCount = if (itemSize % 9 == 0) {
-            itemSize / 9
-        } else {
-            (itemSize / 9) + 1
+        val gridLayout = binding.gridLayout
+        if (itemSize == 0) {
+            viewRecycler.recycle(gridLayout)
+            return
         }
-
-        for (index in 0 until pagedLayout.childCount) {
-            val page = pagedLayout.getChildAt(index)
-            if (page is NineGridsLayout) {
-                viewRecycler.recycle(page)
-            }
-        }
-        viewRecycler.recycle(pagedLayout)
-
-        for (pageIndex in 0 until pageCount) {
-            val pageView: NineGridsLayout = viewRecycler.find {
-                NineGridsLayout(pagedLayout.context)
-            }
-            pagedLayout.addView(pageView)
-            pageView.pageIndex = pageIndex
-            bindGridItem(pageView, gridItemList, pageIndex * 9)
-        }
-        pagedLayout.reset()
+        bindGridItem(gridLayout, gridItemList, pageIndex * 9)
     }
 
     protected open fun onGridItemClick(item: GridItem, index: Int) {}
@@ -101,7 +104,7 @@ open class GridMenuActivity : FeatureBarActivity() {
 
     protected fun resetCurrentSelected() {
         selectedItemIndex = DEFAULT_ITEM_POSITION
-        binding.pagedLayout.currentPage()?.resetSelectedFlag()
+        binding.gridLayout.resetSelectedFlag()
     }
 
     override fun onKeyUp(event: KeyEvent, repeatCount: Int): Boolean {
@@ -115,14 +118,20 @@ open class GridMenuActivity : FeatureBarActivity() {
                 onNumberClick(position)
             }
             KeyEvent.LEFT, KeyEvent.UP -> {
+                if (pageIndex > 0) {
+                    pageIndex--
+                    updateGridPage()
+                }
                 // 翻页后重置选中序号
                 resetCurrentSelected()
-                binding.pagedLayout.lastPage()?.resetSelectedFlag()
             }
             KeyEvent.RIGHT, KeyEvent.DOWN -> {
+                if (pageIndex < pageCount - 1) {
+                    pageIndex++
+                    updateGridPage()
+                }
                 // 翻页后重置选中序号
                 resetCurrentSelected()
-                binding.pagedLayout.nextPage()?.resetSelectedFlag()
             }
             KeyEvent.KEY_1 -> {
                 onNumberClick(1)
@@ -179,7 +188,7 @@ open class GridMenuActivity : FeatureBarActivity() {
     }
 
     private fun onNumberClick(position: Int) {
-        val pageView = findCurrentGridPage() ?: return
+        val pageView = binding.gridLayout
         val itemIndex = getItemIndexByPosition(position)
         if (itemIndex < 0) {
             return
@@ -193,11 +202,7 @@ open class GridMenuActivity : FeatureBarActivity() {
     }
 
     private fun onStarClick() {
-        val pageView = findCurrentGridPage()
-        if (pageView == null) {
-            onGridItemInfoClick(null, -1)
-            return
-        }
+        val pageView = binding.gridLayout
         if (selectedItemIndex < 0) {
             onGridItemInfoClick(null, -1)
             return
@@ -215,7 +220,7 @@ open class GridMenuActivity : FeatureBarActivity() {
     }
 
     protected fun getSelectedItem(): GridItem? {
-        val pageView = findCurrentGridPage() ?: return null
+        val pageView = binding.gridLayout
         val position = selectedItemIndex
         val itemIndex = getItemIndexByPosition(position)
         if (itemIndex < 0) {
@@ -231,24 +236,16 @@ open class GridMenuActivity : FeatureBarActivity() {
         if (position < 1) {
             return -1
         }
-        val pageView = findCurrentGridPage() ?: return -1
+        val pageView = binding.gridLayout
         if (pageView.childCount < position) {
             return -1
         }
-        val dataPageIndex = pageView.pageIndex
+        val dataPageIndex = pageIndex
         val itemIndex = dataPageIndex * 9 + position - 1
         if (itemIndex < 0 || itemIndex >= gridItemList.size) {
             return -1
         }
         return itemIndex
-    }
-
-    private fun findCurrentGridPage(): NineGridsLayout? {
-        val pageView = binding.pagedLayout.currentPage()
-        if (pageView is NineGridsLayout) {
-            return pageView
-        }
-        return null
     }
 
     override fun onDestroy() {
@@ -286,10 +283,10 @@ open class GridMenuActivity : FeatureBarActivity() {
 
         fun recycle(viewGroup: ViewGroup) {
             // 暂时放弃回收View
-//            val childCount = viewGroup.childCount
-//            for (index in 0 until childCount) {
-//                viewPool.add(viewGroup.getChildAt(index))
-//            }
+            val childCount = viewGroup.childCount
+            for (index in 0 until childCount) {
+                viewPool.add(viewGroup.getChildAt(index))
+            }
             viewGroup.removeAllViewsInLayout()
         }
 

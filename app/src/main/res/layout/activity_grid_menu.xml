@@ -5,11 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.lollipop.qin1sptools.view.PagedLayout
+    <com.lollipop.qin1sptools.view.NineGridsLayout
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1"
-        android:id="@+id/pagedLayout"
+        android:id="@+id/gridLayout"
         android:cropToPadding="false"/>
 
     <com.lollipop.qin1sptools.view.PageIndicatorView
