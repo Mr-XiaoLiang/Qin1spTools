@@ -69,7 +69,6 @@ open class GridMenuActivity : FeatureBarActivity() {
     protected fun notifyDataSetChanged() {
         pageIndex = 0
         updateGridPage()
-        onPageChanged()
     }
 
     private fun updateGridPage() {
@@ -80,6 +79,7 @@ open class GridMenuActivity : FeatureBarActivity() {
             return
         }
         bindGridItem(gridLayout, gridItemList, pageIndex * 9)
+        onPageChanged()
     }
 
     protected open fun onGridItemClick(item: GridItem, index: Int) {}
