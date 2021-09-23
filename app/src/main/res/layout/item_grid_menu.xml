@@ -42,7 +42,17 @@
                 android:background="@drawable/bg_position"
                 android:textColor="@color/positionColor"
                 android:text="1"/>
+
         </com.lollipop.qin1sptools.view.ShapeGroup>
+
+        <ImageView
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:id="@+id/selectedFrameView"
+            app:layout_constraintTop_toTopOf="@id/shapeGroup"
+            app:layout_constraintBottom_toBottomOf="@id/shapeGroup"
+            app:layout_constraintLeft_toLeftOf="@id/shapeGroup"
+            app:layout_constraintRight_toRightOf="@id/shapeGroup"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
