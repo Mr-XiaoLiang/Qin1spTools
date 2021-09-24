@@ -159,13 +159,12 @@ class DashboardCardView(context: Context, attr: AttributeSet?, style: Int) :
         return cornerRadii
     }
 
-    override fun onDrawForeground(canvas: Canvas?) {
-        super.onDrawForeground(canvas)
+    override fun dispatchDraw(canvas: Canvas?) {
+        super.dispatchDraw(canvas)
         canvas?.let {
             drawText(it)
         }
     }
-
 
     private fun drawText(canvas: Canvas) {
         if (markValue.isEmpty()) {

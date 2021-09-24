@@ -17,7 +17,8 @@
         app:tileIndexY="0"
         app:tileSpanX="5"
         app:tileSpanY="1"
-        tools:markTextValue="@string/app_name">
+        app:markTextValue="内存"
+        app:markTextSize="14sp">
         <fragment
             android:id="@+id/memoryDashboardFragment"
             android:name="com.lollipop.qin1sptools.fragment.dashboard.MemoryDashboardFragment"
@@ -33,7 +34,8 @@
         app:tileIndexY="1"
         app:tileSpanX="2"
         app:tileSpanY="5"
-        tools:markTextValue="@string/app_name">
+        app:markTextValue="储存"
+        app:markTextSize="16sp">
 
         <fragment
             android:id="@+id/storageDashboardFragment"
@@ -50,7 +52,8 @@
         app:tileIndexY="1"
         app:tileSpanX="3"
         app:tileSpanY="2"
-        tools:markTextValue="@string/app_name">
+        tools:markTextValue="@string/app_name"
+        app:markTextSize="14sp">
 
         <TextView
             android:layout_width="match_parent"
