@@ -47,4 +47,9 @@
         <attr name="max" format="integer"/>
         <attr name="progress" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="GridSelectedFrameView">
+        <attr name="gsfColor" format="color"/>
+        <attr name="gsfRadius" format="dimension"/>
+        <attr name="gsfStrokeWidth" format="dimension"/>
+    </declare-styleable>
 </resources>

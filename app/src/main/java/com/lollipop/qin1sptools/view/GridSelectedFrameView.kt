@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import com.lollipop.qin1sptools.R
 import kotlin.math.max
 import kotlin.math.min
 
@@ -22,7 +23,48 @@ class GridSelectedFrameView(
 
     init {
         setImageDrawable(selectedFrameDrawable)
+        attr?.let { attrs ->
+            val typedArray =
+                context.obtainStyledAttributes(attrs, R.styleable.GridSelectedFrameView)
+            color = typedArray.getColor(
+                R.styleable.GridSelectedFrameView_gsfColor,
+                Color.GRAY
+            )
+            radius = typedArray.getDimensionPixelSize(
+                R.styleable.GridSelectedFrameView_gsfRadius,
+                0
+            )
+            strokeWidth = typedArray.getDimensionPixelSize(
+                R.styleable.GridSelectedFrameView_gsfStrokeWidth,
+                1
+            ).toFloat()
+            typedArray.recycle()
+        }
     }
+
+    var color: Int
+        get() {
+            return selectedFrameDrawable.color
+        }
+        set(value) {
+            selectedFrameDrawable.color = value
+        }
+
+    var radius: Int
+        get() {
+            return selectedFrameDrawable.radius
+        }
+        set(value) {
+            selectedFrameDrawable.radius = value
+        }
+
+    var strokeWidth: Float
+        get() {
+            return selectedFrameDrawable.strokeWidth
+        }
+        set(value) {
+            selectedFrameDrawable.strokeWidth = value
+        }
 
     private class SelectedFrameDrawable : Drawable() {
 
