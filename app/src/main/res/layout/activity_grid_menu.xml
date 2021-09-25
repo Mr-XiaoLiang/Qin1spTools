@@ -10,6 +10,7 @@
         android:layout_height="0px"
         android:layout_weight="1"
         android:id="@+id/gridLayout"
+        app:selectedScale="1.0"
         android:cropToPadding="false"/>
 
     <com.lollipop.qin1sptools.view.PageIndicatorView

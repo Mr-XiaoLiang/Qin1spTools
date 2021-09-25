@@ -47,7 +47,7 @@ open class GridMenuActivity : FeatureBarActivity() {
             val size = gridItemList.size
             var count = size / 9
             if (size % 9 != 0) {
-                count ++
+                count++
             }
             return count
         }
@@ -272,6 +272,11 @@ open class GridMenuActivity : FeatureBarActivity() {
             binding.positionView.text = "${index + 1}"
         }
 
+        override fun setSelected(isSelected: Boolean, selectedScale: Float): Boolean {
+            binding.selectedFrameView.isShow = isSelected
+            return true
+        }
+
         fun bind(item: GridItem) {
             binding.iconView.setImageDrawable(item.icon)
         }
@@ -290,7 +295,7 @@ open class GridMenuActivity : FeatureBarActivity() {
             viewGroup.removeAllViewsInLayout()
         }
 
-        inline fun <reified T: View> find(viewCreate: () -> T): T {
+        inline fun <reified T : View> find(viewCreate: () -> T): T {
             for (view in viewPool) {
                 if (view is T) {
                     viewPool.remove(view)

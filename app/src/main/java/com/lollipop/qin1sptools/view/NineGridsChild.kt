@@ -8,4 +8,8 @@ interface NineGridsChild {
 
     fun setGridIndex(index: Int)
 
+    fun setSelected(isSelected: Boolean, selectedScale: Float): Boolean {
+        return false
+    }
+
 }

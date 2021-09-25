@@ -2,6 +2,7 @@ package com.lollipop.qin1sptools.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import com.lollipop.qin1sptools.R
 
@@ -103,10 +104,26 @@ class NineGridsLayout(context: Context, attributeSet: AttributeSet?, defStyle: I
             getChildAt(index)?.let { child ->
                 if (child is NineGridsChild) {
                     child.setGridIndex(index)
+                    if (!child.setSelected(index == selected, scale)) {
+                        setDefaultSelectedStatus(child, index == selected, scale)
+                    }
+                } else {
+                    setDefaultSelectedStatus(child, index == selected, scale)
                 }
-                child.scaleX = if (index == selected) { scale } else { 1F }
-                child.scaleY = if (index == selected) { scale } else { 1F }
             }
+        }
+    }
+
+    private fun setDefaultSelectedStatus(child: View, isSelected: Boolean, scale: Float) {
+        child.scaleX = if (isSelected) {
+            scale
+        } else {
+            1F
+        }
+        child.scaleY = if (isSelected) {
+            scale
+        } else {
+            1F
         }
     }
 

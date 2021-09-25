@@ -21,27 +21,6 @@ class GridSelectedFrameView(
 
     private val selectedFrameDrawable = SelectedFrameDrawable()
 
-    init {
-        setImageDrawable(selectedFrameDrawable)
-        attr?.let { attrs ->
-            val typedArray =
-                context.obtainStyledAttributes(attrs, R.styleable.GridSelectedFrameView)
-            color = typedArray.getColor(
-                R.styleable.GridSelectedFrameView_gsfColor,
-                Color.GRAY
-            )
-            radius = typedArray.getDimensionPixelSize(
-                R.styleable.GridSelectedFrameView_gsfRadius,
-                0
-            )
-            strokeWidth = typedArray.getDimensionPixelSize(
-                R.styleable.GridSelectedFrameView_gsfStrokeWidth,
-                1
-            ).toFloat()
-            typedArray.recycle()
-        }
-    }
-
     var color: Int
         get() {
             return selectedFrameDrawable.color
@@ -66,11 +45,41 @@ class GridSelectedFrameView(
             selectedFrameDrawable.strokeWidth = value
         }
 
+    var isShow: Boolean
+        get() {
+            return selectedFrameDrawable.isShow
+        }
+        set(value) {
+            selectedFrameDrawable.isShow = value
+        }
+
+    init {
+        setImageDrawable(selectedFrameDrawable)
+        attr?.let { attrs ->
+            val typedArray =
+                context.obtainStyledAttributes(attrs, R.styleable.GridSelectedFrameView)
+            color = typedArray.getColor(
+                R.styleable.GridSelectedFrameView_gsfColor,
+                Color.GRAY
+            )
+            radius = typedArray.getDimensionPixelSize(
+                R.styleable.GridSelectedFrameView_gsfRadius,
+                0
+            )
+            strokeWidth = typedArray.getDimensionPixelSize(
+                R.styleable.GridSelectedFrameView_gsfStrokeWidth,
+                1
+            ).toFloat()
+            typedArray.recycle()
+        }
+    }
+
     private class SelectedFrameDrawable : Drawable() {
 
         private val paint = Paint().apply {
             isDither = true
             isAntiAlias = true
+            style = Paint.Style.STROKE
         }
 
         var color: Int
@@ -93,6 +102,12 @@ class GridSelectedFrameView(
             }
             get() {
                 return paint.strokeWidth
+            }
+
+        var isShow: Boolean = true
+            set(value) {
+                field = value
+                invalidateSelf()
             }
 
         private val framePath = Path()
@@ -133,7 +148,9 @@ class GridSelectedFrameView(
         }
 
         override fun draw(canvas: Canvas) {
-            canvas.drawPath(framePath, paint)
+            if (isShow) {
+                canvas.drawPath(framePath, paint)
+            }
         }
 
         override fun setAlpha(alpha: Int) {
