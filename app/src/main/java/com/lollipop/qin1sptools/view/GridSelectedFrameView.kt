@@ -126,8 +126,8 @@ class GridSelectedFrameView(
             val radiusHalf = radius / 2
             val left = bounds.left + offset
             val top = bounds.top + offset
-            val right = bounds.right - offset
-            val bottom = bounds.bottom - offset
+            val right = bounds.right - strokeWidth
+            val bottom = bounds.bottom - strokeWidth
             framePath.moveTo(left, max(bounds.exactCenterY(), top + radius))
             framePath.lineTo(left, top + radius)
             framePath.cubicTo(
