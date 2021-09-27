@@ -13,7 +13,7 @@
         <entry key="app/src/main/res/drawable/fg_grid_selected_frame.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_bottom_24.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_baseline_hourglass_top_24.xml" value="0.24722222222222223" />
-        <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_dashboard.xml" value="1.0" />
         <entry key="app/src/main/res/layout/activity_feature_bar.xml" value="0.26068003487358327" />
         <entry key="app/src/main/res/layout/activity_grid_menu.xml" value="0.2013677811550152" />
         <entry key="app/src/main/res/layout/activity_micro_display.xml" value="0.21883173496076722" />
