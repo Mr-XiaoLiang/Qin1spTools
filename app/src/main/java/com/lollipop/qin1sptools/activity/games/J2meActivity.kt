@@ -10,6 +10,7 @@ import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.FileChooseActivity
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.dialog.MessageDialog
+import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.guide.Guide
 import com.lollipop.qin1sptools.utils.FeatureIcon
@@ -27,6 +28,9 @@ class J2meActivity : GridMenuActivity() {
 
     companion object {
         private const val JAR_FILTER = ".*\\.[jJ][aA][rRdD]\$"
+
+        private const val OPTION_ID_FILE = 0
+        private const val OPTION_ID_PRESET = 1
     }
 
     override val baseFeatureIconArray = arrayOf(
@@ -177,13 +181,53 @@ class J2meActivity : GridMenuActivity() {
     }
 
     override fun onLeftFeatureButtonClick(): Boolean {
-        FileChooseActivity.start(this, filter = JAR_FILTER, chooseFile = true)
+        OptionDialog.build(this) {
+            setTitle("来源")
+            dataList.clear()
+            add(OptionDialog.Item("从预设添加", OPTION_ID_PRESET))
+            add(OptionDialog.Item("从文件添加", OPTION_ID_FILE))
+            setLeftButton(R.string.ok) {
+                if (it is OptionDialog) {
+                    val selectedPosition = it.selectedPosition
+                    if (selectedPosition in dataList.indices) {
+                        when (dataList[selectedPosition].id) {
+                            OPTION_ID_FILE -> {
+                                startFileChoose()
+                            }
+                            OPTION_ID_PRESET -> {
+                                startPresetChoose()
+                            }
+                        }
+                    }
+                }
+                it.dismiss()
+            }
+            setRightButton(R.string.cancel) {
+                it.dismiss()
+            }
+        }.show()
         return true
+    }
+
+    private fun startFileChoose() {
+        FileChooseActivity.start(this@J2meActivity, filter = JAR_FILTER, chooseFile = true)
+    }
+
+    private fun startPresetChoose() {
+        PresetJarActivity.start(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (FileChooseActivity.isResult(requestCode)) {
             val resultFile = FileChooseActivity.getResultFile(resultCode, data)
+            if (resultFile != null) {
+                onUI {
+                    convertJar(resultFile)
+                }
+            }
+            return
+        } else if (PresetJarActivity.isResult(requestCode)) {
+            val resultFile = PresetJarActivity.getResultFile(resultCode, data)
             if (resultFile != null) {
                 onUI {
                     convertJar(resultFile)
