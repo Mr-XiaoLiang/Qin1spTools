@@ -160,6 +160,8 @@ class MicroDisplayActivity : BaseActivity(), DisplayHost {
             return
         }
         microLoader?.applyConfiguration()
+        // 限制帧率为30
+        microLoader?.setLimitFps(30)
         setOrientation(microLoader?.orientation ?: -1)
         try {
             loadMIDlet()

@@ -21,6 +21,7 @@ import static android.os.Build.VERSION_CODES.N;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -182,6 +183,17 @@ public class MicroLoader {
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             int screenWidth = displayMetrics.widthPixels;
             int screenHeight = displayMetrics.heightPixels;
+            int orientation = getOrientation();
+            if (orientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+                // 横屏情况下，做一下横竖屏数据切换
+                int temp = paramsWidth;
+                paramsWidth = paramsHeight;
+                paramsHeight = temp;
+
+                temp = screenWidth;
+                screenWidth = screenHeight;
+                screenHeight = temp;
+            }
             if (screenWidth * screenHeight > MIN_SCREEN_SIZE) {
                 Displayable.setVirtualSize(paramsWidth, paramsHeight);
             } else {
