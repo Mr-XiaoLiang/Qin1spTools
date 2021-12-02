@@ -8,7 +8,7 @@
     <color name="contentBackground">#FF5A595A</color>
     <color name="featureBarBackground">#FF6E6C6E</color>
     <color name="actionBarColor">#FF54BCD4</color>
-    <color name="positionBackground">#FF6E6C6E</color>
+    <color name="positionBackground">#FF54BCD4</color>
     <color name="positionColor">#ffffffff</color>
     <color name="indicatorColor">#ffffffff</color>
 

@@ -80,6 +80,7 @@ class GridSelectedFrameView(
             isDither = true
             isAntiAlias = true
             style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
         }
 
         var color: Int

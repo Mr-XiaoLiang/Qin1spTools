@@ -13,10 +13,7 @@ import com.lollipop.qin1sptools.dialog.MessageDialog
 import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.guide.Guide
-import com.lollipop.qin1sptools.utils.FeatureIcon
-import com.lollipop.qin1sptools.utils.doAsync
-import com.lollipop.qin1sptools.utils.onUI
-import com.lollipop.qin1sptools.utils.requestStoragePermissions
+import com.lollipop.qin1sptools.utils.*
 import ru.playsoftware.j2meloader.applist.AppItem
 import ru.playsoftware.j2meloader.appsdb.AppRepository
 import ru.playsoftware.j2meloader.util.AppUtils
@@ -221,17 +218,13 @@ class J2meActivity : GridMenuActivity() {
         if (FileChooseActivity.isResult(requestCode)) {
             val resultFile = FileChooseActivity.getResultFile(resultCode, data)
             if (resultFile != null) {
-                onUI {
-                    convertJar(resultFile)
-                }
+                convertJar(resultFile)
             }
             return
         } else if (PresetJarActivity.isResult(requestCode)) {
             val resultFile = PresetJarActivity.getResultFile(resultCode, data)
             if (resultFile != null) {
-                onUI {
-                    convertJar(resultFile)
-                }
+                convertJar(resultFile)
             }
             return
         }
@@ -244,20 +237,22 @@ class J2meActivity : GridMenuActivity() {
     }
 
     private fun convertJar(uri: Uri) {
-        startLoading()
-        setFeatureButtons(FeatureIcon.NONE, FeatureIcon.NONE, FeatureIcon.NONE)
-        doAsync({
-            showToast(R.string.convert_error)
-            endLoading()
-        }) {
-            val gameDir = converter.convert(uri)
-            val app = AppUtils.getApp(gameDir)
-            appRepository.insert(app)
-            updateGameList()
-            onUI {
+        delay(200) {
+            startLoading()
+            setFeatureButtons(FeatureIcon.NONE, FeatureIcon.NONE, FeatureIcon.NONE)
+            doAsync({
+                showToast(R.string.convert_error)
                 endLoading()
-                notifyDataSetChanged()
-                setFeatureButtons()
+            }) {
+                val gameDir = converter.convert(uri)
+                val app = AppUtils.getApp(gameDir)
+                appRepository.insert(app)
+                updateGameList()
+                onUI {
+                    endLoading()
+                    notifyDataSetChanged()
+                    setFeatureButtons()
+                }
             }
         }
     }
