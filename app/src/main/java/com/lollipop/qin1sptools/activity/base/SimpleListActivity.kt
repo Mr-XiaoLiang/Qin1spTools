@@ -44,6 +44,7 @@ open class SimpleListActivity : FeatureBarActivity() {
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listBinding.recyclerView.adapter = ListAdapter(simpleListData, ::getSelectedPosition)
         listBinding.recyclerView.adapter?.notifyDataSetChanged()
+        listBinding.recyclerView.itemAnimator = null
     }
 
     protected fun setData(data: List<String>) {
