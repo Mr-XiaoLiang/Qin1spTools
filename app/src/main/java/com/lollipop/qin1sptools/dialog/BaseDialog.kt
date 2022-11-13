@@ -1,8 +1,13 @@
 package com.lollipop.qin1sptools.dialog
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.databinding.DialogBaseBinding
 import com.lollipop.qin1sptools.event.KeyEvent
@@ -61,6 +66,22 @@ abstract class BaseDialog constructor(private val option: Option) {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+        binding.root.isInvisible = true
+        binding.root.post {
+            binding.root.isVisible = true
+            binding.backgroundView.alpha = 0F
+            binding.dialogView.translationY = binding.dialogView.height.toFloat()
+            viewAnimate(binding.backgroundView) {
+                cancel()
+                alpha(1F)
+                start()
+            }
+            viewAnimate(binding.dialogView) {
+                cancel()
+                translationY(0F)
+                start()
+            }
+        }
     }
 
     private fun bindContent() {
@@ -123,8 +144,40 @@ abstract class BaseDialog constructor(private val option: Option) {
 
     fun dismiss() {
         option.keyEventProvider.removeKeyEventListener(onKeyEventListener)
-        option.container.removeView(binding.root)
         option.onDismissListener?.onDismiss()
+        viewAnimate(binding.backgroundView) {
+            cancel()
+            alpha(0F)
+            start()
+        }
+        viewAnimate(binding.dialogView) {
+            cancel()
+            translationY(binding.dialogView.height.toFloat())
+            setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationCancel(animation: Animator?) {
+                    super.onAnimationCancel(animation)
+                    setListener(null)
+                }
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    setListener(null)
+                    removeView()
+                }
+            })
+            start()
+        }
+    }
+
+    private fun viewAnimate(view: View, run: ViewPropertyAnimator.() -> Unit) {
+        with(view.animate()) {
+            duration = 150
+            run()
+        }
+    }
+
+    private fun removeView() {
+        option.container.removeView(binding.root)
     }
 
     protected fun CharSequence.defaultValue(run: () -> CharSequence): CharSequence {
