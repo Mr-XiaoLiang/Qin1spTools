@@ -8,6 +8,7 @@ import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
 import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
+import com.lollipop.qin1sptools.menu.GridMenu
 import com.lollipop.qin1sptools.utils.FeatureIcon
 
 class MainActivity : GridMenuActivity() {
@@ -28,7 +29,7 @@ class MainActivity : GridMenuActivity() {
         for (i in 0 until 39) {
             val drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher) ?: break
             gridItemList.add(
-                GridItem(
+                GridMenu.GridItem(
                     i,
                     drawable,
                     "Label$i"
@@ -38,7 +39,7 @@ class MainActivity : GridMenuActivity() {
         notifyDataSetChanged()
     }
 
-    override fun onGridItemClick(item: GridItem, index: Int) {
+    override fun onGridItemClick(item: GridMenu.GridItem, index: Int) {
 
     }
 

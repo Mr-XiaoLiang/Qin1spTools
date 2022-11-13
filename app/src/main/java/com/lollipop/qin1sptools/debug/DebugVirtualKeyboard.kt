@@ -21,7 +21,7 @@ class DebugVirtualKeyboard(
 ) {
 
     companion object {
-        var AUTO_SHOW_VIRTUAL_KEYBOARD = BuildConfig.DEBUG
+        var AUTO_SHOW_VIRTUAL_KEYBOARD = false // BuildConfig.DEBUG
             private set
 
         fun enableVirtualKeyboard() {

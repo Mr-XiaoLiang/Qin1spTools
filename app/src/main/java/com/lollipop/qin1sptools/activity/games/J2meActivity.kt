@@ -13,6 +13,7 @@ import com.lollipop.qin1sptools.dialog.MessageDialog
 import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.guide.Guide
+import com.lollipop.qin1sptools.menu.GridMenu
 import com.lollipop.qin1sptools.utils.*
 import ru.playsoftware.j2meloader.applist.AppItem
 import ru.playsoftware.j2meloader.appsdb.AppRepository
@@ -93,11 +94,11 @@ class J2meActivity : GridMenuActivity() {
 
         val defaultIcon = ContextCompat.getDrawable(this, R.mipmap.ic_launcher_java)!!
 
-        val menuList = ArrayList<GridItem>()
+        val menuList = ArrayList<GridMenu.GridItem>()
         apps.forEach { app ->
             try {
                 menuList.add(
-                    GridItem(
+                    GridMenu.GridItem(
                         app.id,
                         Drawable.createFromPath(app.imagePathExt) ?: defaultIcon,
                         app.title
@@ -121,7 +122,7 @@ class J2meActivity : GridMenuActivity() {
         notifyDataSetChanged()
     }
 
-    override fun onGridItemClick(item: GridItem, index: Int) {
+    override fun onGridItemClick(item: GridMenu.GridItem, index: Int) {
         val id = item.id
         val gameInfo = gameList.find { it.id == id } ?: return
         updateWindowInsets()
@@ -170,7 +171,7 @@ class J2meActivity : GridMenuActivity() {
         ContextHolder.setStatusBarSize(rectangle.top)
     }
 
-    override fun onGridItemInfoClick(item: GridItem?, index: Int) {
+    override fun onGridItemInfoClick(item: GridMenu.GridItem?, index: Int) {
         item ?: return
         val id = item.id
         val gameInfo = gameList.find { it.id == id } ?: return
