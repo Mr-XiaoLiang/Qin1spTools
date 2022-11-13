@@ -4,13 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 33
 
     defaultConfig {
         minSdk 19
-        targetSdk 30
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        targetSdk 33
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -27,10 +25,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.lollipop.games'
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
 }

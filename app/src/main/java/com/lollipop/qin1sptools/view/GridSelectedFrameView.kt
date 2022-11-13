@@ -113,7 +113,7 @@ class GridSelectedFrameView(
 
         private val framePath = Path()
 
-        override fun onBoundsChange(bounds: Rect?) {
+        override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
             checkPath()
         }

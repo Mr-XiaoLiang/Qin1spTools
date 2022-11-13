@@ -182,18 +182,25 @@ class J2meActivity : GridMenuActivity() {
         OptionDialog.build(this) {
             setTitle("来源")
             dataList.clear()
-            add(OptionDialog.Item("从预设添加", OPTION_ID_PRESET))
-            add(OptionDialog.Item("从文件添加", OPTION_ID_FILE))
+            add(OptionDialog.Item(getString(R.string.add_from_preset), OPTION_ID_PRESET))
+            add(OptionDialog.Item(getString(R.string.add_from_file), OPTION_ID_FILE))
+            addMenuModeOption(this)
             setLeftButton(R.string.ok) {
                 if (it is OptionDialog) {
                     val selectedPosition = it.selectedPosition
                     if (selectedPosition in dataList.indices) {
-                        when (dataList[selectedPosition].id) {
+                        val id = dataList[selectedPosition].id
+                        when (id) {
                             OPTION_ID_FILE -> {
                                 startFileChoose()
                             }
                             OPTION_ID_PRESET -> {
                                 startPresetChoose()
+                            }
+                            else -> {
+                                setMenuMode(id)
+                                startActivity(Intent(this@J2meActivity, J2meActivity::class.java))
+                                finish()
                             }
                         }
                     }

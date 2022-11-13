@@ -154,12 +154,12 @@ abstract class BaseDialog constructor(private val option: Option) {
             cancel()
             translationY(binding.dialogView.height.toFloat())
             setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     super.onAnimationCancel(animation)
                     setListener(null)
                 }
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     setListener(null)
                     removeView()

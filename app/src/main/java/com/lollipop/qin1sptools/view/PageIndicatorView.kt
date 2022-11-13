@@ -86,7 +86,7 @@ class PageIndicatorView(context: Context, attributeSet: AttributeSet?, defStyle:
             updateIndicator()
         }
 
-        override fun onBoundsChange(bounds: Rect?) {
+        override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
             updateIndicator()
         }

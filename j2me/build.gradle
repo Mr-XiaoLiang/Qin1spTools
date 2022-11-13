@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {android
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 32
+        targetSdkVersion 33
         setProperty("archivesBaseName", "J2ME_Loader-$versionName")
         ndkVersion '21.3.6528147'
         ndk {
@@ -43,19 +43,20 @@ android {android
         abortOnError false
         disable 'MissingTranslation'
     }
+    namespace 'ru.playsoftware.j2meloader'
 }
 
 dependencies {
-    def roomVersion = '2.3.0'
+    def roomVersion = '2.4.3'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "androidx.room:room-rxjava2:$roomVersion"
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.billthefarmer:mididriver:v1.21'
     implementation 'com.github.nikita36078:filepicker:4.3.0'
     implementation 'com.github.nikita36078:mobile-ffmpeg:v4.3.2-compact'
