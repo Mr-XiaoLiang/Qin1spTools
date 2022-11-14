@@ -40,4 +40,7 @@
     <string name="add_from_file">从文件添加</string>
     <string name="menu_mode_v1">传统目录</string>
     <string name="menu_mode_v2">游戏目录</string>
+
+    <string name="title_accessibility_service">辅助服务</string>
+    <string name="msg_accessibility_service">由Lollipop提供</string>
 </resources>

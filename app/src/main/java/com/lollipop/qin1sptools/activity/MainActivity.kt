@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
 import com.lollipop.qin1sptools.activity.base.GridMenuActivity
+import com.lollipop.qin1sptools.boot.AccessibilityService
 import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.menu.GridMenu
@@ -86,11 +87,12 @@ class MainActivity : GridMenuActivity() {
                     WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     PixelFormat.TRANSPARENT
-                ))
+                )
+            )
         }
 
         if (event == KeyEvent.KEY_4) {
-
+            startService(Intent(this, AccessibilityService::class.java))
         }
         return super.onKeyDown(event, repeatCount)
     }

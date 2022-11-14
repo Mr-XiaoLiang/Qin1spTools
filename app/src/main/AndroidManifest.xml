@@ -11,11 +11,11 @@
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -25,21 +25,31 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Qin1spTools">
-        <receiver android:name=".boot.BootBroadcastReceiver"
+        <receiver
+            android:name=".boot.BootBroadcastReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".boot.AccessibilityService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.lollipop.AccessibilityService"
+            android:process=":Accessibility" />
+
         <activity
             android:name=".activity.games.PresetJarActivity"
             android:exported="true" />
         <activity
             android:name=".activity.dashboard.DashboardActivity"
             android:exported="true"
-            android:label="@string/dashboard">
-        </activity>
+            android:label="@string/dashboard"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".activity.games.MicroDisplayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
@@ -48,11 +58,12 @@
             android:name=".activity.games.J2meActivity"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_java"
-            android:label="@string/j2me_name">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            android:label="@string/j2me_name"
+            android:launchMode="singleInstance">
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
