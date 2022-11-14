@@ -1,7 +1,11 @@
 package com.lollipop.qin1sptools.activity
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.PixelFormat
 import android.os.Bundle
+import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lollipop.qin1sptools.R
@@ -10,6 +14,7 @@ import com.lollipop.qin1sptools.dialog.OptionDialog
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.menu.GridMenu
 import com.lollipop.qin1sptools.utils.FeatureIcon
+import com.lollipop.qin1sptools.utils.log
 
 class MainActivity : GridMenuActivity() {
 
@@ -62,6 +67,30 @@ class MainActivity : GridMenuActivity() {
                 }
             }.show()
             return true
+        }
+
+        if (event == KeyEvent.KEY_5) {
+            val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            wm.addView(
+                ImageView(this).apply {
+                    setImageResource(R.mipmap.ic_launcher)
+                    isFocusableInTouchMode = true
+                    setOnKeyListener { v, keyCode, event ->
+                        log("keyCode: $keyCode")
+                        true
+                    }
+                },
+                WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    PixelFormat.TRANSPARENT
+                ))
+        }
+
+        if (event == KeyEvent.KEY_4) {
+
         }
         return super.onKeyDown(event, repeatCount)
     }
