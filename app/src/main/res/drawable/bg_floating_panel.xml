@@ -6,7 +6,7 @@
             <corners
                 android:topLeftRadius="10dp"
                 android:topRightRadius="10dp" />
-            <solid android:color="@color/featureBarBackground" />
+            <solid android:color="#404040" />
         </shape>
     </item>
 

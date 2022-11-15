@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,6 +11,7 @@
         android:background="@color/dialogBackground" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/floatingCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -61,6 +61,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
+        android:id="@+id/floatingBottomLineView"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom"
