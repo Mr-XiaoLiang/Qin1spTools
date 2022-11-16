@@ -8,9 +8,10 @@ import androidx.core.view.isVisible
 import kotlin.math.abs
 
 class FloatingPanelAnimationHelper(
+    private val panelRoot: View,
     private val bottomSheetPanel: View,
     private val backgroundView: View,
-    private val floatingHintView: View
+    private val onClosed: () -> Unit
 ) : ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
     companion object {
@@ -77,21 +78,21 @@ class FloatingPanelAnimationHelper(
         val pro = progress
         backgroundView.alpha = pro
         bottomSheetPanel.translationY = (1 - pro) * bottomSheetPanel.height
-        floatingHintView.scaleX = (1 - pro)
     }
 
     private fun onAnimationStart() {
+        panelRoot.isVisible = true
         bottomSheetPanel.isVisible = true
         backgroundView.isVisible = true
-        floatingHintView.isVisible = true
     }
 
     private fun onAnimationEnd() {
         // 结束的时候，需要把不必要的View隐藏了
         if (progress < THRESHOLD_CLOSED) {
+            panelRoot.isInvisible = true
             bottomSheetPanel.isInvisible = true
             backgroundView.isInvisible = true
-            floatingHintView.isVisible = true
+            onClosed()
         }
     }
 

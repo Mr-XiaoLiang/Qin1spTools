@@ -2,9 +2,11 @@ package com.lollipop.qin1sptools.floating
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import com.lollipop.qin1sptools.databinding.FloatingHintBinding
 import com.lollipop.qin1sptools.databinding.FloatingRootBinding
 import com.lollipop.qin1sptools.event.KeyEvent
 import com.lollipop.qin1sptools.event.KeyEvent.*
@@ -25,7 +27,11 @@ class FloatingPanel(private val context: Context) : KeyEventListener, View.OnKey
 
     private val actionPanelList = ArrayList<FloatingAction>()
 
-    private val binding: FloatingRootBinding by lazy {
+    private val panelBinding: FloatingRootBinding by lazy {
+        LayoutInflater.from(context).bind()
+    }
+
+    private val hintBinding: FloatingHintBinding by lazy {
         LayoutInflater.from(context).bind()
     }
 
@@ -34,27 +40,64 @@ class FloatingPanel(private val context: Context) : KeyEventListener, View.OnKey
 
     private val animationHelper by lazy {
         FloatingPanelAnimationHelper(
-            binding.floatingCardView,
-            binding.backgroundView,
-            binding.floatingBottomLineView
+            panelBinding.root,
+            panelBinding.floatingCardView,
+            panelBinding.backgroundView,
+            ::removePanel
         )
     }
 
     fun onCreate() {
+        showHintView()
+    }
+
+    private fun showHintView() {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            .or(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            .or(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            .or(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+            .or(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        wm.addView(
+            bindKeyListener(hintBinding.root),
+            WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                flags,
+                PixelFormat.TRANSPARENT
+            ).apply {
+                gravity = Gravity.BOTTOM
+            }
+        )
+    }
+
+    private fun showPanel() {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             .or(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             .or(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
             .or(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        val layoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-            flags,
-            PixelFormat.TRANSPARENT
+        val type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        wm.addView(
+            panelBinding.root,
+            WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                type,
+                flags,
+                PixelFormat.TRANSPARENT
+            )
         )
-        wm.addView(bindKeyListener(binding.root), layoutParams)
         animationHelper.close(false)
+        panelBinding.root.post {
+            animationHelper.open(true)
+        }
+    }
+
+    private fun removePanel() {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        wm.removeView(panelBinding.root)
     }
 
     private fun bindKeyListener(view: View): View {
@@ -162,8 +205,9 @@ class FloatingPanel(private val context: Context) : KeyEventListener, View.OnKey
     }
 
     override fun onKey(v: View?, keyCode: Int, event: android.view.KeyEvent?): Boolean {
-        return (keyEventProviderHelper.onKeyDown(keyCode, event)
-                || keyEventProviderHelper.onKeyUp(keyCode, event))
+        val keyDownResult = keyEventProviderHelper.onKeyDown(keyCode, event)
+        val keyUpResult = keyEventProviderHelper.onKeyUp(keyCode, event)
+        return (keyDownResult || keyUpResult)
     }
 
     private class ActionPanelInfo(

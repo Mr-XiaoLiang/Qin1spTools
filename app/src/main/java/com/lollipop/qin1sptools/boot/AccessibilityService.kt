@@ -2,7 +2,10 @@ package com.lollipop.qin1sptools.boot
 
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.IBinder
 import android.view.LayoutInflater
 import androidx.core.app.NotificationChannelCompat
