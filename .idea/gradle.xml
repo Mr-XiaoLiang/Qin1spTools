@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/dexlib" />
             <option value="$PROJECT_DIR$/games" />
             <option value="$PROJECT_DIR$/j2me" />
+            <option value="$PROJECT_DIR$/xposed" />
           </set>
         </option>
       </GradleProjectSettings>
