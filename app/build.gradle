@@ -77,7 +77,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation project(':j2me')
+    implementation project(":j2me")
+    implementation project(":xposed")
     lollipopImplementation project(":games")
     wechatImplementation project(":games")
 }
