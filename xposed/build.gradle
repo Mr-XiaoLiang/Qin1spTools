@@ -33,6 +33,7 @@ dependencies {
 //    implementation 'androidx.core:core-ktx:1.9.0'
     // 修改版本记得同时修改manifest中配置的版本
 //    api files('libs/XposedBridge_90.jar')
+    api files('libs/XposedBridge_82.jar')
 //    api 'de.robv.android.xposed:api:82'
 //    implementation 'de.robv.android.xposed:api:82'
 }
