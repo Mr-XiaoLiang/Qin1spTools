@@ -1,4 +1,4 @@
-package com.lollipop.xposed
+package com.lollipop.xposed.tools
 
 import de.robv.android.xposed.XposedHelpers
 

@@ -210,6 +210,12 @@ class FloatingPanel(private val context: Context) : KeyEventListener, View.OnKey
         return (keyDownResult || keyUpResult)
     }
 
+    fun onHotKey(keyCode: Int, pkg: String) {
+        val event = KeyEventProviderHelper.findKeyByCode(keyCode)
+        keyEventProviderHelper.onKeyDown(event, 0)
+        keyEventProviderHelper.onKeyUp(event, 0)
+    }
+
     private class ActionPanelInfo(
         val actions: List<FloatingAction>
     )
