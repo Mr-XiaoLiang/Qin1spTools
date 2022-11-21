@@ -134,14 +134,10 @@ class FloatingPanel(private val context: Context) : KeyEventListener, View.OnKey
         if (abs(now - starTime) < PANEL_OPEN_DURATION && abs(now - poundTime) < PANEL_OPEN_DURATION) {
             starTime = 0L
             poundTime = 0L
-            openPanel()
+            showPanel()
             return true
         }
         return false
-    }
-
-    private fun openPanel() {
-        animationHelper.open(true)
     }
 
     private fun closePanel() {

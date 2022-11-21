@@ -57,10 +57,13 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.github.billthefarmer:mididriver:v1.21'
-    implementation 'com.github.nikita36078:filepicker:4.3.0'
-    implementation 'com.github.nikita36078:mobile-ffmpeg:v4.3.2-compact'
-    implementation 'com.github.nikita36078:pngj:2.2.2'
+//    implementation 'com.github.billthefarmer:mididriver:v1.21'
+    implementation files('libs/MidiDriver-1.26.aar')
+//    implementation 'com.github.nikita36078:filepicker:4.3.0'
+//    implementation 'com.github.nikita36078:mobile-ffmpeg:4.3.2'
+    implementation files('libs/mobile-ffmpeg.aar')
+//    implementation 'com.github.nikita36078:pngj:2.2.2'
+    implementation files('libs/pngj-2.1.1.jar')
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.6'
     compileOnly 'com.google.auto.service:auto-service-annotations:1.0'
